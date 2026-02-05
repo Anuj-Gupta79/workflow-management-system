@@ -3,6 +3,9 @@ package com.workflow.backend.Config;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
 
+import com.workflow.backend.task.Task;
+import com.workflow.backend.task.TaskRepository;
+import com.workflow.backend.task.TaskStatus;
 import com.workflow.backend.user.Role;
 import com.workflow.backend.user.User;
 import com.workflow.backend.user.UserRepository;
@@ -14,6 +17,7 @@ import lombok.RequiredArgsConstructor;
 public class DataInitializer implements CommandLineRunner {
 
     private final UserRepository userRepository;
+    private final TaskRepository taskRepository;
 
     @Override
     public void run(String... args) throws Exception {
@@ -31,6 +35,26 @@ public class DataInitializer implements CommandLineRunner {
         }
 
         System.out.println("✅ Default users seeded");
+
+        User manager = userRepository.findByRole(Role.MANAGER).orElseThrow();
+        User employee = userRepository.findByRole(Role.EMPLOYEE).orElseThrow();
+        
+        if(taskRepository.count() > 0) {
+            System.out.println("✅ Demo tasks already exist, skipping seeding demo tasks");
+            return;
+        }
+
+        for (TaskStatus status : TaskStatus.values()) {
+            taskRepository.save(Task.builder()
+                    .title("Demo Task - " + status)
+                    .description("This is a demo task with status " + status)
+                    .status(status)
+                    .createdBy(employee)
+                    .assignedTo(manager)
+                    .build());
+        }
+
+        System.out.println("✅ Demo tasks seeded");
 
     }
     
