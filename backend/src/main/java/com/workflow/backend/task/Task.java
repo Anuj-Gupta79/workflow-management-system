@@ -19,12 +19,14 @@ import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.Setter;
 
 @Entity
 @Table(name = "tasks")
 @Builder
 @Getter
 @AllArgsConstructor
+@Setter
 public class Task {
 
     @Id
