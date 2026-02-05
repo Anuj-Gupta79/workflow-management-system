@@ -1,9 +1,10 @@
-package com.workflow.backend.user;
+package com.workflow.backend.task;
 
 import java.time.LocalDateTime;
 
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
+import com.workflow.backend.user.User;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -12,37 +13,40 @@ import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
-import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 
 @Entity
-@Table(name = "users")
-@Getter
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@Table(name = "tasks")
 @Builder
-@AllArgsConstructor(access = AccessLevel.PRIVATE)
-public class User {
-    
+@Getter
+@AllArgsConstructor
+public class Task {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @Column(nullable = false)
-    private String name;
+    private String title;
 
-    @Column(nullable = false, unique = true)
-    private String email;
+    private String description;
 
-    @Column(nullable = false)
-    private String password;
+    @ManyToOne
+    @JoinColumn(name = "created_by")
+    private User createdBy;
+
+    @ManyToOne
+    @JoinColumn(name = "assigned_to")
+    private User assignedTo;
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private Role role;
+    private TaskStatus status;
 
     @CreationTimestamp
     @Column(updatable = false)
@@ -50,4 +54,5 @@ public class User {
 
     @UpdateTimestamp
     private LocalDateTime updatedAt;
+
 }
