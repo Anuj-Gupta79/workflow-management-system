@@ -24,13 +24,13 @@ public class TaskController {
     private final TaskService taskService;
 
     @GetMapping("")
-    public ResponseEntity<List<Task>> getMethodName() {
+    public ResponseEntity<List<Task>> getAllTasks() {
         return ResponseEntity.ok(taskService.getAllTasks());
     }
     
 
     @PostMapping
-    public ResponseEntity<Task> postMethodName(@RequestBody Task entity) {
+    public ResponseEntity<Task> createTask(@RequestBody Task entity) {
         Task createdTask = taskService.createTask(entity);
         return ResponseEntity.ok(createdTask);
     }

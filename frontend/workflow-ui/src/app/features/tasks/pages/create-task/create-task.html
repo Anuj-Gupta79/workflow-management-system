@@ -1,0 +1,59 @@
+<div class="container-fluid mt-4 px-4">
+  <div class="row justify-content-center">
+    <div class="col-md-8 col-lg-6">
+      <div class="card shadow-sm">
+        <div class="card-body">
+          <h4 class="mb-3">Create Task</h4>
+
+          <form [formGroup]="taskForm" (ngSubmit)="submit()">
+            <!-- Title -->
+            <div class="mb-3">
+              <label for="title" class="form-label">Title *</label>
+              <input
+                id="title"
+                type="text"
+                class="form-control"
+                formControlName="title"
+                placeholder="Enter task title"
+              />
+            </div>
+
+            <!-- Description -->
+            <div class="mb-3">
+              <label for="description" class="form-label">Description</label>
+              <textarea
+                id="description"
+                class="form-control"
+                rows="3"
+                formControlName="description"
+              ></textarea>
+            </div>
+
+            <!-- Assigned To -->
+            <div class="mb-3">
+              <label for="assignedToName" class="form-label">Assign To</label>
+              <input
+                id="assignedToName"
+                type="text"
+                class="form-control"
+                formControlName="assignedToName"
+                placeholder="Optional"
+              />
+            </div>
+
+            <!-- Actions -->
+            <div class="d-flex justify-content-end gap-2">
+              <button type="button" class="btn btn-outline-secondary" routerLink="/tasks">
+                Cancel
+              </button>
+
+              <button type="submit" class="btn btn-primary" [disabled]="submitting">
+                {{ submitting ? 'Creating...' : 'Create Task' }}
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

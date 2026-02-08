@@ -1,4 +1,4 @@
-package com.workflow.backend.Config;
+package com.workflow.backend.config;
 
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;

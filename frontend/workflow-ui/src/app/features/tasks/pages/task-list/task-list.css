@@ -1,0 +1,63 @@
+.task-table {
+  background: #fff;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.cursor-pointer {
+  cursor: pointer;
+}
+
+.status-badge {
+  user-select: none;
+}
+
+.status-menu {
+  position: absolute;
+  z-index: 1000;
+  background: #fff;
+  border-radius: 8px;
+  border: 1px solid #e0e0e0;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.08);
+  margin-top: 6px;
+  min-width: 180px;
+  overflow: hidden;
+}
+
+.status-menu button {
+  width: 100%;
+  padding: 10px 14px;
+  font-size: 14px;
+  text-align: left;
+  background: none;
+  border: none;
+}
+
+.status-menu button:hover:not(:disabled) {
+  background-color: #f5f7fa;
+}
+
+.status-menu button:disabled {
+  opacity: 0.6;
+}
+
+.status-empty {
+  padding: 10px 14px;
+  font-size: 13px;
+  color: #6c757d;
+  background-color: #f8f9fa;
+  text-align: center;
+}
+
+.status-menu-mobile {
+  border-top: 1px solid #eee;
+  padding-top: 8px;
+}
+
+@media (max-width: 768px) {
+  .status-menu {
+    position: static;
+    box-shadow: none;
+    border: none;
+  }
+}

@@ -3,7 +3,7 @@
 {
   "extends": "./tsconfig.json",
   "compilerOptions": {
-    "outDir": "./src",
+    "outDir": "../workflow-ui/src",
     "types": [],
     "module": "ES2022"
   },
