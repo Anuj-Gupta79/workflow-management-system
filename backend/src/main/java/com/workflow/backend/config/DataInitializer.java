@@ -1,5 +1,7 @@
 package com.workflow.backend.config;
 
+import java.util.List;
+
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
 
@@ -36,8 +38,8 @@ public class DataInitializer implements CommandLineRunner {
 
         System.out.println("✅ Default users seeded");
 
-        User manager = userRepository.findByRole(Role.MANAGER).orElseThrow();
-        User employee = userRepository.findByRole(Role.EMPLOYEE).orElseThrow();
+        List<User> manager = userRepository.findByRole(Role.MANAGER);
+        List<User> employee = userRepository.findByRole(Role.EMPLOYEE);
         
         if(taskRepository.count() > 0) {
             System.out.println("✅ Demo tasks already exist, skipping seeding demo tasks");
@@ -49,8 +51,8 @@ public class DataInitializer implements CommandLineRunner {
                     .title("Demo Task - " + status)
                     .description("This is a demo task with status " + status)
                     .status(status)
-                    .createdBy(employee)
-                    .assignedTo(manager)
+                    .createdBy(employee.get(0))
+                    .assignedTo(manager.get(0))
                     .build());
         }
 

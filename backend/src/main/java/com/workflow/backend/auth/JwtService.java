@@ -2,6 +2,7 @@ package com.workflow.backend.auth;
 
 import java.security.Key;
 
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
 import io.jsonwebtoken.Claims;
@@ -37,6 +38,16 @@ public class JwtService {
                 .build()
                 .parseClaimsJws(token)
                 .getBody();
+    }
+
+    public boolean isValidToken(String token, UserDetails userDetails) {
+        try {
+            Claims claims = parse(token);
+            String email = claims.getSubject();
+            return email.equals(userDetails.getUsername()) && claims.getExpiration().after(new java.util.Date());
+        } catch (Exception e) {
+            return false;
+        }
     }
 
 }
