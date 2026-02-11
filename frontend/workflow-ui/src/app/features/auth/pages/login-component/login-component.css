@@ -1,0 +1,78 @@
+/* Full screen wrapper */
+.auth-wrapper {
+  min-height: 100vh;
+  background: radial-gradient(circle at top, #f5f7ff 0%, #eef1ff 40%, #e9edff 100%);
+}
+
+/* Perfect centering */
+.auth-center {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+}
+
+/* Card */
+.auth-card {
+  width: 100%;
+  max-width: 380px; /* 🔥 THIS fixes your issue */
+  background: #fff;
+  border-radius: 18px;
+  box-shadow:
+    0 10px 30px rgba(0, 0, 0, 0.08),
+    0 30px 60px rgba(91, 108, 255, 0.12);
+}
+
+/* Body */
+.auth-body {
+  padding: 2.5rem;
+}
+
+/* Subtitle */
+.auth-subtitle {
+  font-size: 0.9rem;
+  color: rgba(0, 0, 0, 0.55);
+}
+
+/* Inputs */
+.auth-input {
+  height: 44px;
+  border-radius: 10px;
+}
+
+.auth-input::placeholder {
+  color: rgba(0, 0, 0, 0.35);
+}
+
+/* Button */
+.auth-btn {
+  height: 44px;
+  border-radius: 10px;
+  font-weight: 500;
+}
+
+/* Links */
+.auth-link {
+  color: #5b6cff;
+  font-weight: 500;
+  text-decoration: none;
+}
+
+.auth-link:hover {
+  text-decoration: underline;
+}
+
+/* Small height screens */
+@media (max-height: 700px) {
+  .auth-body {
+    padding: 1.75rem;
+  }
+}
+
+/* Mobile */
+@media (max-width: 480px) {
+  .auth-card {
+    max-width: 100%;
+  }
+}

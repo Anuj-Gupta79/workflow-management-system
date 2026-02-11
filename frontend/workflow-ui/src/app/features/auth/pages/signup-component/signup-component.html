@@ -1,59 +1,73 @@
-<div class="container min-vh-100 d-flex align-items-center">
-  <div class="row justify-content-center w-100">
-    <div class="col-12 col-sm-10 col-md-6 col-lg-4">
-      <div class="card shadow-lg border-0">
-        <div class="card-body p-4">
-          <h3 class="text-center mb-4">Create Account</h3>
-
-          <form [formGroup]="signupForm" (ngSubmit)="submit()">
-            <!-- Name -->
-            <div class="mb-3">
-              <label class="form-label">Name</label>
-              <input
-                class="form-control"
-                formControlName="name"
-                placeholder="Your name"
-              />
+<div class="auth-wrapper">
+  <div class="container min-vh-100 d-flex align-items-center justify-content-center">
+    <div class="row w-100 justify-content-center">
+      <div class="col-12 col-sm-10 col-md-8 col-lg-6 col-xl-5">
+        <div class="card auth-card border-0">
+          <div class="card-body p-4 p-md-5">
+            <!-- Header -->
+            <div class="text-center mb-4">
+              <h2 class="fw-bold text-primary">Create your account</h2>
+              <p class="text-muted mb-0">
+                Start managing workflows with <span class="fw-semibold">FlowSync</span>
+              </p>
             </div>
 
-            <!-- Email -->
-            <div class="mb-3">
-              <label class="form-label">Email</label>
-              <input
-                type="email"
-                class="form-control"
-                formControlName="email"
-                placeholder="you@example.com"
-              />
+            <!-- Form -->
+            <form [formGroup]="signupForm" (ngSubmit)="submit()">
+              <!-- Name -->
+              <div class="mb-3">
+                <label class="form-label">Name</label>
+                <input
+                  class="form-control form-control-lg"
+                  formControlName="name"
+                  placeholder="Your full name"
+                />
+              </div>
+
+              <!-- Email -->
+              <div class="mb-3">
+                <label class="form-label">Email</label>
+                <input
+                  type="email"
+                  class="form-control form-control-lg"
+                  formControlName="email"
+                  placeholder="you@example.com"
+                />
+              </div>
+
+              <!-- Password -->
+              <div class="mb-4">
+                <label class="form-label">Password</label>
+                <input
+                  type="password"
+                  class="form-control form-control-lg"
+                  formControlName="password"
+                  placeholder="••••••••"
+                />
+              </div>
+
+              <!-- CTA -->
+              <button
+                type="submit"
+                class="btn btn-primary btn-lg w-100"
+                [disabled]="signupForm.invalid"
+              >
+                Get Started
+              </button>
+            </form>
+
+            <!-- Footer -->
+            <div class="text-center mt-4">
+              <small class="text-muted">
+                Already have an account?
+                <a routerLink="/login" class="fw-semibold text-primary">Login</a>
+              </small>
             </div>
-
-            <!-- Password -->
-            <div class="mb-3">
-              <label class="form-label">Password</label>
-              <input
-                type="password"
-                class="form-control"
-                formControlName="password"
-                placeholder="••••••••"
-              />
-            </div>
-
-            <button
-              type="submit"
-              class="btn btn-primary w-100 mt-2"
-              [disabled]="signupForm.invalid"
-            >
-              Sign Up
-            </button>
-          </form>
-
-          <div class="text-center mt-3">
-            <small>
-              Already have an account?
-              <a routerLink="/login">Login</a>
-            </small>
           </div>
         </div>
+
+        <!-- Brand footer -->
+        <p class="text-center text-muted mt-4 small">© 2026 FlowSync</p>
       </div>
     </div>
   </div>
