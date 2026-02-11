@@ -28,7 +28,7 @@ export class LoginComponent {
     if (this.loginForm.invalid) return;
 
     this.authService.login(this.loginForm.value as any).subscribe({
-      next: () => this.router.navigate(['/tasks']),
+      next: () => this.router.navigate(['/dashboard']),
       error: (err) => console.error(err),
     });
   }

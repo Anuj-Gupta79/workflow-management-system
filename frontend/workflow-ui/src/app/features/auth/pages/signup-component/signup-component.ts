@@ -29,7 +29,7 @@ export class SignupComponent {
     if (this.signupForm.invalid) return;
 
     this.authService.signup(this.signupForm.value as any).subscribe({
-      next: () => this.router.navigate(['/login']),
+      next: () => this.router.navigate(['/dashboard']),
       error: (err) => console.error(err),
     });
   }
