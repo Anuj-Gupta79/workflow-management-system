@@ -1,1 +1,55 @@
 /* You can add global styles to this file, and also import other style files */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+
+:root {
+  /* Brand Colors */
+  --primary: #1d4ed8;
+  --primary-dark: #1e3a8a;
+  --accent: #6366f1;
+
+  /* Backgrounds */
+  --bg-white: #ffffff;
+  --bg-soft: #eef2ff;
+  --bg-card: #ffffff;
+
+  /* Text */
+  --text-main: #0f172a;
+  --text-muted: #475569;
+
+  /* Borders & Shadows */
+  --border-light: #e5e7eb;
+  --shadow-soft: 0 10px 30px rgba(29, 78, 216, 0.08), 0 2px 8px rgba(15, 23, 42, 0.05);
+}
+
+body {
+  background-color: var(--bg-white);
+  color: var(--text-main);
+  font-family: 'Inter', 'Segoe UI', system-ui, sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+
+.btn-primary {
+  background: linear-gradient(135deg, var(--primary), var(--accent));
+  border: none;
+}
+
+.btn-primary:hover {
+  opacity: 0.95;
+}
+
+.btn-outline-primary {
+  color: var(--primary);
+  border-color: var(--primary);
+}
+
+.btn-outline-primary:hover {
+  background-color: var(--primary);
+  color: #fff;
+}
+
+.card {
+  border: none;
+  border-radius: 16px;
+  background: var(--bg-card);
+  box-shadow: var(--shadow-soft);
+}

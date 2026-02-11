@@ -1,38 +1,134 @@
-<div class="container-fluid min-vh-100 d-flex align-items-center bg-light">
+<!-- ================= NAVBAR ================= -->
+<nav class="navbar navbar-expand-lg bg-white shadow-sm fixed-top">
+  <div class="container">
+    <a class="navbar-brand fw-bold text-primary-dark" routerLink="/">FlowSync</a>
+
+    <button
+      class="navbar-toggler"
+      type="button"
+      data-bs-toggle="collapse"
+      data-bs-target="#landingNavbar"
+      aria-label="Toggle navigation"
+    >
+      <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <div class="collapse navbar-collapse" id="landingNavbar">
+      <ul class="navbar-nav ms-auto align-items-lg-center gap-lg-3">
+        <li class="nav-item">
+          <a class="nav-link" routerLink="/login">Login</a>
+        </li>
+        <li class="nav-item">
+          <a class="btn btn-primary px-4" routerLink="/signup">Get Started</a>
+        </li>
+      </ul>
+    </div>
+  </div>
+</nav>
+
+<!-- ================= HERO ================= -->
+<section class="hero-gradient min-vh-100 d-flex align-items-center pt-5">
   <div class="container">
     <div class="row align-items-center">
-
-      <!-- Left content -->
-      <div class="col-md-6 mb-4 mb-md-0">
+      <div class="col-md-6">
         <h1 class="fw-bold display-5">
-          Workflow Management System
+          FlowSync<span class="text-accent">.</span>
         </h1>
 
-        <p class="text-muted mt-3 fs-5">
-          Manage tasks, approvals, and team workflows in one place.
-          Built for employees, managers, and admins.
+        <p class="fs-5 text-muted mt-3">
+          Streamline tasks, simplify approvals, and manage workflows effortlessly.
         </p>
 
-        <div class="mt-4 d-flex gap-3">
-          <a routerLink="/login" class="btn btn-primary btn-lg">
-            Sign In
-          </a>
-          <a routerLink="/signup" class="btn btn-outline-primary btn-lg">
-            Sign Up
-          </a>
+        <div class="mt-4 d-flex gap-3 flex-wrap">
+          <a routerLink="/signup" class="btn btn-primary btn-lg px-4">Get Started</a>
+          <a routerLink="/login" class="btn btn-outline-primary btn-lg px-4">Login</a>
         </div>
       </div>
 
-      <!-- Right illustration -->
-      <div class="col-md-6 text-center">
-        <img
-          src="assets/landing-illustration.png"
-          alt="Workflow"
-          class="img-fluid"
-          style="max-height: 420px;"
-        />
+      <div class="col-md-6 text-center d-none d-md-block">
+        <!-- UI mock instead of image -->
+        <div class="workflow-mock hero-image">
+          <div class="mock-header">
+            <span class="dot red"></span>
+            <span class="dot yellow"></span>
+            <span class="dot green"></span>
+          </div>
+          <div class="mock-body">
+            <div class="task-card">
+              <h6>Create Task</h6>
+              <span class="status pending">Pending</span>
+            </div>
+            <div class="task-card">
+              <h6>Manager Review</h6>
+              <span class="status inprogress">In Progress</span>
+            </div>
+            <div class="task-card">
+              <h6>Approval</h6>
+              <span class="status approved">Approved</span>
+            </div>
+          </div>
+        </div>
       </div>
-
     </div>
   </div>
-</div>
+</section>
+
+<!-- ================= ROLES ================= -->
+<section class="py-5 bg-soft">
+  <div class="container text-center">
+    <h2 class="section-title mb-4">Built for Every Role</h2>
+
+    <div class="row g-4">
+      <div class="col-md-4">
+        <div class="card h-100">
+          <h5>Employee</h5>
+          <p class="text-muted">Manage assigned tasks with full visibility.</p>
+        </div>
+      </div>
+
+      <div class="col-md-4">
+        <div class="card h-100">
+          <h5>Manager</h5>
+          <p class="text-muted">Approve workflows and track progress.</p>
+        </div>
+      </div>
+
+      <div class="col-md-4">
+        <div class="card h-100">
+          <h5>Admin</h5>
+          <p class="text-muted">Control users and system settings.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= FEATURES ================= -->
+<section class="py-5">
+  <div class="container text-center">
+    <h2 class="section-title mb-4">Everything You Need</h2>
+
+    <div class="row g-4">
+      <div class="col-md-4"><div class="card">Task Management</div></div>
+      <div class="col-md-4"><div class="card">Approval Workflows</div></div>
+      <div class="col-md-4"><div class="card">Role-Based Access</div></div>
+      <div class="col-md-6"><div class="card">Audit Trail</div></div>
+      <div class="col-md-6"><div class="card">Secure Authentication</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= CTA ================= -->
+<section class="py-5 bg-soft text-center">
+  <div class="container">
+    <h2 class="fw-bold mb-3">Ready to Get Started?</h2>
+    <p class="text-muted mb-4">Start managing workflows with FlowSync.</p>
+    <a routerLink="/signup" class="btn btn-primary btn-lg px-5">Get Started</a>
+  </div>
+</section>
+
+<!-- ================= FOOTER ================= -->
+<footer class="py-4 border-top bg-white text-center">
+  <p class="fw-semibold mb-1">FlowSync</p>
+  <small class="text-muted">© 2026 • Angular & Spring Boot</small>
+</footer>

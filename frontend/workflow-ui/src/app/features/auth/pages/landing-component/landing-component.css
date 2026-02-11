@@ -2,12 +2,120 @@ h1 {
   line-height: 1.2;
 }
 
-img {
+.hero-gradient {
+  background: linear-gradient(135deg, #eef2ff 0%, #ffffff 60%);
+}
+
+.text-primary-dark {
+  color: #1e3a8a;
+}
+
+.text-accent {
+  color: #6366f1;
+}
+
+.bg-soft {
+  background-color: #eef2ff;
+}
+
+/* Cards */
+.card {
+  background: #ffffff;
+  border-radius: 16px;
+  padding: 24px;
+  box-shadow: 0 12px 30px rgba(29, 78, 216, 0.08);
+  transition: all 0.3s ease;
+}
+
+.card:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 18px 40px rgba(15, 23, 42, 0.12);
+}
+
+/* Workflow Mock */
+.workflow-preview-wrapper {
+  background: linear-gradient(135deg, #f1f5ff, #f8faff);
+  padding: 60px 20px;
+}
+
+.workflow-mock {
+  background: #ffffff;
+  border-radius: 16px;
+  overflow: hidden;
+  max-width: 420px;
+  margin: auto;
+
+  border: 1px solid rgba(37, 99, 235, 0.08);
+  box-shadow: 0 25px 60px rgba(37, 99, 235, 0.15);
+}
+
+.mock-header {
+  background: #f1f3f9;
+  padding: 12px;
+  display: flex;
+  gap: 8px;
+}
+
+.dot {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+}
+
+.dot.red {
+  background: #ff5f56;
+}
+.dot.yellow {
+  background: #ffbd2e;
+}
+.dot.green {
+  background: #27c93f;
+}
+
+.mock-body {
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.task-card {
+  display: flex;
+  justify-content: space-between;
+  background: #f8f9ff;
+  padding: 14px 16px;
+  border-radius: 10px;
+}
+
+.status {
+  font-size: 0.75rem;
+  padding: 4px 10px;
+  border-radius: 20px;
+  font-weight: 600;
+}
+
+.pending {
+  background: #fff3cd;
+}
+.inprogress {
+  background: #d1ecf1;
+}
+.approved {
+  background: #d4edda;
+}
+
+.hero-image {
   animation: float 4s ease-in-out infinite;
 }
 
 @keyframes float {
-  0% { transform: translateY(0); }
-  50% { transform: translateY(-10px); }
-  100% { transform: translateY(0); }
+  0% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+  100% {
+    transform: translateY(0);
+  }
 }
