@@ -1,0 +1,152 @@
+.admin-page {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+
+/* ===== Header ===== */
+.page-header h2 {
+  margin: 0;
+  font-weight: 600;
+}
+
+.page-header p {
+  color: #64748b;
+  font-size: 0.9rem;
+}
+
+/* ===== Stats ===== */
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 1.5rem;
+}
+
+.stat-card {
+  background: white;
+  padding: 1.5rem;
+  border-radius: 16px;
+  box-shadow: 0 8px 24px rgba(15, 23, 42, 0.05);
+}
+
+.stat-card h3 {
+  margin: 0;
+  font-size: 1.8rem;
+  color: #4f46e5;
+}
+
+.stat-card p {
+  margin: 0.5rem 0 0;
+  color: #64748b;
+}
+
+.stat-card.warning h3 {
+  color: #f59e0b;
+}
+
+/* ===== Table Card ===== */
+.table-card {
+  background: white;
+  padding: 2rem;
+  border-radius: 16px;
+  box-shadow: 0 8px 24px rgba(15, 23, 42, 0.05);
+}
+
+.table-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+.primary-btn {
+  background: linear-gradient(135deg, #4f46e5, #2563eb);
+  color: white;
+  border: none;
+  padding: 8px 18px;
+  border-radius: 10px;
+  cursor: pointer;
+  font-weight: 600;
+}
+
+.table-wrapper {
+  overflow-x: auto;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+thead {
+  background: #f8fafc;
+}
+
+th,
+td {
+  padding: 0.9rem;
+  text-align: left;
+  font-size: 0.9rem;
+}
+
+tbody tr {
+  border-bottom: 1px solid #f1f5f9;
+}
+
+tbody tr:hover {
+  background: #f9fafb;
+}
+
+/* ===== Role Badges ===== */
+.role {
+  padding: 4px 10px;
+  border-radius: 20px;
+  font-size: 0.75rem;
+  font-weight: 600;
+}
+
+.role.admin {
+  background: #eef2ff;
+  color: #4f46e5;
+}
+
+.role.user {
+  background: #ecfdf5;
+  color: #059669;
+}
+
+/* ===== Status ===== */
+.status {
+  padding: 4px 10px;
+  border-radius: 20px;
+  font-size: 0.75rem;
+  font-weight: 600;
+}
+
+.status.active {
+  background: #dcfce7;
+  color: #16a34a;
+}
+
+.status.inactive {
+  background: #fee2e2;
+  color: #dc2626;
+}
+
+/* ===== Actions ===== */
+.action-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  margin-right: 8px;
+  color: #4f46e5;
+  font-weight: 500;
+}
+
+.action-btn.danger {
+  color: #dc2626;
+}
+
+.action-btn:hover {
+  text-decoration: underline;
+}

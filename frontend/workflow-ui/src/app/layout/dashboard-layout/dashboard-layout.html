@@ -1,46 +1,33 @@
-<div class="dashboard-wrapper">
-  <!-- Sidebar -->
-  <aside class="sidebar">
-    <div class="sidebar-brand">
-      <div class="logo">FS</div>
-      <span>FlowSync</span>
-    </div>
+<div class="dashboard-wrapper"
+     [class.sidebar-collapsed]="isSidebarCollapsed">
 
-    <nav class="sidebar-menu">
-      <a routerLink="/dashboard" routerLinkActive="active">
-        <span>🏠</span> Dashboard
-      </a>
-      <a routerLink="/dashboard/tasks" routerLinkActive="active">
-        <span>📋</span> Tasks
-      </a>
-      <a routerLink="/dashboard/profile" routerLinkActive="active">
-        <span>👤</span> Profile
-      </a>
+  <!-- ===== Sidebar ===== -->
+  <aside class="sidebar"
+         [class.mobile-open]="isMobileOpen">
 
-      <!-- Visible now, hide later via role -->
-      <a routerLink="/dashboard/admin" class="muted">
-        <span>⚙️</span> Admin
-      </a>
-    </nav>
+    <app-sidebar></app-sidebar>
+
   </aside>
 
-  <!-- Main -->
-  <div class="main-content">
-    <!-- Navbar -->
-    <header class="navbar">
-      <div class="navbar-left">
-        <h3>FlowSync</h3>
-      </div>
+  <!-- ===== Overlay (Mobile Only) ===== -->
+  <div class="overlay"
+       *ngIf="isMobileOpen"
+       (click)="toggleMobile()">
+  </div>
 
-      <div class="navbar-right">
-        <span class="user-name">John Doe</span>
-        <div class="avatar">JD</div>
-      </div>
-    </header>
+  <!-- ===== Main Content Area ===== -->
+  <div class="main-content">
+
+    <!-- Navbar -->
+    <app-navbar
+      (toggleSidebar)="toggleSidebar()"
+      (toggleMobile)="toggleMobile()">
+    </app-navbar>
 
     <!-- Page Content -->
     <main class="content">
       <router-outlet></router-outlet>
     </main>
+
   </div>
 </div>

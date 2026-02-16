@@ -1,33 +1,29 @@
-<aside class="sidebar">
-  <div class="sidebar-header">
-    <span class="logo">FS</span>
-    <span class="title">FlowSync</span>
-  </div>
+<!-- Brand -->
+<div class="sidebar-header">
+  <div class="logo">FS</div>
+  <span class="brand-name">FlowSync</span>
+</div>
 
-  <ul class="nav-list">
-    <li class="nav-item active">
-      <a routerLink="/dashboard">
-        <span>Dashboard</span>
-      </a>
-    </li>
+<!-- Navigation -->
+<nav class="sidebar-menu">
+  <a routerLink="/dashboard" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }">
+    <span class="icon">🏠</span>
+    <span class="label">Dashboard</span>
+  </a>
 
-    <li class="nav-item">
-      <a routerLink="/tasks">
-        <span>Tasks</span>
-      </a>
-    </li>
+  <a routerLink="/dashboard/tasks" routerLinkActive="active">
+    <span class="icon">📋</span>
+    <span class="label">Tasks</span>
+  </a>
 
-    <li class="nav-item">
-      <a routerLink="/profile">
-        <span>Profile</span>
-      </a>
-    </li>
+  <a routerLink="/dashboard/profile" routerLinkActive="active">
+    <span class="icon">👤</span>
+    <span class="label">Profile</span>
+  </a>
 
-    <!-- Future role-based -->
-    <li class="nav-item">
-      <a routerLink="/admin">
-        <span>Admin</span>
-      </a>
-    </li>
-  </ul>
-</aside>
+  <!-- Future Role Based -->
+  <a routerLink="/dashboard/admin" class="muted">
+    <span class="icon">⚙️</span>
+    <span class="label">Admin</span>
+  </a>
+</nav>

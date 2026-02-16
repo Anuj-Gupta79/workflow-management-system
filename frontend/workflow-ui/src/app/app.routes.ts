@@ -14,6 +14,9 @@ import { CreateTask } from './features/tasks/pages/create-task/create-task';
 
 // Guards
 import { AuthGuard } from './cores/auth/auth.guard';
+import { DashboardHome } from './features/dashboard/pages/dashboard-home/dashboard-home';
+import { Profile } from './features/dashboard/pages/profile/profile';
+import { Admin } from './features/dashboard/pages/admin/admin';
 
 export const routes: Routes = [
   /* ---------------- PUBLIC (NO AUTH) ---------------- */
@@ -27,11 +30,18 @@ export const routes: Routes = [
     component: DashboardLayout,
     canActivate: [AuthGuard],
     children: [
-      // {
-      //   path: '',
-      //   redirectTo: 'tasks',
-      //   pathMatch: 'full',
-      // },
+      {
+        path: '',
+        component: DashboardHome,
+      },
+      {
+        path: 'profile',
+       component: Profile,
+      },
+      {
+        path: 'admin',
+        component: Admin,
+      },
       {
         path: 'tasks',
         component: TaskList,
