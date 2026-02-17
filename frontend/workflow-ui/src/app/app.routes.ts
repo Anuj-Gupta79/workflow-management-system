@@ -15,7 +15,7 @@ import { CreateTask } from './features/tasks/pages/create-task/create-task';
 // Guards
 import { AuthGuard } from './cores/auth/auth.guard';
 import { DashboardHome } from './features/dashboard/pages/dashboard-home/dashboard-home';
-import { Profile } from './features/dashboard/pages/profile/profile';
+import { ProfileComponent } from './features/dashboard/pages/profile/profile';
 import { Admin } from './features/dashboard/pages/admin/admin';
 
 export const routes: Routes = [
@@ -36,7 +36,7 @@ export const routes: Routes = [
       },
       {
         path: 'profile',
-       component: Profile,
+        component: ProfileComponent,
       },
       {
         path: 'admin',

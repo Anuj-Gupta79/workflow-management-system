@@ -1,76 +1,103 @@
 <div class="admin-page">
-  <!-- ===== Header ===== -->
-  <div class="page-header">
-    <h2>Admin Panel</h2>
-    <p>Manage users, roles, and system activity.</p>
+
+  <!-- ===== Loading State ===== -->
+  <div *ngIf="loading$ | async" class="loading">
+    Loading admin data...
   </div>
 
-  <!-- ===== Stats ===== -->
-  <section class="stats-grid">
-    <div class="stat-card">
-      <h3>120</h3>
-      <p>Total Users</p>
+  <ng-container *ngIf="!(loading$ | async)">
+
+    <!-- ===== Header ===== -->
+    <div class="page-header">
+      <h2>Admin Panel</h2>
+      <p>Manage users, roles, and system activity.</p>
     </div>
 
-    <div class="stat-card">
-      <h3>860</h3>
-      <p>Total Tasks</p>
-    </div>
+    <!-- ===== Stats ===== -->
+    <section class="stats-grid" *ngIf="stats$ | async as stats">
 
-    <div class="stat-card">
-      <h3>32</h3>
-      <p>Active Today</p>
-    </div>
+      <div class="stat-card">
+        <h3>{{ stats.totalUsers }}</h3>
+        <p>Total Users</p>
+      </div>
 
-    <div class="stat-card warning">
-      <h3>6</h3>
-      <p>Pending Approvals</p>
-    </div>
-  </section>
+      <div class="stat-card">
+        <h3>{{ stats.totalTasks }}</h3>
+        <p>Total Tasks</p>
+      </div>
 
-  <!-- ===== Users Table ===== -->
-  <section class="table-card">
-    <div class="table-header">
-      <h4>User Management</h4>
-      <button class="primary-btn">+ Add User</button>
-    </div>
+      <div class="stat-card">
+        <h3>{{ stats.inProgressTasks }}</h3>
+        <p>Active Today</p>
+      </div>
 
-    <div class="table-wrapper">
-      <table>
-        <thead>
-          <tr>
-            <th>Name</th>
-            <th>Email</th>
-            <th>Role</th>
-            <th>Status</th>
-            <th>Actions</th>
-          </tr>
-        </thead>
+      <div class="stat-card warning">
+        <h3>{{ stats.pendingTasks }}</h3>
+        <p>Pending Approvals</p>
+      </div>
 
-        <tbody>
-          <tr>
-            <td>John Doe</td>
-            <td>john@example.com</td>
-            <td><span class="role admin">Admin</span></td>
-            <td><span class="status active">Active</span></td>
-            <td>
-              <button class="action-btn">Edit</button>
-              <button class="action-btn danger">Delete</button>
-            </td>
-          </tr>
+    </section>
 
-          <tr>
-            <td>Jane Smith</td>
-            <td>jane@example.com</td>
-            <td><span class="role user">User</span></td>
-            <td><span class="status inactive">Inactive</span></td>
-            <td>
-              <button class="action-btn">Edit</button>
-              <button class="action-btn danger">Delete</button>
-            </td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
-  </section>
+    <!-- ===== Users Table ===== -->
+    <section class="table-card">
+
+      <div class="table-header">
+        <h4>User Management</h4>
+        <button class="primary-btn">+ Add User</button>
+      </div>
+
+      <div class="table-wrapper" *ngIf="users$ | async as users">
+
+        <table>
+          <thead>
+            <tr>
+              <th>Name</th>
+              <th>Email</th>
+              <th>Role</th>
+              <th>Status</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+
+          <tbody>
+            <tr *ngFor="let user of users; trackBy: trackById">
+
+              <td>{{ user.name }}</td>
+              <td>{{ user.email }}</td>
+
+              <td>
+                <span class="role" [ngClass]="user.role.toLowerCase()">
+                  {{ user.role }}
+                </span>
+              </td>
+
+              <td>
+                <span class="status active">Active</span>
+              </td>
+
+              <td>
+                <button class="action-btn">Edit</button>
+                <button
+                  class="action-btn danger"
+                  (click)="deleteUser(user.id)">
+                  Delete
+                </button>
+              </td>
+
+            </tr>
+
+            <!-- Empty State -->
+            <tr *ngIf="users.length === 0">
+              <td colspan="5" class="empty-state">
+                No users found.
+              </td>
+            </tr>
+
+          </tbody>
+        </table>
+
+      </div>
+    </section>
+
+  </ng-container>
 </div>
