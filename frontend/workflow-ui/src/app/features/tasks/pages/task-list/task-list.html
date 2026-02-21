@@ -1,109 +1,107 @@
-<div class="container mt-4">
+<div class="task-page">
+  <!-- ===== Page Header ===== -->
+  <div class="page-header">
+    <div>
+      <h2 class="page-title">Tasks</h2>
+      <p class="page-subtitle">Manage and track workflow tasks</p>
+    </div>
 
-  <div class="d-flex justify-content-between align-items-center mb-3">
-    <h3>Tasks</h3>
-    <a routerLink="/tasks/new" class="btn btn-primary">
-      + Create Task
-    </a>
+    <a routerLink="/dashboard/tasks/new" class="btn btn-primary"> + Create Task </a>
   </div>
 
-  <div *ngIf="loading$ | async" class="alert alert-info">Loading tasks...</div>
+  <!-- ===== Loading ===== -->
+  <div *ngIf="loading$ | async" class="state-card info">Loading tasks...</div>
 
+  <!-- ===== Empty State ===== -->
   <div
     *ngIf="!(loading$ | async) && ((tasks$ | async)?.length ?? 0) === 0"
-    class="alert alert-warning"
+    class="state-card empty"
   >
     No tasks found.
   </div>
 
-  <div *ngIf="!(loading$ | async) && ((tasks$ | async)?.length ?? 0) > 0" class="table-responsive">
-    <div class="d-none d-md-block table-responsive">
-      <table class="table table-striped align-middle">
-        <thead class="table-dark">
-          <tr>
-            <th>Title</th>
-            <th>Status</th>
-            <th>Created By</th>
-            <th>Assigned To</th>
-          </tr>
-        </thead>
+  <!-- ===== Table View (Desktop) ===== -->
+  <div
+    *ngIf="!(loading$ | async) && ((tasks$ | async)?.length ?? 0) > 0"
+    class="table-wrapper d-none d-md-block"
+  >
+    <table class="custom-table">
+      <thead>
+        <tr>
+          <th>Title</th>
+          <th>Status</th>
+          <th>Created By</th>
+          <th>Assigned To</th>
+        </tr>
+      </thead>
 
-        <tbody>
-          <tr *ngFor="let task of tasks$ | async; trackBy: trackById">
-            <td>{{ task.title }}</td>
-            <td class="position-relative">
-              <span
-                [ngClass]="getBadgeClass(task.status)"
-                class="cursor-pointer"
-                (click)="toggleStatusMenu(task.id)"
-              >
-                {{ task.status }}
-              </span>
+      <tbody>
+        <tr *ngFor="let task of tasks$ | async; trackBy: trackById">
+          <td class="title-cell">{{ task.title }}</td>
 
-              <div *ngIf="openTaskId === task.id" class="status-menu shadow-sm">
-                <button
-                  *ngFor="let next of allowedTransitions[task.status]"
-                  class="dropdown-item"
-                  [disabled]="updatingTaskId === task.id"
-                  (click)="updateStatus(task, next)"
-                >
-                  → {{ next }}
-                </button>
-
-                <div
-                  *ngIf="allowedTransitions[task.status].length === 0"
-                  class="dropdown-item text-muted"
-                >
-                  No actions available
-                </div>
-              </div>
-            </td>
-            <td>{{ task.createdByName || '—' }}</td>
-            <td>{{ task.assignedToName || '—' }}</td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
-
-    <div class="d-block d-md-none">
-      <div class="card mb-3" *ngFor="let task of tasks$ | async; trackBy: trackById">
-        <div class="card-body">
-          <h6 class="card-title mb-2">{{ task.title }}</h6>
-
-          <div class="mb-2">
+          <td class="position-relative">
             <span
+              class="status-badge"
               [ngClass]="getBadgeClass(task.status)"
-              class="cursor-pointer"
               (click)="toggleStatusMenu(task.id)"
             >
               {{ task.status }}
             </span>
-          </div>
 
-          <!-- Mobile Status Actions -->
-          <div *ngIf="openTaskId === task.id" class="status-menu-mobile">
-            <button
-              *ngFor="let next of allowedTransitions[task.status]"
-              class="btn btn-outline-primary btn-sm w-100 mb-1"
-              [disabled]="updatingTaskId === task.id"
-              (click)="updateStatus(task, next)"
-            >
-              → {{ next }}
-            </button>
+            <div *ngIf="openTaskId === task.id" class="status-menu">
+              <button
+                *ngFor="let next of allowedTransitions[task.status]"
+                [disabled]="updatingTaskId === task.id"
+                (click)="updateStatus(task, next)"
+              >
+                → {{ next }}
+              </button>
 
-            <div
-              *ngIf="allowedTransitions[task.status].length === 0"
-              class="text-muted small text-center"
-            >
-              No actions available
+              <div *ngIf="allowedTransitions[task.status].length === 0" class="status-empty">
+                No actions available
+              </div>
             </div>
-          </div>
+          </td>
 
-          <div class="text-muted small mt-2">
-            <div><strong>Created:</strong> {{ task.createdByName || '—' }}</div>
-            <div><strong>Assigned:</strong> {{ task.assignedToName || '—' }}</div>
-          </div>
+          <td>{{ task.createdByName || '—' }}</td>
+          <td>{{ task.assignedToName || '—' }}</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- ===== Mobile Card View ===== -->
+  <div class="d-block d-md-none">
+    <div class="task-card" *ngFor="let task of tasks$ | async; trackBy: trackById">
+      <div class="task-card-header">
+        <h6>{{ task.title }}</h6>
+
+        <span
+          class="status-badge"
+          [ngClass]="getBadgeClass(task.status)"
+          (click)="toggleStatusMenu(task.id)"
+        >
+          {{ task.status }}
+        </span>
+      </div>
+
+      <div *ngIf="openTaskId === task.id" class="status-menu-mobile">
+        <button
+          *ngFor="let next of allowedTransitions[task.status]"
+          [disabled]="updatingTaskId === task.id"
+          (click)="updateStatus(task, next)"
+        >
+          → {{ next }}
+        </button>
+
+        <div *ngIf="allowedTransitions[task.status].length === 0" class="status-empty">
+          No actions available
         </div>
+      </div>
+
+      <div class="task-meta">
+        <div><strong>Created:</strong> {{ task.createdByName || '—' }}</div>
+        <div><strong>Assigned:</strong> {{ task.assignedToName || '—' }}</div>
       </div>
     </div>
   </div>
