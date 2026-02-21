@@ -1,29 +1,33 @@
-<!-- Brand -->
+<!-- HEADER -->
 <div class="sidebar-header">
-  <div class="logo">FS</div>
+  <div class="logo-badge">FS</div>
   <span class="brand-name">FlowSync</span>
 </div>
 
-<!-- Navigation -->
+<!-- MENU -->
 <nav class="sidebar-menu">
-  <a routerLink="/dashboard" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }">
-    <span class="icon">🏠</span>
+  <a
+    routerLink="/dashboard"
+    routerLinkActive="active"
+    [routerLinkActiveOptions]="{ exact: true }"
+    (click)="onLinkClick()"
+  >
+    <span class="material-icons">dashboard</span>
     <span class="label">Dashboard</span>
   </a>
 
-  <a routerLink="/dashboard/tasks" routerLinkActive="active">
-    <span class="icon">📋</span>
+  <a routerLink="/dashboard/tasks" routerLinkActive="active" (click)="onLinkClick()">
+    <span class="material-icons">task</span>
     <span class="label">Tasks</span>
   </a>
 
-  <a routerLink="/dashboard/profile" routerLinkActive="active">
-    <span class="icon">👤</span>
+  <a routerLink="/dashboard/profile" routerLinkActive="active" (click)="onLinkClick()">
+    <span class="material-icons">person</span>
     <span class="label">Profile</span>
   </a>
 
-  <!-- Future Role Based -->
-  <a routerLink="/dashboard/admin" class="muted">
-    <span class="icon">⚙️</span>
+  <a routerLink="/dashboard/admin" routerLinkActive="active" class="muted" (click)="onLinkClick()">
+    <span class="material-icons">settings</span>
     <span class="label">Admin</span>
   </a>
 </nav>

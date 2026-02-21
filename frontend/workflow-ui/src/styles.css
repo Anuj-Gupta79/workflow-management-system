@@ -4,21 +4,24 @@
 /* ===== Global Theme ===== */
 
 :root {
-  /* Brand Colors */
+  /* ===== Brand ===== */
   --primary: #1d4ed8;
   --primary-dark: #1e3a8a;
   --accent: #6366f1;
 
-  /* Backgrounds */
-  --bg-white: #ffffff;
-  --bg-soft: #eef2ff;
-  --bg-card: #ffffff;
+  /* ===== Background System ===== */
+  --bg-main: #f8fafc; /* Page background */
+  --bg-surface: #ffffff; /* Cards, navbar, sidebar */
+  --bg-soft: #eef2ff; /* Soft highlights */
 
-  /* Text */
+  /* ===== Sidebar (Aligned Light) ===== */
+  --bg-sidebar: #ffffff;
+
+  /* ===== Text ===== */
   --text-main: #0f172a;
   --text-muted: #475569;
 
-  /* Borders & Shadows */
+  /* ===== Borders & Shadows ===== */
   --border-light: #e5e7eb;
   --shadow-soft: 0 10px 30px rgba(29, 78, 216, 0.08), 0 2px 8px rgba(15, 23, 42, 0.05);
 }

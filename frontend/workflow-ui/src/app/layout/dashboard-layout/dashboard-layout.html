@@ -1,33 +1,18 @@
-<div class="dashboard-wrapper"
-     [class.sidebar-collapsed]="isSidebarCollapsed">
+<div class="dashboard-wrapper" [class.sidebar-collapsed]="isSidebarCollapsed">
+  <app-sidebar
+    class="sidebar"
+    [class.mobile-open]="isMobileOpen"
+    (linkClicked)="closeMobileSidebar()"
+  >
+  </app-sidebar>
 
-  <!-- ===== Sidebar ===== -->
-  <aside class="sidebar"
-         [class.mobile-open]="isMobileOpen">
+  <div class="overlay" *ngIf="isMobileOpen" (click)="toggleMobile()"></div>
 
-    <app-sidebar></app-sidebar>
-
-  </aside>
-
-  <!-- ===== Overlay (Mobile Only) ===== -->
-  <div class="overlay"
-       *ngIf="isMobileOpen"
-       (click)="toggleMobile()">
-  </div>
-
-  <!-- ===== Main Content Area ===== -->
   <div class="main-content">
+    <app-navbar (toggleSidebar)="toggleSidebar()" (toggleMobile)="toggleMobile()"> </app-navbar>
 
-    <!-- Navbar -->
-    <app-navbar
-      (toggleSidebar)="toggleSidebar()"
-      (toggleMobile)="toggleMobile()">
-    </app-navbar>
-
-    <!-- Page Content -->
     <main class="content">
       <router-outlet></router-outlet>
     </main>
-
   </div>
 </div>

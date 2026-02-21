@@ -1,21 +1,66 @@
 <nav class="navbar-custom">
-  <!-- Left Section -->
-  <div class="left-section">
-    <!-- Mobile Sidebar Toggle (future use) -->
-    <button class="menu-toggle" aria-label="Toggle menu" (click)="onToggle()">☰</button>
 
-    <span class="brand">FlowSync</span>
+  <!-- LEFT -->
+  <div class="nav-left">
+    <button class="menu-toggle" (click)="onToggle()">☰</button>
+
+    <div class="brand">
+      <div class="logo-badge">FS</div>
+      <span class="brand-text">FlowSync</span>
+    </div>
   </div>
 
-  <!-- Right Section -->
-  <div class="right-section">
-    <!-- Future Notification Icon -->
-    <div class="icon-button" title="Notifications">🔔</div>
+  <!-- RIGHT -->
+  <div class="nav-right">
 
-    <!-- User Info -->
-    <div class="user-info">
-      <span class="user-name">John Doe</span>
-      <div class="avatar">JD</div>
+    <!-- Notifications -->
+    <div class="dropdown-wrapper">
+      <div class="icon-button" (click)="toggleNotifications()">
+        <span class="material-icons">notifications</span>
+
+        <span *ngIf="notifications.length > 0" class="badge">
+          {{ notifications.length }}
+        </span>
+      </div>
+
+      <div class="custom-dropdown" *ngIf="showNotifications">
+        <div class="dropdown-header">
+          <span>Notifications</span>
+          <button (click)="clearNotifications()">Clear All</button>
+        </div>
+
+        <div *ngIf="notifications.length > 0; else emptyState">
+          <div
+            class="dropdown-item"
+            *ngFor="let n of notifications; trackBy: trackByNotificationId">
+            {{ n.message }}
+          </div>
+        </div>
+
+        <ng-template #emptyState>
+          <div class="empty">No notifications</div>
+        </ng-template>
+      </div>
     </div>
+
+    <!-- Profile -->
+    <div class="dropdown-wrapper" *ngIf="profile$ | async as profile">
+      <div class="user-info" (click)="toggleProfileMenu()">
+        <span class="user-name">{{ profile?.name }}</span>
+        <div class="avatar">
+          {{ profile?.name?.charAt(0) || '?' }}
+        </div>
+      </div>
+
+      <div class="custom-dropdown" *ngIf="showProfileMenu">
+        <div class="dropdown-item" (click)="goToProfile()">
+          My Profile
+        </div>
+        <div class="dropdown-item logout" (click)="logout()">
+          Logout
+        </div>
+      </div>
+    </div>
+
   </div>
 </nav>

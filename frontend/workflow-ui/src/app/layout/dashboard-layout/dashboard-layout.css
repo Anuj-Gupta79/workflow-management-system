@@ -1,31 +1,34 @@
-/* ===== Layout Wrapper ===== */
+/* ============================= */
+/* ===== ROOT WRAPPER ========== */
+/* ============================= */
+
 .dashboard-wrapper {
   display: flex;
-  min-height: 100vh;
+  height: 100vh;
   background: var(--bg-light);
-  position: relative;
+  overflow: hidden;
 }
 
-/* ===== SIDEBAR ===== */
+/* ============================= */
+/* ===== SIDEBAR =============== */
+/* ============================= */
+
 .sidebar {
   width: 240px;
-  background-color: var(--bg-sidebar);
+  flex-shrink: 0;
+  height: 100vh;
+  background: var(--bg-sidebar);
   border-right: 1px solid var(--border-color);
   padding: 1.5rem 1rem;
-  display: flex;
-  flex-direction: column;
-  transition:
-    width 0.3s ease,
-    left 0.3s ease;
-  z-index: 1000;
+  transition: width 0.3s ease;
+  overflow: hidden;
 }
 
-/* ===== COLLAPSED SIDEBAR (Desktop) ===== */
+/* Collapsed */
 .dashboard-wrapper.sidebar-collapsed .sidebar {
   width: 70px;
 }
 
-/* Hide text when collapsed */
 .dashboard-wrapper.sidebar-collapsed .sidebar .label,
 .dashboard-wrapper.sidebar-collapsed .sidebar .brand-name {
   display: none;
@@ -35,50 +38,65 @@
   justify-content: center;
 }
 
-/* ===== MAIN CONTENT ===== */
+/* ============================= */
+/* ===== MAIN CONTENT ========== */
+/* ============================= */
+
 .main-content {
   flex: 1;
   display: flex;
   flex-direction: column;
-  min-width: 0;
+  height: 100vh;
+  overflow: hidden;
 }
 
-/* ===== CONTENT AREA ===== */
+/* ============================= */
+/* ===== NAVBAR ================ */
+/* ============================= */
+
+app-navbar {
+  flex-shrink: 0;
+}
+
+/* ============================= */
+/* ===== CONTENT =============== */
+/* ============================= */
+
 .content {
-  padding: 2rem;
   flex: 1;
+  overflow-y: auto;
+  padding: 2rem;
   background: var(--bg-light);
 }
 
-/* ===== MOBILE STYLES ===== */
+/* ============================= */
+/* ===== MOBILE ================= */
+/* ============================= */
+
 @media (max-width: 768px) {
+
   .sidebar {
     position: fixed;
     left: -240px;
     top: 0;
     height: 100vh;
     width: 240px;
-    box-shadow: 2px 0 10px rgba(0, 0, 0, 0.1);
+    z-index: 1000;
+    transition: left 0.3s ease;
   }
 
   .sidebar.mobile-open {
     left: 0;
   }
 
-  /* Disable collapse shrinking on mobile */
   .dashboard-wrapper.sidebar-collapsed .sidebar {
     width: 240px;
   }
 
-  .main-content {
-    width: 100%;
+  .overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.35);
+    z-index: 900;
   }
-}
-
-/* ===== OVERLAY (Mobile) ===== */
-.overlay {
-  position: fixed;
-  inset: 0;
-  background: rgba(0, 0, 0, 0.35);
-  z-index: 900;
 }
