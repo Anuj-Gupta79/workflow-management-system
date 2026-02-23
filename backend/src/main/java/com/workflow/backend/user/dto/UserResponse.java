@@ -1,7 +1,7 @@
 package com.workflow.backend.user.dto;
 
-import com.workflow.backend.user.Role;
-import com.workflow.backend.user.User;
+import com.workflow.backend.user.entity.User;
+import com.workflow.backend.user.utility.Role;
 
 import lombok.Getter;
 import lombok.Setter;

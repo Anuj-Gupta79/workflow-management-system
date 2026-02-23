@@ -1,4 +1,4 @@
-package com.workflow.backend.user;
+package com.workflow.backend.user.controller;
 
 import java.util.List;
 
@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.workflow.backend.user.dto.UserRequest;
 import com.workflow.backend.user.dto.UserResponse;
+import com.workflow.backend.user.service.UserServiceImpl;
 
 import lombok.RequiredArgsConstructor;
 
@@ -23,12 +24,12 @@ import org.springframework.web.bind.annotation.RequestBody;
 @RestController
 @RequestMapping("users")
 @RequiredArgsConstructor
-@PreAuthorize("hasRole('ADMIN')")
 public class UserController {
 
-    private final UserService userService;
+    private final UserServiceImpl userService;
 
     @GetMapping("")
+    @PreAuthorize("hasRole('ADMIN')")
     public List<UserResponse> getAllUsers() {
         return userService.getAllUsers()
                 .stream()
@@ -43,11 +44,13 @@ public class UserController {
     }
 
     @GetMapping("/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
     public UserResponse getUserById(@PathVariable Long id) {
         return new UserResponse(userService.getUserById(id));
     }
 
     @DeleteMapping("/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
     public void deleteUserById(@PathVariable Long id) {
         userService.deleteUser(id);
     }

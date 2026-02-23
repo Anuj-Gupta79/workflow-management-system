@@ -1,8 +1,12 @@
-package com.workflow.backend.task;
+package com.workflow.backend.task.controller;
 
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+
+import com.workflow.backend.task.entity.Task;
+import com.workflow.backend.task.service.TaskServiceImpl;
+import com.workflow.backend.task.utility.TaskStatus;
 
 import lombok.RequiredArgsConstructor;
 
@@ -21,7 +25,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 @RequiredArgsConstructor
 public class TaskController {
 
-    private final TaskService taskService;
+    private final TaskServiceImpl taskService;
 
     @GetMapping("")
     public ResponseEntity<List<Task>> getAllTasks() {

@@ -1,4 +1,4 @@
-package com.workflow.backend.auth;
+package com.workflow.backend.security;
 
 import java.io.IOException;
 

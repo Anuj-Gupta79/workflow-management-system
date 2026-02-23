@@ -1,26 +1,18 @@
-package com.workflow.backend.task;
+package com.workflow.backend.task.entity;
 
 import java.time.LocalDateTime;
 
+import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
-import com.workflow.backend.user.User;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.Table;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import com.workflow.backend.department.entity.Department;
+import com.workflow.backend.task.utility.TaskPriority;
+import com.workflow.backend.task.utility.TaskStatus;
+import com.workflow.backend.user.entity.User;
+
+import jakarta.persistence.*;
+import lombok.*;
 
 @Entity
 @Table(name = "tasks")
@@ -48,9 +40,24 @@ public class Task {
     @JoinColumn(name = "assigned_to")
     private User assignedTo;
 
+    @ManyToOne
+    @JoinColumn(name = "department_id", nullable = false)
+    private Department department;
+
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private TaskStatus status;
+
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private TaskPriority priority;
+
+    @Column
+    private LocalDateTime dueDate;
+
+    @Builder.Default
+    @Column(nullable = false)
+    private boolean deleted = false;
 
     @CreationTimestamp
     @Column(updatable = false)
@@ -58,5 +65,4 @@ public class Task {
 
     @UpdateTimestamp
     private LocalDateTime updatedAt;
-
 }

@@ -1,7 +1,8 @@
-package com.workflow.backend.auth;
+package com.workflow.backend.security;
 
 import java.security.Key;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
@@ -12,10 +13,14 @@ import io.jsonwebtoken.security.Keys;
 @Service
 public class JwtService {
 
-    private static final String SECRET_KEY = "workflow-management-system-secret-key-256bit";
-    private static final long EXPIRATION_TIME = 86400000; // 24 hours
+    private final Key key;
+    private final long expirationTime;
 
-    private final Key key = Keys.hmacShaKeyFor(SECRET_KEY.getBytes());
+    public JwtService(@Value("${jwt.secret}") String secret,
+            @Value("${jwt.expiration}") long expirationTime) {
+        this.key = Keys.hmacShaKeyFor(secret.getBytes());
+        this.expirationTime = expirationTime;
+    }
 
     public String generateToken(String email, String role) {
         long now = System.currentTimeMillis();
@@ -23,7 +28,7 @@ public class JwtService {
                 .setSubject(email)
                 .claim("role", role)
                 .setIssuedAt(new java.util.Date(now))
-                .setExpiration(new java.util.Date(now + EXPIRATION_TIME))
+                .setExpiration(new java.util.Date(now + expirationTime))
                 .signWith(key, SignatureAlgorithm.HS256)
                 .compact();
     }

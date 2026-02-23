@@ -7,9 +7,9 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.workflow.backend.task.TaskService;
-import com.workflow.backend.task.TaskStatus;
-import com.workflow.backend.user.UserService;
+import com.workflow.backend.task.service.TaskService;
+import com.workflow.backend.task.utility.TaskStatus;
+import com.workflow.backend.user.service.UserService;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;

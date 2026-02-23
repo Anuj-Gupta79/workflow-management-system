@@ -6,7 +6,7 @@ import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
-import com.workflow.backend.auth.UserDetailServiceImpl;
+import com.workflow.backend.security.UserDetailServiceImpl;
 
 @Configuration
 public class ApplicationConfig {

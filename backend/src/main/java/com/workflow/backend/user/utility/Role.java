@@ -1,4 +1,4 @@
-package com.workflow.backend.user;
+package com.workflow.backend.user.utility;
 
 public enum Role {
     ADMIN,
