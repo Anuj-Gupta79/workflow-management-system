@@ -1,52 +1,96 @@
-h1 {
+/* ================= GLOBAL SPACING ================= */
+.roles-section {
+  padding: 6rem 0;
+  background-color: #f8f9ff;
+}
+
+.cta-section {
+  padding: 5rem 0;
+  background: #eef2ff;
+}
+
+.footer {
+  padding: 2rem 0;
+  background: #ffffff;
+  border-top: 1px solid #eee;
+}
+
+/* ================= NAVBAR ================= */
+.premium-navbar {
+  background: rgba(255, 255, 255, 0.85);
+  backdrop-filter: blur(12px);
+  border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+}
+
+.brand-logo {
+  font-size: 1.3rem;
+  color: #1e3a8a;
+}
+
+.nav-link-custom {
+  font-weight: 500;
+  color: #475569 !important;
+}
+
+.nav-link-custom:hover {
+  color: #6366f1 !important;
+}
+
+/* ================= HERO ================= */
+.hero-section {
+  min-height: 100vh;
+  background: linear-gradient(135deg, #eef2ff 0%, #ffffff 70%);
+  padding-top: 100px;
+}
+
+.hero-title {
+  font-size: 2.8rem;
+  font-weight: 700;
   line-height: 1.2;
 }
 
-.hero-gradient {
-  background: linear-gradient(135deg, #eef2ff 0%, #ffffff 60%);
-}
-
-.text-primary-dark {
-  color: #1e3a8a;
+.hero-subtitle {
+  font-size: 1.1rem;
+  color: #6b7280;
+  max-width: 520px;
 }
 
 .text-accent {
   color: #6366f1;
 }
 
-.bg-soft {
-  background-color: #eef2ff;
+/* ================= TRUST ROW ================= */
+.trust-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1.2rem;
+  font-size: 0.9rem;
+  color: #475569;
 }
 
-/* Cards */
-.card {
+/* ================= PREMIUM CARDS ================= */
+.premium-card {
+  padding: 32px;
+  border-radius: 18px;
   background: #ffffff;
-  border-radius: 16px;
-  padding: 24px;
-  box-shadow: 0 12px 30px rgba(29, 78, 216, 0.08);
+  box-shadow: 0 20px 40px rgba(15, 23, 42, 0.06);
   transition: all 0.3s ease;
 }
 
-.card:hover {
-  transform: translateY(-6px);
-  box-shadow: 0 18px 40px rgba(15, 23, 42, 0.12);
+.premium-card:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 30px 60px rgba(15, 23, 42, 0.12);
 }
 
-/* Workflow Mock */
+/* ================= WORKFLOW MOCK ================= */
 .workflow-mock {
   background: #ffffff;
   border-radius: 16px;
   overflow: hidden;
   max-width: 420px;
   margin: auto;
-
   border: 1px solid rgba(37, 99, 235, 0.08);
   box-shadow: 0 25px 60px rgba(37, 99, 235, 0.15);
-}
-
-.workflow-mock:hover {
-  transform: translateY(-4px);
-  transition: all 0.3s ease;
 }
 
 .mock-header {
@@ -63,15 +107,9 @@ h1 {
   border-radius: 50%;
 }
 
-.dot.red {
-  background: #ff5f56;
-}
-.dot.yellow {
-  background: #ffbd2e;
-}
-.dot.green {
-  background: #27c93f;
-}
+.dot.red { background: #ff5f56; }
+.dot.yellow { background: #ffbd2e; }
+.dot.green { background: #27c93f; }
 
 .mock-body {
   padding: 20px;
@@ -96,28 +134,34 @@ h1 {
   font-weight: 600;
 }
 
-.pending {
-  background: #fff3cd;
-}
-.inprogress {
-  background: #d1ecf1;
-}
-.approved {
-  background: #d4edda;
+.pending { background: #fff3cd; }
+.inprogress { background: #d1ecf1; }
+.approved { background: #d4edda; }
+
+/* ================= BUTTON ================= */
+.premium-btn {
+  border-radius: 12px;
+  font-weight: 600;
 }
 
+/* ================= FLOAT ANIMATION ================= */
 .hero-image {
   animation: float 4s ease-in-out infinite;
 }
 
 @keyframes float {
-  0% {
-    transform: translateY(0);
+  0% { transform: translateY(0); }
+  50% { transform: translateY(-12px); }
+  100% { transform: translateY(0); }
+}
+
+/* ================= RESPONSIVE ================= */
+@media (max-width: 992px) {
+  .hero-title {
+    font-size: 2.2rem;
   }
-  50% {
-    transform: translateY(-10px);
-  }
-  100% {
-    transform: translateY(0);
+
+  .hero-section {
+    padding-top: 120px;
   }
 }

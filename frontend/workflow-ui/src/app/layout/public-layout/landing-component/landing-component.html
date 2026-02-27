@@ -1,14 +1,13 @@
 <!-- ================= NAVBAR ================= -->
-<nav class="navbar navbar-expand-lg bg-white shadow-sm fixed-top">
+<nav class="navbar navbar-expand-lg fixed-top premium-navbar">
   <div class="container">
-    <a class="navbar-brand fw-bold text-primary-dark" routerLink="/">FlowSync</a>
+    <a class="navbar-brand fw-bold brand-logo" routerLink="/">FlowSync</a>
 
     <button
       class="navbar-toggler"
       type="button"
       data-bs-toggle="collapse"
       data-bs-target="#landingNavbar"
-      aria-label="Toggle navigation"
     >
       <span class="navbar-toggler-icon"></span>
     </button>
@@ -16,10 +15,12 @@
     <div class="collapse navbar-collapse" id="landingNavbar">
       <ul class="navbar-nav ms-auto align-items-lg-center gap-lg-3">
         <li class="nav-item">
-          <a class="nav-link" routerLink="/login">Login</a>
+          <a class="nav-link nav-link-custom" routerLink="/login">Login</a>
         </li>
         <li class="nav-item">
-          <a class="btn btn-primary px-4" routerLink="/signup">Get Started</a>
+          <a class="btn btn-primary px-4 premium-btn" routerLink="/signup">
+            Get Started
+          </a>
         </li>
       </ul>
     </div>
@@ -27,26 +28,37 @@
 </nav>
 
 <!-- ================= HERO ================= -->
-<section class="hero-gradient min-vh-100 d-flex align-items-center pt-5">
+<section class="hero-section d-flex align-items-center">
   <div class="container">
     <div class="row align-items-center">
-      <div class="col-md-6">
-        <h1 class="fw-bold display-5">
-          FlowSync<span class="text-accent">.</span>
+
+      <!-- LEFT CONTENT -->
+      <div class="col-lg-6 text-center text-lg-start">
+        <h1 class="hero-title">
+          Modern Workflow Management
+          <span class="text-accent">for Growing Teams</span>
         </h1>
 
-        <p class="fs-5 text-muted mt-3">
-          Streamline tasks, simplify approvals, and manage workflows effortlessly.
+        <p class="hero-subtitle mt-4">
+          Streamline approvals, automate task flows, and manage departments
+          with clarity, transparency, and security.
         </p>
 
-        <div class="mt-4 d-flex gap-3 flex-wrap">
-          <a routerLink="/signup" class="btn btn-primary btn-lg px-4">Get Started</a>
-          <a routerLink="/login" class="btn btn-outline-primary btn-lg px-4">Login</a>
+        <div class="mt-4">
+          <a routerLink="/signup" class="btn btn-primary btn-lg px-5 premium-btn">
+            Start Free Trial
+          </a>
+        </div>
+
+        <div class="trust-row mt-4 justify-content-center justify-content-lg-start">
+          <span>✔ Role-Based Access</span>
+          <span>✔ Real-Time Tracking</span>
+          <span>✔ Secure Authentication</span>
         </div>
       </div>
 
-      <div class="col-md-6 text-center d-none d-md-block">
-        <!-- UI mock instead of image -->
+      <!-- RIGHT MOCK -->
+      <div class="col-lg-6 mt-5 mt-lg-0 text-center">
         <div class="workflow-mock hero-image">
           <div class="mock-header">
             <span class="dot red"></span>
@@ -69,66 +81,62 @@
           </div>
         </div>
       </div>
+
     </div>
   </div>
 </section>
 
 <!-- ================= ROLES ================= -->
-<section class="py-5 bg-soft">
-  <div class="container text-center">
-    <h2 class="section-title mb-4">Built for Every Role</h2>
+<section class="roles-section text-center">
+  <div class="container">
+    <h2 class="section-title">Designed for Every Role</h2>
 
-    <div class="row g-4">
+    <div class="row g-4 mt-5">
       <div class="col-md-4">
-        <div class="card h-100">
+        <div class="premium-card h-100">
           <h5>Employee</h5>
-          <p class="text-muted">Manage assigned tasks with full visibility.</p>
+          <p class="text-muted">
+            Track assigned tasks and stay aligned with your team’s workflow.
+          </p>
         </div>
       </div>
 
       <div class="col-md-4">
-        <div class="card h-100">
+        <div class="premium-card h-100">
           <h5>Manager</h5>
-          <p class="text-muted">Approve workflows and track progress.</p>
+          <p class="text-muted">
+            Review approvals, monitor progress, and eliminate bottlenecks.
+          </p>
         </div>
       </div>
 
       <div class="col-md-4">
-        <div class="card h-100">
+        <div class="premium-card h-100">
           <h5>Admin</h5>
-          <p class="text-muted">Control users and system settings.</p>
+          <p class="text-muted">
+            Manage users, departments, and full system access control.
+          </p>
         </div>
       </div>
-    </div>
-  </div>
-</section>
-
-<!-- ================= FEATURES ================= -->
-<section class="py-5">
-  <div class="container text-center">
-    <h2 class="section-title mb-4">Everything You Need</h2>
-
-    <div class="row g-4">
-      <div class="col-md-4"><div class="card">Task Management</div></div>
-      <div class="col-md-4"><div class="card">Approval Workflows</div></div>
-      <div class="col-md-4"><div class="card">Role-Based Access</div></div>
-      <div class="col-md-6"><div class="card">Audit Trail</div></div>
-      <div class="col-md-6"><div class="card">Secure Authentication</div></div>
     </div>
   </div>
 </section>
 
 <!-- ================= CTA ================= -->
-<section class="py-5 bg-soft text-center">
+<section class="cta-section text-center">
   <div class="container">
-    <h2 class="fw-bold mb-3">Ready to Get Started?</h2>
-    <p class="text-muted mb-4">Start managing workflows with FlowSync.</p>
-    <a routerLink="/signup" class="btn btn-primary btn-lg px-5">Get Started</a>
+    <h2 class="fw-bold">Ready to simplify your workflow?</h2>
+    <p class="text-muted mt-3">
+      Join teams that move faster and smarter with FlowSync.
+    </p>
+    <a routerLink="/signup" class="btn btn-primary btn-lg px-5 premium-btn mt-3">
+      Get Started
+    </a>
   </div>
 </section>
 
 <!-- ================= FOOTER ================= -->
-<footer class="py-4 border-top bg-white text-center">
+<footer class="footer text-center">
   <p class="fw-semibold mb-1">FlowSync</p>
-  <small class="text-muted">© 2026 • Angular & Spring Boot</small>
+  <small class="text-muted">© 2026 • Built with Angular & Spring Boot</small>
 </footer>
