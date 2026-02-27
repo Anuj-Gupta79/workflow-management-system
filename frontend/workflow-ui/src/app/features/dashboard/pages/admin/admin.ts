@@ -50,7 +50,7 @@ export class Admin {
 
     this.adminService.deleteUser(id).subscribe({
       next: () => {
-        this.reload(); // 🔥 reload from backend instead of manual mutation
+        this.reload();
       },
       error: () => alert('Failed to delete user'),
     });

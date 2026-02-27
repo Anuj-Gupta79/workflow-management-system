@@ -1,46 +1,83 @@
 <div class="auth-wrapper">
   <div class="auth-center">
-    <div class="auth-card shadow-lg">
+    <div class="auth-card">
+
       <div class="auth-body">
-        <h3 class="text-center mb-1">Welcome Back 👋</h3>
-        <p class="text-center auth-subtitle mb-4">Login to continue</p>
+
+        <h3 class="auth-title">Welcome Back 👋</h3>
+        <p class="auth-subtitle">Login to continue</p>
+
+        <!-- Error Alert -->
+        <div *ngIf="serverError$ | async as serverError" class="auth-alert">
+          {{ serverError }}
+        </div>
 
         <form [formGroup]="loginForm" (ngSubmit)="submit()">
-          <div class="mb-3">
-            <label class="form-label">Email</label>
+
+          <!-- Email -->
+          <div class="form-group">
+            <label>Email</label>
             <input
               type="email"
-              class="form-control auth-input"
+              class="auth-input"
               formControlName="email"
               placeholder="you@example.com"
             />
+            <small class="error-text"
+              *ngIf="loginForm.get('email')?.touched && loginForm.get('email')?.invalid">
+              Please enter a valid email
+            </small>
           </div>
 
-          <div class="mb-4">
-            <label class="form-label">Password</label>
-            <input
-              type="password"
-              class="form-control auth-input"
-              formControlName="password"
-              placeholder="••••••••"
-            />
+          <!-- Password -->
+          <div class="form-group password-group">
+            <label>Password</label>
+
+            <div class="password-wrapper">
+              <input
+                [type]="showPassword ? 'text' : 'password'"
+                class="auth-input"
+                formControlName="password"
+                placeholder="••••••••"
+              />
+
+              <span
+                class="toggle-password"
+                (click)="showPassword = !showPassword">
+                {{ showPassword ? '🙈' : '👁' }}
+              </span>
+            </div>
+
+            <small class="error-text"
+              *ngIf="loginForm.get('password')?.touched && loginForm.get('password')?.invalid">
+              Password is required
+            </small>
           </div>
 
+          <!-- Forgot Password -->
+          <div class="forgot-wrapper">
+            <a routerLink="/forgot-password" class="auth-link">
+              Forgot Password?
+            </a>
+          </div>
+
+          <!-- Submit -->
           <button
             type="submit"
-            class="btn btn-primary w-100 auth-btn"
-            [disabled]="loginForm.invalid"
-          >
-            Login
+            class="auth-btn"
+            [disabled]="loginForm.invalid || (isLoading$ | async)">
+
+            <span *ngIf="!(isLoading$ | async)">Login</span>
+            <span *ngIf="isLoading$ | async" class="loader"></span>
+
           </button>
         </form>
 
-        <div class="text-center mt-3">
-          <small class="text-muted">
-            Don’t have an account?
-            <a routerLink="/signup" class="auth-link">Sign up</a>
-          </small>
+        <div class="auth-footer">
+          Don’t have an account?
+          <a routerLink="/signup" class="auth-link">Sign up</a>
         </div>
+
       </div>
     </div>
   </div>
