@@ -2,11 +2,8 @@ package com.workflow.backend.task.entity;
 
 import java.time.LocalDateTime;
 
-import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
-
-import com.workflow.backend.department.entity.Department;
 import com.workflow.backend.task.utility.TaskPriority;
 import com.workflow.backend.task.utility.TaskStatus;
 import com.workflow.backend.user.entity.User;
@@ -39,10 +36,6 @@ public class Task {
     @ManyToOne
     @JoinColumn(name = "assigned_to")
     private User assignedTo;
-
-    @ManyToOne
-    @JoinColumn(name = "department_id", nullable = false)
-    private Department department;
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)

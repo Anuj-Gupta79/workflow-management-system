@@ -20,34 +20,38 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public List<User> getAllUsers() {
-        return userRepository.findAll();
+        return userRepository.findAll().stream().filter(user -> !user.isDeleted()).toList();
     }
 
     @Override
     public User getUserById(Long id) {
-        return userRepository.findById(id).orElseThrow(() -> new RuntimeException("User not found"));
+        return userRepository.findById(id).filter(user -> !user.isDeleted())
+                .orElseThrow(() -> new RuntimeException("User not found"));
     }
 
     @Override
     public User getUserByEmail(String email) {
-        return userRepository.findByEmail(email).orElseThrow(() -> new RuntimeException("User not found"));
+        return userRepository.findByEmail(email).filter(user -> !user.isDeleted())
+                .orElseThrow(() -> new RuntimeException("User not found"));
     }
 
     @Override
     public void deleteUser(Long id) {
-        userRepository.deleteById(id);
+        User user = userRepository.findById(id).orElseThrow(() -> new RuntimeException("User not found"));
+        user.setDeleted(true);
+        userRepository.save(user);
     }
 
     @Override
     public long countUsers() {
-        return userRepository.count();
+        return userRepository.countByDeletedFalse();
     }
 
     @Override
     public User saveUser(User user) {
         return userRepository.save(user);
     }
-    
+
     public UserResponse getCurrentUser(Authentication authentication) {
         String email = authentication.getName();
         User user = userRepository.findByEmail(email)

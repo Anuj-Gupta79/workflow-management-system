@@ -8,9 +8,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.workflow.backend.auth.dto.AuthResponse;
+import com.workflow.backend.auth.dto.ForgotPasswordRequest;
 import com.workflow.backend.auth.dto.LoginRequest;
 import com.workflow.backend.auth.dto.RegisterRequest;
 import com.workflow.backend.auth.service.AuthService;
+import com.workflow.backend.auth.service.ForgotPasswordService;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -22,6 +24,7 @@ import lombok.RequiredArgsConstructor;
 public class AuthController {
 
     private final AuthService authService;
+    private final ForgotPasswordService forgotPasswordService;
 
     @PostMapping("/register")
     public ResponseEntity<AuthResponse> register(@Valid @RequestBody RegisterRequest request) {
@@ -31,5 +34,11 @@ public class AuthController {
     @PostMapping("/login")
     public ResponseEntity<AuthResponse> login(@Valid @RequestBody LoginRequest request) {
         return ResponseEntity.ok(authService.login(request));
+    }
+
+    @PostMapping("/forgot-password")
+    public ResponseEntity<String> forgotPassword(@RequestBody ForgotPasswordRequest request) {
+        forgotPasswordService.sendResetLink(request.getEmail());
+        return ResponseEntity.ok("Reset link sent");
     }
 }

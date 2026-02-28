@@ -6,9 +6,6 @@ import java.util.List;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
-
-import com.workflow.backend.department.entity.Department;
-import com.workflow.backend.department.repository.DepartmentRepository;
 import com.workflow.backend.task.entity.Task;
 import com.workflow.backend.task.repository.TaskRepository;
 import com.workflow.backend.task.utility.TaskPriority;
@@ -23,18 +20,12 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class DataInitializer implements CommandLineRunner {
 
-    private final DepartmentRepository departmentRepository;
     private final UserRepository userRepository;
     private final TaskRepository taskRepository;
     private final PasswordEncoder passwordEncoder;
 
     @Override
     public void run(String... args) {
-
-        if (departmentRepository.count() == 0) {
-            seedDepartments();
-        }
-
         if (userRepository.count() == 0) {
             seedUsers();
         }
@@ -47,48 +38,16 @@ public class DataInitializer implements CommandLineRunner {
     }
 
     // =======================
-    // 1️⃣ Seed Departments
-    // =======================
-
-    private void seedDepartments() {
-
-        departmentRepository.save(createDepartment("Engineering", "Handles product development"));
-        departmentRepository.save(createDepartment("HR", "Handles recruitment and policies"));
-        departmentRepository.save(createDepartment("Operations", "Handles workflow operations"));
-        departmentRepository.save(createDepartment("Finance", "Handles finance & accounts"));
-
-        System.out.println("✅ Departments seeded");
-    }
-
-    private Department createDepartment(String name, String description) {
-        Department dept = new Department();
-        dept.setName(name);
-        dept.setDescription(description);
-        return dept;
-    }
-
-    // =======================
     // 2️⃣ Seed Users
     // =======================
 
     private void seedUsers() {
-
-        Department engineering = departmentRepository.findByName("Engineering")
-                .orElseThrow(() -> new RuntimeException("Engineering department not found"));
-
-        Department hr = departmentRepository.findByName("HR")
-                .orElseThrow(() -> new RuntimeException("HR department not found"));
-
-        Department operations = departmentRepository.findByName("Operations")
-                .orElseThrow(() -> new RuntimeException("Operations department not found"));
-
         // Admin
         userRepository.save(User.builder()
                 .name("Admin User")
                 .email("admin@example.com")
                 .password(passwordEncoder.encode("admin123"))
                 .role(Role.ADMIN)
-                .department(engineering)
                 .build());
 
         // Managers
@@ -97,7 +56,6 @@ public class DataInitializer implements CommandLineRunner {
                 .email("eng.manager@example.com")
                 .password(passwordEncoder.encode("manager123"))
                 .role(Role.MANAGER)
-                .department(engineering)
                 .build());
 
         userRepository.save(User.builder()
@@ -105,7 +63,6 @@ public class DataInitializer implements CommandLineRunner {
                 .email("hr.manager@example.com")
                 .password(passwordEncoder.encode("manager123"))
                 .role(Role.MANAGER)
-                .department(hr)
                 .build());
 
         // Employees
@@ -114,7 +71,6 @@ public class DataInitializer implements CommandLineRunner {
                 .email("dev1@example.com")
                 .password(passwordEncoder.encode("employee123"))
                 .role(Role.EMPLOYEE)
-                .department(engineering)
                 .build());
 
         userRepository.save(User.builder()
@@ -122,7 +78,6 @@ public class DataInitializer implements CommandLineRunner {
                 .email("dev2@example.com")
                 .password(passwordEncoder.encode("employee123"))
                 .role(Role.EMPLOYEE)
-                .department(engineering)
                 .build());
 
         userRepository.save(User.builder()
@@ -130,7 +85,6 @@ public class DataInitializer implements CommandLineRunner {
                 .email("hr1@example.com")
                 .password(passwordEncoder.encode("employee123"))
                 .role(Role.EMPLOYEE)
-                .department(hr)
                 .build());
 
         userRepository.save(User.builder()
@@ -138,7 +92,6 @@ public class DataInitializer implements CommandLineRunner {
                 .email("ops1@example.com")
                 .password(passwordEncoder.encode("employee123"))
                 .role(Role.EMPLOYEE)
-                .department(operations)
                 .build());
 
         System.out.println("✅ Users seeded");
@@ -173,7 +126,6 @@ public class DataInitializer implements CommandLineRunner {
                     .priority(priorities[i % priorities.length])
                     .createdBy(creator)
                     .assignedTo(assignee)
-                    .department(creator.getDepartment()) // ✅ FIXED (important)
                     .dueDate(LocalDateTime.now().plusDays(7)) // ✅ If nullable = false
                     .deleted(false)
                     .build());

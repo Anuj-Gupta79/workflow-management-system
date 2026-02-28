@@ -6,8 +6,6 @@ import org.springframework.stereotype.Service;
 import com.workflow.backend.auth.dto.AuthResponse;
 import com.workflow.backend.auth.dto.LoginRequest;
 import com.workflow.backend.auth.dto.RegisterRequest;
-import com.workflow.backend.department.entity.Department;
-import com.workflow.backend.department.repository.DepartmentRepository;
 import com.workflow.backend.security.JwtService;
 import com.workflow.backend.user.entity.User;
 import com.workflow.backend.user.repository.UserRepository;
@@ -22,7 +20,6 @@ public class AuthService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
     private final JwtService jwtService;
-    private final DepartmentRepository departmentRepository;
 
     public AuthResponse register(RegisterRequest request) {
 
@@ -34,16 +31,11 @@ public class AuthService {
             throw new IllegalArgumentException("Passwords do not match");
         }
 
-        Department defaultDepartment = departmentRepository
-                .findByName("Engineering")
-                .orElseThrow(() -> new RuntimeException("Default department not found"));
-
         User user = User.builder()
                 .name(request.getName())
                 .email(request.getEmail())
                 .password(passwordEncoder.encode(request.getPassword()))
                 .role(Role.EMPLOYEE)
-                .department(defaultDepartment)
                 .deleted(false)
                 .build();
 
