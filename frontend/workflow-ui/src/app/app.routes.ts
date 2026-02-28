@@ -4,6 +4,9 @@ import { Routes } from '@angular/router';
 import { LandingComponent } from './layout/public-layout/landing-component/landing-component';
 import { LoginComponent } from './features/auth/pages/login-component/login-component';
 import { SignupComponent } from './features/auth/pages/signup-component/signup-component';
+import { ForgotPasswordComponent } from './features/auth/pages/forgot-password-component/forgot-password-component';
+import { ForgotPasswordSuccessComponent } from './features/auth/pages/forgot-password-success-component/forgot-password-success-component';
+import { ResetPasswordComponent } from './features/auth/pages/reset-password-component/reset-password-component';
 
 // Dashboard layout
 import { DashboardLayout } from './layout/dashboard-layout/dashboard-layout';
@@ -23,6 +26,9 @@ export const routes: Routes = [
   { path: '', component: LandingComponent },
   { path: 'login', component: LoginComponent },
   { path: 'signup', component: SignupComponent },
+  { path: 'forgot-password', component: ForgotPasswordComponent },
+  { path: 'forgot-password/success', component: ForgotPasswordSuccessComponent },
+  { path: 'reset-password', component: ResetPasswordComponent },
 
   /* ---------------- DASHBOARD (AUTH REQUIRED) ---------------- */
   {
@@ -30,29 +36,13 @@ export const routes: Routes = [
     component: DashboardLayout,
     canActivate: [AuthGuard],
     children: [
-      {
-        path: '',
-        component: DashboardHome,
-      },
-      {
-        path: 'profile',
-        component: ProfileComponent,
-      },
-      {
-        path: 'admin',
-        component: Admin,
-      },
-      {
-        path: 'tasks',
-        component: TaskList,
-      },
-      {
-        path: 'tasks/new',
-        component: CreateTask,
-      },
+      { path: '', component: DashboardHome },
+      { path: 'profile', component: ProfileComponent },
+      { path: 'admin', component: Admin },
+      { path: 'tasks', component: TaskList },
+      { path: 'tasks/new', component: CreateTask },
     ],
   },
 
-  /* ---------------- FALLBACK ---------------- */
   { path: '**', redirectTo: '' },
 ];

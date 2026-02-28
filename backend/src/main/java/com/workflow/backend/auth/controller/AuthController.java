@@ -1,5 +1,7 @@
 package com.workflow.backend.auth.controller;
 
+import java.util.Map;
+
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -11,6 +13,7 @@ import com.workflow.backend.auth.dto.AuthResponse;
 import com.workflow.backend.auth.dto.ForgotPasswordRequest;
 import com.workflow.backend.auth.dto.LoginRequest;
 import com.workflow.backend.auth.dto.RegisterRequest;
+import com.workflow.backend.auth.dto.ResetPasswordRequest;
 import com.workflow.backend.auth.service.AuthService;
 import com.workflow.backend.auth.service.ForgotPasswordService;
 
@@ -37,8 +40,21 @@ public class AuthController {
     }
 
     @PostMapping("/forgot-password")
-    public ResponseEntity<String> forgotPassword(@RequestBody ForgotPasswordRequest request) {
+    public ResponseEntity<Map<String, String>> forgotPassword(@RequestBody ForgotPasswordRequest request) {
         forgotPasswordService.sendResetLink(request.getEmail());
-        return ResponseEntity.ok("Reset link sent");
+        return ResponseEntity.ok(Map.of("message", "Reset link sent"));
+    }
+
+    @PostMapping("/reset-password")
+    public ResponseEntity<Map<String, String>> resetPassword(
+            @RequestBody ResetPasswordRequest request) {
+
+        System.out.println("Received reset password request: " + request.getToken() + ", " + request.getPassword()); 
+
+        forgotPasswordService.resetPassword(
+                request.getToken(),
+                request.getPassword());
+
+        return ResponseEntity.ok(Map.of("message", "Password reset successful"));
     }
 }

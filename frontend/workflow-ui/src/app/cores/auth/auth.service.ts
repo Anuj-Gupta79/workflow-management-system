@@ -28,6 +28,14 @@ export class AuthService {
     );
   }
 
+  forgotPassword(email: string) {
+    return this.http.post(`${this.baseUrl}/forgot-password`, { email });
+  }
+
+  resetPassword(token: string, password: string) {
+    return this.http.post(`${this.baseUrl}/reset-password`, { token, password });
+  }
+
   logout() {
     localStorage.removeItem(this.TOKEN_KEY);
     localStorage.removeItem(this.ROLE_KEY);
