@@ -6,17 +6,16 @@ import java.util.Optional;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import com.workflow.backend.user.entity.User;
-import com.workflow.backend.user.utility.Role;
 
 public interface UserRepository extends JpaRepository<User, Long> {
-    
-    Optional<User> findByEmail(String email);
 
-    List<User> findByRole(Role role);
+    Optional<User> findByIdAndDeletedFalse(Long id);
 
-    boolean existsByEmail(String email);
+    Optional<User> findByEmailAndDeletedFalse(String email);
 
-    boolean existsByRole(Role role);
+    boolean existsByEmailAndDeletedFalse(String email);
+
+    List<User> findByDeletedFalse();
 
     long countByDeletedFalse();
 }

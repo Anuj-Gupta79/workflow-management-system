@@ -9,37 +9,51 @@ import com.workflow.backend.user.dto.UserRequest;
 import com.workflow.backend.user.dto.UserResponse;
 import com.workflow.backend.user.entity.User;
 import com.workflow.backend.user.repository.UserRepository;
+import com.workflow.backend.user.utility.PlatformRole;
 
-import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 
 @Service
-@AllArgsConstructor
+@RequiredArgsConstructor
 public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
 
     @Override
     public List<User> getAllUsers() {
-        return userRepository.findAll().stream().filter(user -> !user.isDeleted()).toList();
+        return userRepository.findByDeletedFalse();
     }
 
     @Override
     public User getUserById(Long id) {
-        return userRepository.findById(id).filter(user -> !user.isDeleted())
+        return userRepository.findByIdAndDeletedFalse(id)
                 .orElseThrow(() -> new RuntimeException("User not found"));
     }
 
     @Override
     public User getUserByEmail(String email) {
-        return userRepository.findByEmail(email).filter(user -> !user.isDeleted())
+        return userRepository.findByEmailAndDeletedFalse(email)
                 .orElseThrow(() -> new RuntimeException("User not found"));
     }
 
     @Override
-    public void deleteUser(Long id) {
-        User user = userRepository.findById(id).orElseThrow(() -> new RuntimeException("User not found"));
-        user.setDeleted(true);
-        userRepository.save(user);
+    public void deleteUser(Long id, Authentication authentication) {
+
+        User currentUser = getUserByEmail(authentication.getName());
+        User targetUser = getUserById(id);
+
+        // Prevent self-deletion
+        if (currentUser.getId().equals(targetUser.getId())) {
+            throw new RuntimeException("You cannot delete yourself");
+        }
+
+        // Optional: Prevent deleting MASTER_ADMIN
+        if (targetUser.getRole() == PlatformRole.MASTER_ADMIN) {
+            throw new RuntimeException("Cannot delete MASTER_ADMIN");
+        }
+
+        targetUser.setDeleted(true);
+        userRepository.save(targetUser);
     }
 
     @Override
@@ -52,28 +66,22 @@ public class UserServiceImpl implements UserService {
         return userRepository.save(user);
     }
 
+    @Override
     public UserResponse getCurrentUser(Authentication authentication) {
-        String email = authentication.getName();
-        User user = userRepository.findByEmail(email)
-                .orElseThrow(() -> new RuntimeException("User not found with email: " + email));
 
-        return mapToResponse(user);
+        User user = getUserByEmail(authentication.getName());
+        return new UserResponse(user);
     }
 
-    public UserResponse updateProfile(Authentication authentication, UserRequest userRequest) {
-        String email = authentication.getName();
-        User user = userRepository.findByEmail(email)
-                .orElseThrow(() -> new RuntimeException("User not found with email: " + email));
+    @Override
+    public UserResponse updateProfile(Authentication authentication, UserRequest request) {
 
-        user.setName(userRequest.getName());
-        user.setEmail(userRequest.getEmail());
+        User user = getUserByEmail(authentication.getName());
 
-        User savedUser = userRepository.save(user);
-        return mapToResponse(savedUser);
-    }
+        if (request.getName() != null && !request.getName().isBlank()) {
+            user.setName(request.getName().trim());
+        }
 
-    private UserResponse mapToResponse(User user) {
-        UserResponse response = new UserResponse(user);
-        return response;
+        return new UserResponse(userRepository.save(user));
     }
 }

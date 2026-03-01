@@ -6,12 +6,14 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class CreateTaskRequest {
+public class TaskRequest {
 
     @NotBlank
     private String title;
 
     private String description;
+
+    private String priority;
 
     private Long assignedTo;
 }

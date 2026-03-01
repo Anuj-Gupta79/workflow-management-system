@@ -25,7 +25,7 @@ public class ForgotPasswordService {
 
     @Transactional
     public void sendResetLink(String email) {
-        User user = userRepository.findByEmail(email)
+        User user = userRepository.findByEmailAndDeletedFalse(email)
                 .orElseThrow(() -> new RuntimeException("User not found with email: " + email));
 
         // Delete existing tokens for the user

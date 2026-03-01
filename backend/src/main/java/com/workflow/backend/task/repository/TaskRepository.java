@@ -1,6 +1,7 @@
 package com.workflow.backend.task.repository;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 
@@ -8,10 +9,15 @@ import com.workflow.backend.task.entity.Task;
 import com.workflow.backend.task.utility.TaskStatus;
 
 public interface TaskRepository extends JpaRepository<Task, Long> {
+    List<Task> findByOrganizationIdAndDeletedFalse(Long organizationId);
 
-    List<Task> findByCreatedById(Long userId);
+    List<Task> findByOrganizationIdAndCreatedByIdAndDeletedFalse(Long orgId, Long userId);
 
-    List<Task> findByAssignedToId(Long userId);
+    List<Task> findByOrganizationIdAndAssignedToIdAndDeletedFalse(Long orgId, Long userId);
 
-    List<Task> findByStatus(TaskStatus status);
+    List<Task> findByOrganizationIdAndStatusAndDeletedFalse(Long orgId, TaskStatus status);
+
+    Optional<Task> findByIdAndOrganizationIdAndDeletedFalse(Long taskId, Long orgId);
+
+    long countByOrganizationIdAndDeletedFalse(Long orgId);
 }

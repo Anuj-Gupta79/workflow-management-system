@@ -1,10 +1,13 @@
 package com.workflow.backend.security;
 
 import java.security.Key;
+import java.util.Date;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
+
+import com.workflow.backend.user.entity.User;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.SignatureAlgorithm;
@@ -22,13 +25,13 @@ public class JwtService {
         this.expirationTime = expirationTime;
     }
 
-    public String generateToken(String email, String role) {
+    public String generateToken(User user) {
         long now = System.currentTimeMillis();
         return io.jsonwebtoken.Jwts.builder()
-                .setSubject(email)
-                .claim("role", role)
-                .setIssuedAt(new java.util.Date(now))
-                .setExpiration(new java.util.Date(now + expirationTime))
+                .setSubject(user.getEmail())
+                .claim("platformRole", user.getRole().name())
+                .setIssuedAt(new Date(now))
+                .setExpiration(new Date(now + expirationTime))
                 .signWith(key, SignatureAlgorithm.HS256)
                 .compact();
     }

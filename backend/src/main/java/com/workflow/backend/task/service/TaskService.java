@@ -7,20 +7,20 @@ import com.workflow.backend.task.utility.TaskStatus;
 
 public interface TaskService {
 
-    public List<Task> getAllTasks();
+    List<Task> getTasksByOrganization(Long orgId);
 
-    public Task createTask(Task task);
+    Task createTask(Long orgId, Task task);
 
-    public List<Task> getTasksByCreator(Long userId);
+    List<Task> getTasksByCreatorInOrganization(Long orgId, Long userId);
 
-    public List<Task> getTasksByAssignee(Long userId);
+    List<Task> getTasksByAssigneeInOrganization(Long orgId, Long userId);
 
-    public List<Task> getTasksByStatus(TaskStatus status);
+    List<Task> getTasksByStatusInOrganization(Long orgId, TaskStatus status);
 
-    public Task updateTaskStatus(Long taskId, TaskStatus newStatus);
+    Task updateTaskStatus(Long orgId, Long taskId, TaskStatus newStatus);
 
-    public Task assignTask(Long taskId, Long userId);
+    Task assignTask(Long orgId, Long taskId, Long userId);
 
-    public long countTasks();
+    long countTasksByOrganization(Long orgId);
 
 }

@@ -2,19 +2,27 @@ package com.workflow.backend.user.service;
 
 import java.util.List;
 
+import org.springframework.security.core.Authentication;
+
+import com.workflow.backend.user.dto.UserRequest;
+import com.workflow.backend.user.dto.UserResponse;
 import com.workflow.backend.user.entity.User;
 
 public interface UserService {
 
-    public List<User> getAllUsers();
+    List<User> getAllUsers();
 
-    public User getUserById(Long id);
+    User getUserById(Long id);
 
-    public User getUserByEmail(String email);
+    User getUserByEmail(String email);
 
-    public void deleteUser(Long id);
+    void deleteUser(Long id, Authentication authentication);
 
-    public long countUsers();
+    long countUsers();
 
-    public User saveUser(User user);
+    User saveUser(User user);
+
+    UserResponse getCurrentUser(Authentication authentication);
+
+    UserResponse updateProfile(Authentication authentication, UserRequest request);
 }

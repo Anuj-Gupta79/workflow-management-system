@@ -9,7 +9,7 @@ import com.workflow.backend.auth.dto.RegisterRequest;
 import com.workflow.backend.security.JwtService;
 import com.workflow.backend.user.entity.User;
 import com.workflow.backend.user.repository.UserRepository;
-import com.workflow.backend.user.utility.Role;
+import com.workflow.backend.user.utility.PlatformRole;
 
 import lombok.RequiredArgsConstructor;
 
@@ -23,32 +23,28 @@ public class AuthService {
 
     public AuthResponse register(RegisterRequest request) {
 
-        if (userRepository.existsByEmail(request.getEmail())) {
+        if (userRepository.existsByEmailAndDeletedFalse(request.getEmail())) {
             throw new IllegalArgumentException("Email already exists");
-        }
-
-        if (!request.getPassword().equals(request.getConfirmPassword())) {
-            throw new IllegalArgumentException("Passwords do not match");
         }
 
         User user = User.builder()
                 .name(request.getName())
                 .email(request.getEmail())
                 .password(passwordEncoder.encode(request.getPassword()))
-                .role(Role.EMPLOYEE)
+                .role(PlatformRole.USER)
                 .deleted(false)
                 .build();
 
         userRepository.save(user);
 
-        String token = jwtService.generateToken(user.getEmail(), user.getRole().name());
+        String token = jwtService.generateToken(user);
 
         return buildAuthResponse(user, token);
     }
 
     public AuthResponse login(LoginRequest request) {
 
-        User user = userRepository.findByEmail(request.getEmail())
+        User user = userRepository.findByEmailAndDeletedFalse(request.getEmail())
                 .orElseThrow(() -> new IllegalArgumentException("Invalid credentials"));
 
         if (user.isDeleted()) {
@@ -59,7 +55,7 @@ public class AuthService {
             throw new IllegalArgumentException("Invalid credentials");
         }
 
-        String token = jwtService.generateToken(user.getEmail(), user.getRole().name());
+        String token = jwtService.generateToken(user);
 
         return buildAuthResponse(user, token);
     }

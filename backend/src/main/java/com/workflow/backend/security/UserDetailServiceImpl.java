@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 
 import com.workflow.backend.user.entity.User;
 import com.workflow.backend.user.repository.UserRepository;
+import com.workflow.backend.utility.CustomUserDetails;
 
 @Service
 public class UserDetailServiceImpl implements UserDetailsService {
@@ -22,10 +23,11 @@ public class UserDetailServiceImpl implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
-        User user = userRepository.findByEmail(email)
+        User user = userRepository.findByEmailAndDeletedFalse(email)
                 .orElseThrow(() -> new UsernameNotFoundException("User not found with email: " + email));
 
-        return new org.springframework.security.core.userdetails.User(
+        return new CustomUserDetails(
+                user.getId(),
                 user.getEmail(),
                 user.getPassword(),
                 List.of(new SimpleGrantedAuthority("ROLE_" + user.getRole().name())));

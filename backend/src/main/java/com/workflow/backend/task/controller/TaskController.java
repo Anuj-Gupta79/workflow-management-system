@@ -1,73 +1,97 @@
 package com.workflow.backend.task.controller;
 
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.web.bind.annotation.*;
 
 import com.workflow.backend.task.entity.Task;
-import com.workflow.backend.task.service.TaskServiceImpl;
+import com.workflow.backend.task.service.TaskService;
 import com.workflow.backend.task.utility.TaskStatus;
-
-import lombok.RequiredArgsConstructor;
 
 import java.util.List;
 
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PatchMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-
-
 @RestController
-@RequestMapping("tasks")
+@RequestMapping("/organizations/{orgId}/tasks")
 @RequiredArgsConstructor
 public class TaskController {
 
-    private final TaskServiceImpl taskService;
+    private final TaskService taskService;
 
-    @GetMapping("")
-    public ResponseEntity<List<Task>> getAllTasks() {
-        return ResponseEntity.ok(taskService.getAllTasks());
+    @GetMapping
+    @PreAuthorize("@orgSecurity.isMember(#orgId, authentication)")
+    public ResponseEntity<List<Task>> getAllTasks(@PathVariable Long orgId) {
+        return ResponseEntity.ok(taskService.getTasksByOrganization(orgId));
     }
-    
 
     @PostMapping
-    public ResponseEntity<Task> createTask(@RequestBody Task entity) {
-        Task createdTask = taskService.createTask(entity);
-        return ResponseEntity.ok(createdTask);
+    @PreAuthorize("@orgSecurity.hasRole(#orgId, T(com.workflow.backend.organization.utility.OrganizationRole).MANAGER, authentication) "
+            +
+            "or @orgSecurity.hasRole(#orgId, T(com.workflow.backend.organization.utility.OrganizationRole).ADMIN, authentication)")
+    public ResponseEntity<Task> createTask(
+            @PathVariable Long orgId,
+            @RequestBody Task task) {
+
+        return ResponseEntity.ok(taskService.createTask(orgId, task));
     }
 
-    @GetMapping("created/{userId}")
-    public ResponseEntity<List<Task>> getTasksByCreator(@PathVariable Long userId) {
-        List<Task> tasks = taskService.getTasksByCreator(userId);
-        return ResponseEntity.ok(tasks);
-    }
-    
-    @GetMapping("assigned/{userId}")
-    public ResponseEntity<List<Task>> getTasksByAssignee(@PathVariable Long userId) {
-        List<Task> tasks = taskService.getTasksByAssignee(userId);
-        return ResponseEntity.ok(tasks);
+    @GetMapping("/created/{userId}")
+    @PreAuthorize("@orgSecurity.isMember(#orgId, authentication)")
+    public ResponseEntity<List<Task>> getTasksByCreator(
+            @PathVariable Long orgId,
+            @PathVariable Long userId) {
+
+        return ResponseEntity.ok(
+                taskService.getTasksByCreatorInOrganization(orgId, userId));
     }
 
-    @GetMapping("status/{status}")
-    public ResponseEntity<List<Task>> getTasksByStatus(@PathVariable TaskStatus status) {
-        List<Task> tasks = taskService.getTasksByStatus(status);
-        return ResponseEntity.ok(tasks);
+    @GetMapping("/assigned/{userId}")
+    @PreAuthorize("@orgSecurity.isMember(#orgId, authentication)")
+    public ResponseEntity<List<Task>> getTasksByAssignee(
+            @PathVariable Long orgId,
+            @PathVariable Long userId) {
+
+        return ResponseEntity.ok(
+                taskService.getTasksByAssigneeInOrganization(orgId, userId));
     }
 
+    @GetMapping("/status/{status}")
+    @PreAuthorize("@orgSecurity.isMember(#orgId, authentication)")
+    public ResponseEntity<List<Task>> getTasksByStatus(
+            @PathVariable Long orgId,
+            @PathVariable TaskStatus status) {
+
+        return ResponseEntity.ok(
+                taskService.getTasksByStatusInOrganization(orgId, status));
+    }
+
+    // =========================
+    // Update Task Status (Members)
+    // =========================
     @PatchMapping("/{taskId}/status")
-    public ResponseEntity<Task> updateTaskStatus(@PathVariable Long taskId, @RequestParam TaskStatus newStatus) {
-        Task task = taskService.updateTaskStatus(taskId, newStatus);
-        return ResponseEntity.ok(task);
+    @PreAuthorize("@orgSecurity.isMember(#orgId, authentication)")
+    public ResponseEntity<Task> updateTaskStatus(
+            @PathVariable Long orgId,
+            @PathVariable Long taskId,
+            @RequestParam TaskStatus newStatus) {
 
+        return ResponseEntity.ok(
+                taskService.updateTaskStatus(orgId, taskId, newStatus));
     }
 
+    // =========================
+    // Assign Task (Manager/Admin)
+    // =========================
     @PatchMapping("/{taskId}/assign")
-    public ResponseEntity<Task> assignTask(@PathVariable Long taskId, @RequestParam Long userId) {
-        Task task = taskService.assignTask(taskId, userId);
-        return ResponseEntity.ok(task);
+    @PreAuthorize("@orgSecurity.hasRole(#orgId, T(com.workflow.backend.organization.utility.OrganizationRole).MANAGER, authentication) "
+            +
+            "or @orgSecurity.hasRole(#orgId, T(com.workflow.backend.organization.utility.OrganizationRole).ADMIN, authentication)")
+    public ResponseEntity<Task> assignTask(
+            @PathVariable Long orgId,
+            @PathVariable Long taskId,
+            @RequestParam Long userId) {
+
+        return ResponseEntity.ok(
+                taskService.assignTask(orgId, taskId, userId));
     }
-    
 }
