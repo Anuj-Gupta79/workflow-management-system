@@ -13,6 +13,11 @@ import { AuthService } from '../../../../cores/auth/auth.service';
 export class SignupComponent {
   signupForm!: FormGroup;
 
+  showPassword = false;
+
+  strengthText = '';
+  strengthClass = '';
+
   constructor(
     private fb: FormBuilder,
     private authService: AuthService,
@@ -21,8 +26,23 @@ export class SignupComponent {
     this.signupForm = this.fb.group({
       name: ['', Validators.required],
       email: ['', [Validators.required, Validators.email]],
-      password: ['', Validators.required],
+      password: ['', [Validators.required, Validators.minLength(6)]],
     });
+  }
+
+  checkStrength() {
+    const password = this.signupForm.get('password')?.value || '';
+
+    if (password.length < 6) {
+      this.strengthText = 'Weak password';
+      this.strengthClass = 'strength-weak';
+    } else if (password.match(/[A-Z]/) && password.match(/[0-9]/)) {
+      this.strengthText = 'Strong password';
+      this.strengthClass = 'strength-strong';
+    } else {
+      this.strengthText = 'Medium strength';
+      this.strengthClass = 'strength-medium';
+    }
   }
 
   submit() {

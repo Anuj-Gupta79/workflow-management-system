@@ -1,73 +1,95 @@
-<div class="auth-wrapper">
-  <div class="container min-vh-100 d-flex align-items-center justify-content-center">
-    <div class="row w-100 justify-content-center">
-      <div class="col-12 col-sm-10 col-md-8 col-lg-6 col-xl-5">
-        <div class="card auth-card border-0">
-          <div class="card-body p-4 p-md-5">
-            <!-- Header -->
+<div class="signup-wrapper">
+  <div class="container-fluid min-vh-100">
+    <div class="row min-vh-100">
+      <!-- LEFT BRAND PANEL (Desktop Only) -->
+      <div class="col-lg-6 d-none d-lg-flex signup-brand-panel">
+        <div class="brand-content">
+          <h1 class="brand-title">FlowSync</h1>
+          <p class="brand-tagline">
+            Streamline workflows.<br />
+            Empower teams.<br />
+            Scale effortlessly.
+          </p>
+
+          <div class="brand-features">
+            <div>✔ Smart task automation</div>
+            <div>✔ Real-time collaboration</div>
+            <div>✔ Secure cloud platform</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- RIGHT FORM PANEL -->
+      <div class="col-12 col-lg-6 d-flex align-items-center justify-content-center">
+        <div class="signup-card">
+          <div class="signup-body">
             <div class="text-center mb-4">
-              <h2 class="fw-bold text-primary">Create your account</h2>
-              <p class="text-muted mb-0">
-                Start managing workflows with <span class="fw-semibold">FlowSync</span>
-              </p>
+              <h2 class="signup-title">Create your account</h2>
+              <p class="signup-subtitle">Start managing workflows with <span>FlowSync</span></p>
             </div>
 
-            <!-- Form -->
             <form [formGroup]="signupForm" (ngSubmit)="submit()">
               <!-- Name -->
-              <div class="mb-3">
-                <label class="form-label">Name</label>
-                <input
-                  class="form-control form-control-lg"
-                  formControlName="name"
-                  placeholder="Your full name"
-                />
+              <div class="signup-group">
+                <label>Name</label>
+                <input class="signup-input" formControlName="name" placeholder="Your full name" />
               </div>
 
               <!-- Email -->
-              <div class="mb-3">
-                <label class="form-label">Email</label>
+              <div class="signup-group">
+                <label>Email</label>
                 <input
                   type="email"
-                  class="form-control form-control-lg"
+                  class="signup-input"
                   formControlName="email"
                   placeholder="you@example.com"
                 />
               </div>
 
               <!-- Password -->
-              <div class="mb-4">
-                <label class="form-label">Password</label>
-                <input
-                  type="password"
-                  class="form-control form-control-lg"
-                  formControlName="password"
-                  placeholder="••••••••"
-                />
+              <div class="signup-group">
+                <label>Password</label>
+
+                <div class="signup-password-wrapper">
+                  <input
+                    [type]="showPassword ? 'text' : 'password'"
+                    class="signup-input"
+                    formControlName="password"
+                    placeholder="Create a strong password"
+                    (input)="checkStrength()"
+                  />
+
+                  <span class="signup-toggle" (click)="showPassword = !showPassword">
+                    <span class="material-icons">
+                      {{ showPassword ? 'visibility_off' : 'visibility' }}
+                    </span>
+                  </span>
+                </div>
+
+                <!-- Strength Bar -->
+                <div class="password-strength">
+                  <div class="strength-bar" [ngClass]="strengthClass"></div>
+                </div>
+
+                <small class="strength-text">
+                  {{ strengthText }}
+                </small>
               </div>
 
               <!-- CTA -->
-              <button
-                type="submit"
-                class="btn btn-primary btn-lg w-100"
-                [disabled]="signupForm.invalid"
-              >
+              <button type="submit" class="signup-btn" [disabled]="signupForm.invalid">
                 Get Started
               </button>
             </form>
 
-            <!-- Footer -->
             <div class="text-center mt-4">
-              <small class="text-muted">
+              <small>
                 Already have an account?
-                <a routerLink="/login" class="fw-semibold text-primary">Login</a>
+                <a routerLink="/login" class="signup-link">Login</a>
               </small>
             </div>
           </div>
         </div>
-
-        <!-- Brand footer -->
-        <p class="text-center text-muted mt-4 small">© 2026 FlowSync</p>
       </div>
     </div>
   </div>

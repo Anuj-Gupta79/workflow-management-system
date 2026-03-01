@@ -1,7 +1,19 @@
 <div class="auth-wrapper">
+
+  <!-- Left Brand Panel -->
+  <div class="auth-brand-panel">
+    <div class="brand-content">
+      <h1 class="brand-title">FlowSync</h1>
+      <p class="brand-tagline">
+        Streamline your workflow.<br />
+        Collaborate smarter.
+      </p>
+    </div>
+  </div>
+
+  <!-- Right Auth Area -->
   <div class="auth-center">
     <div class="auth-card">
-
       <div class="auth-body">
 
         <h3 class="auth-title">Welcome Back 👋</h3>
@@ -30,7 +42,7 @@
           </div>
 
           <!-- Password -->
-          <div class="form-group password-group">
+          <div class="form-group">
             <label>Password</label>
 
             <div class="password-wrapper">
@@ -44,7 +56,7 @@
               <span
                 class="toggle-password"
                 (click)="showPassword = !showPassword">
-                {{ showPassword ? '🙈' : '👁' }}
+                {{ showPassword ? 'Hide' : 'Show' }}
               </span>
             </div>
 
