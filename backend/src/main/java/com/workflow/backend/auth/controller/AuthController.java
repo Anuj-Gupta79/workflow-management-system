@@ -48,9 +48,7 @@ public class AuthController {
     @PostMapping("/reset-password")
     public ResponseEntity<Map<String, String>> resetPassword(
             @RequestBody ResetPasswordRequest request) {
-
-        System.out.println("Received reset password request: " + request.getToken() + ", " + request.getPassword()); 
-
+                
         forgotPasswordService.resetPassword(
                 request.getToken(),
                 request.getPassword());
