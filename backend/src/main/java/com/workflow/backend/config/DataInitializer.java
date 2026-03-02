@@ -4,12 +4,19 @@ import java.time.LocalDateTime;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
+
+import com.workflow.backend.organization.entity.Organization;
+import com.workflow.backend.organization.entity.OrganizationMember;
+import com.workflow.backend.organization.repository.OrganizationMemberRepository;
+import com.workflow.backend.organization.repository.OrganizationRepository;
+import com.workflow.backend.organization.utility.OrganizationRole;
 import com.workflow.backend.task.entity.Task;
 import com.workflow.backend.task.repository.TaskRepository;
 import com.workflow.backend.task.utility.TaskPriority;
 import com.workflow.backend.task.utility.TaskStatus;
 import com.workflow.backend.user.entity.User;
 import com.workflow.backend.user.repository.UserRepository;
+import com.workflow.backend.user.utility.PlatformRole;
 
 import lombok.RequiredArgsConstructor;
 
@@ -17,97 +24,125 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class DataInitializer implements CommandLineRunner {
 
-    private final UserRepository userRepository;
-    private final TaskRepository taskRepository;
-    private final PasswordEncoder passwordEncoder;
+        private final UserRepository userRepository;
+        private final OrganizationRepository organizationRepository;
+        private final OrganizationMemberRepository organizationMemberRepository;
+        private final TaskRepository taskRepository;
+        private final PasswordEncoder passwordEncoder;
 
-    @Override
-    public void run(String... args) {
-        if (userRepository.count() == 0) {
-            seedUsers();
+        @Override
+        public void run(String... args) {
+
+                if (userRepository.count() > 0)
+                        return;
+
+                // ======================
+                // 1️⃣ Create Users
+                // ======================
+
+                userRepository.save(User.builder()
+                                .name("Master Admin")
+                                .email("master@workflow.com")
+                                .password(passwordEncoder.encode("admin123"))
+                                .role(PlatformRole.MASTER_ADMIN)
+                                .build());
+
+                User owner = userRepository.save(User.builder()
+                                .name("Org Owner")
+                                .email("owner@workflow.com")
+                                .password(passwordEncoder.encode("password"))
+                                .role(PlatformRole.USER)
+                                .build());
+
+                User manager = userRepository.save(User.builder()
+                                .name("Engineering Manager")
+                                .email("manager@workflow.com")
+                                .password(passwordEncoder.encode("password"))
+                                .role(PlatformRole.USER)
+                                .build());
+
+                User employee1 = userRepository.save(User.builder()
+                                .name("Developer One")
+                                .email("dev1@workflow.com")
+                                .password(passwordEncoder.encode("password"))
+                                .role(PlatformRole.USER)
+                                .build());
+
+                User employee2 = userRepository.save(User.builder()
+                                .name("Developer Two")
+                                .email("dev2@workflow.com")
+                                .password(passwordEncoder.encode("password"))
+                                .role(PlatformRole.USER)
+                                .build());
+
+                // ======================
+                // 2️⃣ Create Organization
+                // ======================
+
+                Organization organization = organizationRepository.save(
+                                Organization.builder()
+                                                .name("Tech Corp")
+                                                .owner(owner)
+                                                .build());
+
+                // ======================
+                // 3️⃣ Add Members
+                // ======================
+
+                organizationMemberRepository.save(
+                                OrganizationMember.builder()
+                                                .organization(organization)
+                                                .user(owner)
+                                                .role(OrganizationRole.OWNER)
+                                                .build());
+
+                organizationMemberRepository.save(
+                                OrganizationMember.builder()
+                                                .organization(organization)
+                                                .user(manager)
+                                                .role(OrganizationRole.MANAGER)
+                                                .build());
+
+                organizationMemberRepository.save(
+                                OrganizationMember.builder()
+                                                .organization(organization)
+                                                .user(employee1)
+                                                .role(OrganizationRole.EMPLOYEE)
+                                                .build());
+
+                organizationMemberRepository.save(
+                                OrganizationMember.builder()
+                                                .organization(organization)
+                                                .user(employee2)
+                                                .role(OrganizationRole.EMPLOYEE)
+                                                .build());
+
+                // ======================
+                // 4️⃣ Create Tasks
+                // ======================
+
+                taskRepository.save(Task.builder()
+                                .title("Setup Project Architecture")
+                                .description("Design base project structure")
+                                .organization(organization)
+                                .createdBy(manager)
+                                .assignedTo(employee1)
+                                .status(TaskStatus.TO_DO)
+                                .priority(TaskPriority.HIGH)
+                                .dueDate(LocalDateTime.now().plusDays(5))
+                                .build());
+
+                taskRepository.save(Task.builder()
+                                .title("Implement Authentication")
+                                .description("Add JWT + security filters")
+                                .organization(organization)
+                                .createdBy(manager)
+                                .assignedTo(employee2)
+                                .status(TaskStatus.IN_PROGRESS)
+                                .priority(TaskPriority.MEDIUM)
+                                .dueDate(LocalDateTime.now().plusDays(7))
+                                .build());
+
+                System.out.println("✅ Development data seeded successfully");
         }
-
-        if (taskRepository.count() == 0) {
-            seedTasks();
-        }
-
-        System.out.println("✅ Development data seeded successfully");
-    }
-
-    // =======================
-    // 2️⃣ Seed Users
-    // =======================
-
-    private void seedUsers() {
-        // Admin
-        userRepository.save(User.builder()
-                .name("Admin User")
-                .email("admin@example.com")
-                .password(passwordEncoder.encode("admin123"))
-                .build());
-
-        // Managers
-        userRepository.save(User.builder()
-                .name("Engineering Manager")
-                .email("eng.manager@example.com")
-                .password(passwordEncoder.encode("manager123"))
-                .build());
-
-        userRepository.save(User.builder()
-                .name("HR Manager")
-                .email("hr.manager@example.com")
-                .password(passwordEncoder.encode("manager123"))
-                .build());
-
-        // Employees
-        userRepository.save(User.builder()
-                .name("Dev Employee 1")
-                .email("dev1@example.com")
-                .password(passwordEncoder.encode("employee123"))
-                .build());
-
-        userRepository.save(User.builder()
-                .name("Dev Employee 2")
-                .email("dev2@example.com")
-                .password(passwordEncoder.encode("employee123"))
-                .build());
-
-        userRepository.save(User.builder()
-                .name("HR Executive")
-                .email("hr1@example.com")
-                .password(passwordEncoder.encode("employee123"))
-                .build());
-
-        userRepository.save(User.builder()
-                .name("Operations Executive")
-                .email("ops1@example.com")
-                .password(passwordEncoder.encode("employee123"))
-                .build());
-
-        System.out.println("✅ Users seeded");
-    }
-
-    // =======================
-    // 3️⃣ Seed Tasks
-    // =======================
-
-    private void seedTasks() {
-        TaskStatus[] statuses = TaskStatus.values();
-        TaskPriority[] priorities = TaskPriority.values();
-
-
-        for (int i = 0; i < statuses.length; i++) {
-
-            taskRepository.save(Task.builder()
-                    .title("Sample Task - " + statuses[i])
-                    .description("This is a " + statuses[i] + " task for testing workflow")
-                    .status(statuses[i])
-                    .priority(priorities[i % priorities.length])
-                    .dueDate(LocalDateTime.now().plusDays(7)) // ✅ If nullable = false
-                    .deleted(false)
-                    .build());
-        }
-
-        System.out.println("✅ Tasks seeded");
-    }
 }

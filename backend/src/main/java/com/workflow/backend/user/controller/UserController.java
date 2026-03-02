@@ -10,15 +10,22 @@ import com.workflow.backend.user.dto.UserRequest;
 import com.workflow.backend.user.dto.UserResponse;
 import com.workflow.backend.user.service.UserServiceImpl;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import io.swagger.v3.oas.annotations.tags.Tag;
+
 import java.util.List;
 
 @RestController
 @RequestMapping("/users")
 @RequiredArgsConstructor
+@Tag(name = "Users", description = "User management APIs")
+@SecurityRequirement(name = "bearerAuth")
 public class UserController {
 
     private final UserServiceImpl userService;
 
+    @Operation(summary = "Get all users (MASTER_ADMIN only)")
     @GetMapping
     @PreAuthorize("hasRole('MASTER_ADMIN')")
     public ResponseEntity<List<UserResponse>> getAllUsers() {
@@ -30,6 +37,7 @@ public class UserController {
                         .toList());
     }
 
+    @Operation(summary = "Get current logged-in user profile")
     @GetMapping("/me")
     @PreAuthorize("isAuthenticated()")
     public ResponseEntity<UserResponse> getMyProfile(Authentication authentication) {
@@ -38,6 +46,7 @@ public class UserController {
                 userService.getCurrentUser(authentication));
     }
 
+    @Operation(summary = "Update current user profile")
     @PutMapping("/me")
     @PreAuthorize("isAuthenticated()")
     public ResponseEntity<UserResponse> updateMyProfile(
@@ -48,6 +57,7 @@ public class UserController {
                 userService.updateProfile(authentication, request));
     }
 
+    @Operation(summary = "Delete user by ID (MASTER_ADMIN only)")
     @DeleteMapping("/{id}")
     @PreAuthorize("hasRole('MASTER_ADMIN')")
     public ResponseEntity<Void> deleteUser(
