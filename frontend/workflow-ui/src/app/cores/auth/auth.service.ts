@@ -15,8 +15,13 @@ export class AuthService {
 
   constructor(private http: HttpClient) {}
 
-  signup(payload: SignupRequest): Observable<void> {
-    return this.http.post<void>(`${this.baseUrl}/register`, payload);
+  signup(payload: SignupRequest): Observable<AuthResponse> {
+    return this.http.post<AuthResponse>(`${this.baseUrl}/register`, payload).pipe(
+      tap((res) => {
+        localStorage.setItem(this.TOKEN_KEY, res.token);
+        localStorage.setItem(this.ROLE_KEY, res.role);
+      }),
+    );
   }
 
   login(payload: LoginRequest): Observable<AuthResponse> {
@@ -37,8 +42,7 @@ export class AuthService {
   }
 
   logout() {
-    localStorage.removeItem(this.TOKEN_KEY);
-    localStorage.removeItem(this.ROLE_KEY);
+    localStorage.clear();
   }
 
   isLoggedIn(): boolean {

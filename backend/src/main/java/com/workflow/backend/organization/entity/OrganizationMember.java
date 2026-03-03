@@ -1,5 +1,6 @@
 package com.workflow.backend.organization.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.workflow.backend.organization.utility.OrganizationRole;
 import com.workflow.backend.user.entity.User;
 
@@ -30,6 +31,7 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 public class OrganizationMember {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

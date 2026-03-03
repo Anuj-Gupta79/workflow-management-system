@@ -3,7 +3,7 @@ import {
   HttpHandler,
   HttpInterceptor,
   HttpRequest,
-  HttpErrorResponse
+  HttpErrorResponse,
 } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable, throwError } from 'rxjs';
@@ -12,20 +12,14 @@ import { AuthService } from '../auth/auth.service';
 
 @Injectable()
 export class AuthInterceptor implements HttpInterceptor {
-
   constructor(private authService: AuthService) {}
 
   intercept(req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
-
     let modifiedReq = req;
 
     const token = this.authService.getToken();
 
-    if (
-      token &&
-      !req.url.includes('/auth/login') &&
-      !req.url.includes('/auth/register')
-    ) {
+    if (token && !req.url.includes('/auth/')) {
       modifiedReq = req.clone({
         setHeaders: {
           Authorization: `Bearer ${token}`,
@@ -37,7 +31,7 @@ export class AuthInterceptor implements HttpInterceptor {
       catchError((error: HttpErrorResponse) => {
         // VERY IMPORTANT: rethrow
         return throwError(() => error);
-      })
+      }),
     );
   }
 }

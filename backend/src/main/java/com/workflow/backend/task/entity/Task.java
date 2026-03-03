@@ -5,6 +5,7 @@ import java.time.LocalDateTime;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.workflow.backend.organization.entity.Organization;
 import com.workflow.backend.task.utility.TaskPriority;
 import com.workflow.backend.task.utility.TaskStatus;
@@ -20,6 +21,7 @@ import lombok.*;
 @AllArgsConstructor
 @NoArgsConstructor
 @Setter
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 public class Task {
 
     @Id

@@ -5,6 +5,7 @@ import java.time.LocalDateTime;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.workflow.backend.user.utility.PlatformRole;
 
 import jakarta.persistence.Column;
@@ -29,6 +30,7 @@ import lombok.Setter;
 @Builder
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @Setter
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 public class User {
     
     @Id

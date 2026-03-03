@@ -1,24 +1,8 @@
-/* ================= GLOBAL SPACING ================= */
-.roles-section {
-  padding: 6rem 0;
-  background-color: #f8f9ff;
-}
-
-.cta-section {
-  padding: 5rem 0;
-  background: #eef2ff;
-}
-
-.footer {
-  padding: 2rem 0;
-  background: #ffffff;
-  border-top: 1px solid #eee;
-}
-
 /* ================= NAVBAR ================= */
+
 .premium-navbar {
-  background: rgba(255, 255, 255, 0.85);
-  backdrop-filter: blur(12px);
+  background: rgba(255, 255, 255, 0.75);
+  backdrop-filter: blur(14px);
   border-bottom: 1px solid rgba(0, 0, 0, 0.05);
 }
 
@@ -37,10 +21,13 @@
 }
 
 /* ================= HERO ================= */
+
 .hero-section {
   min-height: 100vh;
   background: linear-gradient(135deg, #eef2ff 0%, #ffffff 70%);
   padding-top: 100px;
+  position: relative;
+  overflow: hidden;
 }
 
 .hero-title {
@@ -56,10 +43,25 @@
 }
 
 .text-accent {
-  color: #6366f1;
+  background: linear-gradient(90deg, #6366f1, #4f46e5);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+/* ================= HERO GLOW ================= */
+
+.hero-glow {
+  position: absolute;
+  width: 600px;
+  height: 600px;
+  background: radial-gradient(circle, #6366f140 0%, transparent 70%);
+  top: -200px;
+  right: -150px;
+  z-index: 0;
 }
 
 /* ================= TRUST ROW ================= */
+
 .trust-row {
   display: flex;
   flex-wrap: wrap;
@@ -68,7 +70,37 @@
   color: #475569;
 }
 
-/* ================= PREMIUM CARDS ================= */
+/* ================= FEATURES ================= */
+
+.features-section {
+  padding: 6rem 0;
+  background: #ffffff;
+}
+
+/* ================= ROLES ================= */
+
+.roles-section {
+  padding: 6rem 0;
+  background: #f8f9ff;
+}
+
+/* ================= CTA ================= */
+
+.cta-section {
+  padding: 5rem 0;
+  background: #eef2ff;
+}
+
+/* ================= FOOTER ================= */
+
+.footer {
+  padding: 2rem 0;
+  background: #ffffff;
+  border-top: 1px solid #eee;
+}
+
+/* ================= PREMIUM CARD ================= */
+
 .premium-card {
   padding: 32px;
   border-radius: 18px;
@@ -82,7 +114,24 @@
   box-shadow: 0 30px 60px rgba(15, 23, 42, 0.12);
 }
 
+/* ================= BUTTON ================= */
+
+.premium-btn {
+  background: linear-gradient(135deg, #6366f1, #4f46e5);
+  color: white;
+  border: none;
+  border-radius: 12px;
+  font-weight: 600;
+  transition: all 0.3s ease;
+}
+
+.premium-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 25px rgba(79, 70, 229, 0.35);
+}
+
 /* ================= WORKFLOW MOCK ================= */
+
 .workflow-mock {
   background: #ffffff;
   border-radius: 16px;
@@ -107,9 +156,15 @@
   border-radius: 50%;
 }
 
-.dot.red { background: #ff5f56; }
-.dot.yellow { background: #ffbd2e; }
-.dot.green { background: #27c93f; }
+.red {
+  background: #ff5f56;
+}
+.yellow {
+  background: #ffbd2e;
+}
+.green {
+  background: #27c93f;
+}
 
 .mock-body {
   padding: 20px;
@@ -134,28 +189,36 @@
   font-weight: 600;
 }
 
-.pending { background: #fff3cd; }
-.inprogress { background: #d1ecf1; }
-.approved { background: #d4edda; }
-
-/* ================= BUTTON ================= */
-.premium-btn {
-  border-radius: 12px;
-  font-weight: 600;
+.pending {
+  background: #fff3cd;
+}
+.inprogress {
+  background: #d1ecf1;
+}
+.approved {
+  background: #d4edda;
 }
 
 /* ================= FLOAT ANIMATION ================= */
+
 .hero-image {
   animation: float 4s ease-in-out infinite;
 }
 
 @keyframes float {
-  0% { transform: translateY(0); }
-  50% { transform: translateY(-12px); }
-  100% { transform: translateY(0); }
+  0% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-12px);
+  }
+  100% {
+    transform: translateY(0);
+  }
 }
 
 /* ================= RESPONSIVE ================= */
+
 @media (max-width: 992px) {
   .hero-title {
     font-size: 2.2rem;
