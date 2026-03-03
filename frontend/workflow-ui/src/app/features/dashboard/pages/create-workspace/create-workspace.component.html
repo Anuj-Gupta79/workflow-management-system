@@ -1,0 +1,43 @@
+<div class="workspace-container">
+  <div class="workspace-card">
+    <!-- Top Logo -->
+    <div class="logo-circle">FS</div>
+
+    <!-- Welcome Message -->
+    <h2>Welcome to FlowSync 👋</h2>
+    <p class="subtitle">
+      You're not part of any workspace yet. A workspace is your personal or team area where you can
+      manage projects, tasks, and collaborate.
+    </p>
+
+    <!-- Benefits Section -->
+    <div class="benefits">
+      <div class="benefit">
+        <span class="emoji">📂</span>
+        <p>Organize your projects & tasks</p>
+      </div>
+      <div class="benefit">
+        <span class="emoji">👥</span>
+        <p>Collaborate with your team</p>
+      </div>
+      <div class="benefit">
+        <span class="emoji">🚀</span>
+        <p>Track progress & complete tasks faster</p>
+      </div>
+    </div>
+
+    <!-- Create Workspace Input -->
+    <div class="workspace-block">
+      <h3>Create Your First Workspace</h3>
+      <input type="text" placeholder="Workspace name" [(ngModel)]="workspaceName" />
+      <button (click)="createWorkspace()" [disabled]="isLoading$ | async" class="btn-primary">
+        {{ (isLoading$ | async) ? 'Creating...' : 'Create Workspace' }}
+      </button>
+      <div class="error" *ngIf="error$ | async as error">{{ error }}</div>
+    </div>
+
+    <p class="tip">
+      Tip: You can create multiple workspaces for different projects or teams later!
+    </p>
+  </div>
+</div>

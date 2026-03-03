@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -13,8 +14,13 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.workflow.backend.organization.dto.OrganizationRequest;
 import com.workflow.backend.organization.entity.Organization;
+import com.workflow.backend.organization.service.OrganizationMemberService;
 import com.workflow.backend.organization.service.OrganizationService;
+import com.workflow.backend.user.entity.User;
+import com.workflow.backend.user.repository.UserRepository;
+import com.workflow.backend.utility.CustomUserDetails;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
@@ -28,12 +34,26 @@ import lombok.RequiredArgsConstructor;
 @SecurityRequirement(name = "bearerAuth")
 public class OrganizationController {
     private final OrganizationService organizationService;
+    private final UserRepository userRepository;
+    private final OrganizationMemberService organizationMemberService;
 
     @Operation(summary = "Create new organization")
     @PostMapping
     @PreAuthorize("isAuthenticated()")
-    public ResponseEntity<Organization> createOrganization(@RequestBody Organization organization) {
-        return ResponseEntity.ok(organizationService.createOrganization(organization));
+    public ResponseEntity<Organization> createOrganization(@RequestBody OrganizationRequest organization,
+            @AuthenticationPrincipal CustomUserDetails user) {
+        Organization org = new Organization();
+        org.setName(organization.getName());
+
+        User owner = userRepository.findByIdAndDeletedFalse(user.getId())
+                .orElseThrow(() -> new RuntimeException("User not found"));
+        org.setOwner(owner);
+
+        Organization savedOrg = organizationService.createOrganization(org);
+
+        // 2️⃣ Add creator as member (OWNER role)
+        organizationMemberService.addCreatorAsOwner(owner, savedOrg);
+        return ResponseEntity.ok(savedOrg);
     }
 
     @Operation(summary = "Get organization by ID")

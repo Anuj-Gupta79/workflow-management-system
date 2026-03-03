@@ -4,9 +4,11 @@ import java.util.List;
 
 import org.springframework.stereotype.Service;
 
+import com.workflow.backend.organization.entity.Organization;
 import com.workflow.backend.organization.entity.OrganizationMember;
 import com.workflow.backend.organization.repository.OrganizationMemberRepository;
 import com.workflow.backend.organization.utility.OrganizationRole;
+import com.workflow.backend.user.entity.User;
 
 import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
@@ -34,6 +36,15 @@ public class OrganizationMemberServiceImpl implements OrganizationMemberService 
             throw new RuntimeException("Cannot assign OWNER role directly");
         }
 
+        return memberRepository.save(member);
+    }
+
+    @Override
+    public OrganizationMember addCreatorAsOwner(User owner, Organization org) {
+        OrganizationMember member = new OrganizationMember();
+        member.setOrganization(org);
+        member.setUser(owner);
+        member.setRole(OrganizationRole.OWNER); // allow OWNER here only
         return memberRepository.save(member);
     }
 

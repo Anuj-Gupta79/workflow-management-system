@@ -2,12 +2,16 @@ package com.workflow.backend.organization.service;
 
 import java.util.List;
 
+import com.workflow.backend.organization.entity.Organization;
 import com.workflow.backend.organization.entity.OrganizationMember;
 import com.workflow.backend.organization.utility.OrganizationRole;
+import com.workflow.backend.user.entity.User;
 
 public interface OrganizationMemberService {
     // Add a member to an organization
     OrganizationMember addMember(OrganizationMember member);
+
+    OrganizationMember addCreatorAsOwner(User owner, Organization org);
 
     // Get all members of an organization
     List<OrganizationMember> getMembersByOrganization(Long organizationId);

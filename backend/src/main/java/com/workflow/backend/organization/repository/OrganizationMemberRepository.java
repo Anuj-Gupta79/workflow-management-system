@@ -23,4 +23,6 @@ public interface OrganizationMemberRepository extends JpaRepository<Organization
 
     // Optional: all non-deleted members
     List<OrganizationMember> findByOrganizationIdAndDeletedFalse(Long organizationId);
+    
+    long countByOrganizationId(Long organizationId);
 }

@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormBuilder, Validators } from '@angular/forms';
-import { ProfileService, Profile } from '../../services/profile.service';
+import { ProfileService, Profile } from '../services/profile.service';
 import { Observable, Subject, of } from 'rxjs';
 import { switchMap, startWith, catchError, shareReplay, map } from 'rxjs/operators';
 

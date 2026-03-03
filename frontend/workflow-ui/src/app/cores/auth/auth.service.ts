@@ -20,6 +20,9 @@ export class AuthService {
       tap((res) => {
         localStorage.setItem(this.TOKEN_KEY, res.token);
         localStorage.setItem(this.ROLE_KEY, res.role);
+        localStorage.setItem('userId', res.userId.toString());
+
+        console.log('User registered and logged in:', res.userId);
       }),
     );
   }
@@ -29,6 +32,8 @@ export class AuthService {
       tap((res) => {
         localStorage.setItem(this.TOKEN_KEY, res.token);
         localStorage.setItem(this.ROLE_KEY, res.role);
+        localStorage.setItem('userId', res.userId.toString());
+        console.log('User registered and logged in:', res.userId);
       }),
     );
   }

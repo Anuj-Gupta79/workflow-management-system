@@ -17,9 +17,9 @@ import { CreateTask } from './features/tasks/pages/create-task/create-task';
 
 // Guards
 import { AuthGuard } from './cores/auth/auth.guard';
-import { DashboardHome } from './features/dashboard/pages/dashboard-home/dashboard-home';
-import { ProfileComponent } from './features/dashboard/pages/profile/profile';
-import { Admin } from './features/dashboard/pages/admin/admin';
+import { DashboardHomeComponent } from './features/dashboard/pages/dashboard-home/dashboard-home';
+import { ProfileComponent } from './features/profile/pages/profile';
+import { Admin } from './features/admin/pages/admin';
 
 export const routes: Routes = [
   /* ---------------- PUBLIC (NO AUTH) ---------------- */
@@ -36,7 +36,7 @@ export const routes: Routes = [
     component: DashboardLayout,
     canActivate: [AuthGuard],
     children: [
-      { path: '', component: DashboardHome },
+      { path: '', component: DashboardHomeComponent },
       { path: 'profile', component: ProfileComponent },
       { path: 'admin', component: Admin },
       { path: 'tasks', component: TaskList },

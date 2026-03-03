@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { AdminService, AdminStats, UserResponse } from '../../services/admin.service';
+import { AdminService, AdminStats, UserResponse } from '.././services/admin.service';
 import { Observable, Subject, combineLatest, of } from 'rxjs';
 import { switchMap, startWith, catchError, shareReplay, map } from 'rxjs/operators';
 

@@ -1,13 +1,7 @@
-import {
-  Component,
-  EventEmitter,
-  Output,
-  HostListener,
-  ElementRef
-} from '@angular/core';
+import { Component, EventEmitter, Output, HostListener, ElementRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
-import { ProfileService, Profile } from '../../../features/dashboard/services/profile.service';
+import { ProfileService, Profile } from '../../../features/profile/services/profile.service';
 import { Observable, of } from 'rxjs';
 import { catchError, shareReplay } from 'rxjs/operators';
 
@@ -19,7 +13,6 @@ import { catchError, shareReplay } from 'rxjs/operators';
   styleUrls: ['./navbar.css'],
 })
 export class Navbar {
-
   @Output() toggleSidebar = new EventEmitter<void>();
   @Output() toggleMobile = new EventEmitter<void>();
 
@@ -36,11 +29,11 @@ export class Navbar {
   constructor(
     private router: Router,
     private profileService: ProfileService,
-    private elementRef: ElementRef
+    private elementRef: ElementRef,
   ) {
     this.profile$ = this.profileService.getProfile().pipe(
       catchError(() => of(null as any)),
-      shareReplay(1)
+      shareReplay(1),
     );
   }
 
@@ -109,5 +102,4 @@ export class Navbar {
   onEscapeKey() {
     this.closeDropdowns();
   }
-
 }

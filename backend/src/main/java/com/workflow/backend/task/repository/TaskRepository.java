@@ -1,5 +1,6 @@
 package com.workflow.backend.task.repository;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -20,4 +21,12 @@ public interface TaskRepository extends JpaRepository<Task, Long> {
     Optional<Task> findByIdAndOrganizationIdAndDeletedFalse(Long taskId, Long orgId);
 
     long countByOrganizationIdAndDeletedFalse(Long orgId);
+
+    long countByOrganizationIdAndStatusAndDeletedFalse(Long organizationId, TaskStatus status);
+
+    long countByOrganizationIdAndAssignedToIdAndDeletedFalse(Long organizationId, Long userId);
+
+    long countByOrganizationIdAndDueDateBeforeAndDeletedFalse(Long organizationId, LocalDateTime date);
+
+    List<Task> findTop5ByOrganizationIdAndDeletedFalseOrderByCreatedAtDesc(Long organizationId);
 }
