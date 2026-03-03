@@ -1,15 +1,17 @@
 /* ================= NAVBAR ================= */
 
 .navbar-custom {
-  height: 72px;
+  height: 70px;
   padding: 0 2rem;
+
   display: flex;
   align-items: center;
   justify-content: space-between;
 
   background: rgba(255, 255, 255, 0.85);
   backdrop-filter: blur(12px);
-  border-bottom: 1px solid rgba(99, 102, 241, 0.08);
+
+  border-bottom: 1px solid rgba(0, 0, 0, 0.05);
 
   position: sticky;
   top: 0;
@@ -21,42 +23,36 @@
 .nav-left {
   display: flex;
   align-items: center;
-  gap: 1.5rem;
+  gap: 18px;
 }
 
 .menu-toggle {
   display: none;
-  background: transparent;
   border: none;
-  font-size: 1.4rem;
+  background: transparent;
+
   cursor: pointer;
+
+  padding: 6px;
+  border-radius: 8px;
+
+  transition: background 0.2s ease;
+}
+
+.menu-toggle:hover {
+  background: rgba(99, 102, 241, 0.08);
 }
 
 .brand {
   display: flex;
   align-items: center;
-  gap: 0.8rem;
-}
-
-.logo-badge {
-  width: 40px;
-  height: 40px;
-  border-radius: 12px;
-
-  background: linear-gradient(135deg, #6d28d9, #2563eb);
-  color: #fff;
-  font-weight: 700;
-
-  display: flex;
-  align-items: center;
-  justify-content: center;
-
-  box-shadow: 0 8px 20px rgba(79, 70, 229, 0.35);
+  gap: 10px;
 }
 
 .brand-text {
   font-size: 1.2rem;
   font-weight: 700;
+
   color: #111827;
 }
 
@@ -65,16 +61,20 @@
 .nav-right {
   display: flex;
   align-items: center;
-  gap: 1.5rem;
+  gap: 20px;
 }
 
 /* ================= ICON BUTTON ================= */
 
 .icon-button {
   position: relative;
-  cursor: pointer;
+
   padding: 8px;
+
   border-radius: 10px;
+
+  cursor: pointer;
+
   transition: all 0.2s ease;
 }
 
@@ -87,30 +87,39 @@
   color: #374151;
 }
 
-/* Badge */
+/* ================= BADGE ================= */
+
 .badge {
   position: absolute;
+
   top: -4px;
   right: -4px;
 
   background: #ef4444;
+
   color: white;
-  font-size: 0.65rem;
+
+  font-size: 10px;
   font-weight: 600;
 
   padding: 2px 6px;
+
   border-radius: 50%;
 }
 
-/* ================= USER ================= */
+/* ================= USER INFO ================= */
 
 .user-info {
   display: flex;
   align-items: center;
-  gap: 0.8rem;
-  cursor: pointer;
+  gap: 10px;
+
   padding: 6px 10px;
+
   border-radius: 12px;
+
+  cursor: pointer;
+
   transition: background 0.2s ease;
 }
 
@@ -119,25 +128,42 @@
 }
 
 .user-name {
-  font-size: 0.9rem;
+  font-size: 14px;
   font-weight: 500;
+
   color: #374151;
 }
 
-.avatar {
-  width: 38px;
-  height: 38px;
-  border-radius: 50%;
+.arrow {
+  font-size: 18px;
+  color: #6b7280;
+}
 
-  background: linear-gradient(135deg, #6d28d9, #2563eb);
-  color: white;
+/* ================= AVATAR ================= */
+
+.avatar {
+  width: 36px;
+  height: 36px;
+
+  border-radius: 50%;
 
   display: flex;
   align-items: center;
   justify-content: center;
 
+  color: white;
   font-weight: 600;
-  box-shadow: 0 6px 16px rgba(79, 70, 229, 0.3);
+
+  background: linear-gradient(135deg, #6366f1, #2563eb);
+
+  box-shadow: 0 6px 16px rgba(79, 70, 229, 0.35);
+}
+
+.avatar.large {
+  width: 44px;
+  height: 44px;
+
+  font-size: 16px;
 }
 
 /* ================= DROPDOWN ================= */
@@ -152,14 +178,20 @@
   right: 0;
 
   width: 260px;
+
   background: white;
+
   border-radius: 14px;
 
   border: 1px solid rgba(0, 0, 0, 0.05);
-  box-shadow: 0 15px 40px rgba(0, 0, 0, 0.12);
+
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.15);
+
+  overflow: hidden;
 
   animation: fadeIn 0.18s ease;
-  z-index: 9999;
+
+  z-index: 1000;
 }
 
 @keyframes fadeIn {
@@ -167,33 +199,109 @@
     opacity: 0;
     transform: translateY(-6px);
   }
+
   to {
     opacity: 1;
     transform: translateY(0);
   }
 }
 
+/* ================= DROPDOWN HEADER ================= */
+
 .dropdown-header {
-  padding: 12px 16px;
-  font-weight: 600;
-  font-size: 0.85rem;
   display: flex;
   justify-content: space-between;
+
+  padding: 12px 16px;
+
+  font-size: 13px;
+  font-weight: 600;
+
   border-bottom: 1px solid #f3f4f6;
 }
 
 .dropdown-header button {
   border: none;
   background: none;
-  font-size: 0.75rem;
+
+  font-size: 12px;
+
   color: #6366f1;
+
   cursor: pointer;
 }
 
-.dropdown-item {
+/* ================= NOTIFICATIONS ================= */
+
+.notification-list {
+  max-height: 280px;
+  overflow-y: auto;
+}
+
+.notification-item {
+  display: flex;
+  align-items: center;
+
+  gap: 10px;
+
   padding: 12px 16px;
-  font-size: 0.85rem;
+
   cursor: pointer;
+
+  transition: background 0.15s ease;
+}
+
+.notification-item:hover {
+  background: #f9fafb;
+}
+
+.notif-icon {
+  font-size: 18px;
+  color: #6366f1;
+}
+
+.notif-text {
+  font-size: 13px;
+  color: #374151;
+}
+
+/* ================= PROFILE MENU ================= */
+
+.profile-header {
+  display: flex;
+  align-items: center;
+
+  gap: 10px;
+
+  padding: 14px 16px;
+}
+
+.profile-meta .name {
+  font-weight: 600;
+  font-size: 14px;
+
+  color: #111827;
+}
+
+.dropdown-divider {
+  height: 1px;
+  background: #f3f4f6;
+}
+
+/* ================= DROPDOWN ITEMS ================= */
+
+.dropdown-item {
+  display: flex;
+  align-items: center;
+
+  gap: 10px;
+
+  padding: 12px 16px;
+
+  font-size: 13px;
+
+  cursor: pointer;
+
   transition: background 0.15s ease;
 }
 
@@ -201,19 +309,26 @@
   background: #f9fafb;
 }
 
-.logout {
+.dropdown-item.logout {
   color: #ef4444;
-  font-weight: 500;
 }
 
+/* ================= EMPTY ================= */
+
 .empty {
-  padding: 16px;
   text-align: center;
-  font-size: 0.85rem;
+
+  padding: 25px 10px;
+
   color: #9ca3af;
 }
 
-/* ================= RESPONSIVE ================= */
+.empty .material-icons {
+  font-size: 30px;
+  margin-bottom: 6px;
+}
+
+/* ================= MOBILE ================= */
 
 @media (max-width: 768px) {
   .menu-toggle {

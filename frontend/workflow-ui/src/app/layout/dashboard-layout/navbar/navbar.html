@@ -1,8 +1,9 @@
 <nav class="navbar-custom">
-
   <!-- LEFT -->
   <div class="nav-left">
-    <button class="menu-toggle" (click)="onToggle()">☰</button>
+    <button class="menu-toggle" (click)="onToggle()">
+      <span class="material-icons">menu</span>
+    </button>
 
     <div class="brand">
       <div class="logo-badge">FS</div>
@@ -12,7 +13,6 @@
 
   <!-- RIGHT -->
   <div class="nav-right">
-
     <!-- Notifications -->
     <div class="dropdown-wrapper">
       <div class="icon-button" (click)="toggleNotifications()">
@@ -23,44 +23,72 @@
         </span>
       </div>
 
-      <div class="custom-dropdown" *ngIf="showNotifications">
+      <div class="custom-dropdown notifications" *ngIf="showNotifications">
         <div class="dropdown-header">
           <span>Notifications</span>
-          <button (click)="clearNotifications()">Clear All</button>
+
+          <button *ngIf="notifications.length > 0" (click)="clearNotifications()">Clear</button>
         </div>
 
-        <div *ngIf="notifications.length > 0; else emptyState">
+        <div class="notification-list" *ngIf="notifications.length > 0; else emptyState">
           <div
-            class="dropdown-item"
-            *ngFor="let n of notifications; trackBy: trackByNotificationId">
-            {{ n.message }}
+            class="notification-item"
+            *ngFor="let n of notifications; trackBy: trackByNotificationId"
+          >
+            <span class="material-icons notif-icon"> notifications </span>
+
+            <span class="notif-text">
+              {{ n.message }}
+            </span>
           </div>
         </div>
 
         <ng-template #emptyState>
-          <div class="empty">No notifications</div>
+          <div class="empty">
+            <span class="material-icons">notifications_off</span>
+            <p>No notifications</p>
+          </div>
         </ng-template>
       </div>
     </div>
 
-    <!-- Profile -->
+    <!-- PROFILE -->
     <div class="dropdown-wrapper" *ngIf="profile$ | async as profile">
       <div class="user-info" (click)="toggleProfileMenu()">
-        <span class="user-name">{{ profile?.name }}</span>
         <div class="avatar">
           {{ profile?.name?.charAt(0) || '?' }}
         </div>
+
+        <span class="user-name">
+          {{ profile?.name }}
+        </span>
+
+        <span class="material-icons arrow"> expand_more </span>
       </div>
 
-      <div class="custom-dropdown" *ngIf="showProfileMenu">
+      <div class="custom-dropdown profile-menu" *ngIf="showProfileMenu">
+        <div class="profile-header">
+          <div class="avatar large">
+            {{ profile?.name?.charAt(0) || '?' }}
+          </div>
+
+          <div class="profile-meta">
+            <div class="name">{{ profile?.name }}</div>
+          </div>
+        </div>
+
+        <div class="dropdown-divider"></div>
+
         <div class="dropdown-item" (click)="goToProfile()">
+          <span class="material-icons">person</span>
           My Profile
         </div>
+
         <div class="dropdown-item logout" (click)="logout()">
+          <span class="material-icons">logout</span>
           Logout
         </div>
       </div>
     </div>
-
   </div>
 </nav>
