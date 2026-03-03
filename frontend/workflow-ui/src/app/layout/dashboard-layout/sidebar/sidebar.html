@@ -1,33 +1,66 @@
-<!-- HEADER -->
-<div class="sidebar-header">
-  <div class="logo-badge">FS</div>
-  <span class="brand-name">FlowSync</span>
+<div class="sidebar">
+  <!-- HEADER -->
+  <div class="sidebar-header">
+    <div class="logo">FS</div>
+    <div class="brand">FlowSync</div>
+  </div>
+
+  <nav class="sidebar-menu">
+    <!-- MAIN -->
+    <div class="menu-section">MAIN</div>
+
+    <a
+      routerLink="/dashboard"
+      routerLinkActive="active"
+      [routerLinkActiveOptions]="{ exact: true }"
+      (click)="onLinkClick()"
+    >
+      <span class="material-icons">dashboard</span>
+      <span class="label">Dashboard</span>
+    </a>
+
+    <!-- WORK -->
+    <div class="menu-section">WORK</div>
+
+    <a routerLink="/dashboard/tasks" routerLinkActive="active" (click)="onLinkClick()">
+      <span class="material-icons">task</span>
+      <span class="label">Tasks</span>
+    </a>
+
+    <a routerLink="/dashboard/approvals" routerLinkActive="active" (click)="onLinkClick()">
+      <span class="material-icons">fact_check</span>
+      <span class="label">Approvals</span>
+    </a>
+
+    <a routerLink="/dashboard/workflows" routerLinkActive="active" (click)="onLinkClick()">
+      <span class="material-icons">account_tree</span>
+      <span class="label">Workflows</span>
+    </a>
+
+    <!-- ORGANIZATION -->
+    <div class="menu-section">ORGANIZATION</div>
+
+    <a routerLink="/dashboard/members" routerLinkActive="active" (click)="onLinkClick()">
+      <span class="material-icons">group</span>
+      <span class="label">Members</span>
+    </a>
+
+    <a routerLink="/dashboard/departments" routerLinkActive="active" (click)="onLinkClick()">
+      <span class="material-icons">apartment</span>
+      <span class="label">Departments</span>
+    </a>
+
+    <!-- ACCOUNT -->
+    <div class="menu-section">ACCOUNT</div>
+
+    <a routerLink="/dashboard/profile" routerLinkActive="active" (click)="onLinkClick()">
+      <span class="material-icons">person</span>
+      <span class="label">Profile</span>
+    </a>
+
+    <a routerLink="/dashboard/settings" routerLinkActive="active" (click)="onLinkClick()">
+      <span class="material-icons">settings</span>
+      <span class="label">Settings</span>
+    </a>
+  </nav>
 </div>
-
-<!-- MENU -->
-<nav class="sidebar-menu">
-  <a
-    routerLink="/dashboard"
-    routerLinkActive="active"
-    [routerLinkActiveOptions]="{ exact: true }"
-    (click)="onLinkClick()"
-  >
-    <span class="material-icons">dashboard</span>
-    <span class="label">Dashboard</span>
-  </a>
-
-  <a routerLink="/dashboard/tasks" routerLinkActive="active" (click)="onLinkClick()">
-    <span class="material-icons">task</span>
-    <span class="label">Tasks</span>
-  </a>
-
-  <a routerLink="/dashboard/profile" routerLinkActive="active" (click)="onLinkClick()">
-    <span class="material-icons">person</span>
-    <span class="label">Profile</span>
-  </a>
-
-  <a routerLink="/dashboard/admin" routerLinkActive="active" class="muted" (click)="onLinkClick()">
-    <span class="material-icons">settings</span>
-    <span class="label">Admin</span>
-  </a>
-</nav>
