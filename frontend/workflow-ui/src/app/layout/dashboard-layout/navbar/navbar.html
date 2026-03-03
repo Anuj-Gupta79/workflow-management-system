@@ -13,9 +13,9 @@
 
   <!-- RIGHT -->
   <div class="nav-right">
-    <!-- Notifications -->
+    <!-- NOTIFICATIONS -->
     <div class="dropdown-wrapper">
-      <div class="icon-button" (click)="toggleNotifications()">
+      <div class="icon-button" (click)="toggleNotifications($event)">
         <span class="material-icons">notifications</span>
 
         <span *ngIf="notifications.length > 0" class="badge">
@@ -23,11 +23,10 @@
         </span>
       </div>
 
-      <div class="custom-dropdown notifications" *ngIf="showNotifications">
+      <div class="custom-dropdown" *ngIf="showNotifications" (click)="$event.stopPropagation()">
         <div class="dropdown-header">
           <span>Notifications</span>
-
-          <button *ngIf="notifications.length > 0" (click)="clearNotifications()">Clear</button>
+          <button (click)="clearNotifications()">Clear All</button>
         </div>
 
         <div class="notification-list" *ngIf="notifications.length > 0; else emptyState">
@@ -35,18 +34,15 @@
             class="notification-item"
             *ngFor="let n of notifications; trackBy: trackByNotificationId"
           >
-            <span class="material-icons notif-icon"> notifications </span>
-
-            <span class="notif-text">
-              {{ n.message }}
-            </span>
+            <span class="material-icons notif-icon">notifications</span>
+            <span class="notif-text">{{ n.message }}</span>
           </div>
         </div>
 
         <ng-template #emptyState>
           <div class="empty">
             <span class="material-icons">notifications_off</span>
-            <p>No notifications</p>
+            <div>No notifications</div>
           </div>
         </ng-template>
       </div>
@@ -54,19 +50,17 @@
 
     <!-- PROFILE -->
     <div class="dropdown-wrapper" *ngIf="profile$ | async as profile">
-      <div class="user-info" (click)="toggleProfileMenu()">
+      <div class="user-info" (click)="toggleProfileMenu($event)">
+        <span class="user-name">{{ profile?.name }}</span>
+
         <div class="avatar">
           {{ profile?.name?.charAt(0) || '?' }}
         </div>
 
-        <span class="user-name">
-          {{ profile?.name }}
-        </span>
-
-        <span class="material-icons arrow"> expand_more </span>
+        <span class="material-icons arrow">expand_more</span>
       </div>
 
-      <div class="custom-dropdown profile-menu" *ngIf="showProfileMenu">
+      <div class="custom-dropdown" *ngIf="showProfileMenu" (click)="$event.stopPropagation()">
         <div class="profile-header">
           <div class="avatar large">
             {{ profile?.name?.charAt(0) || '?' }}
