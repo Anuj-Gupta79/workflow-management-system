@@ -1,29 +1,35 @@
+Perfect! Let’s focus first on **polishing your backend README**. I’ll take your draft and make it **more professional, clean, and resume/portfolio-ready**. I’ll also improve structure, headings, examples, and clarity without changing the technical content.
+
+Here’s the **updated polished backend README**:
+
+---
+
 # 🔐 Workflow Management System – Backend API
 
 > Production-ready, multi-tenant Workflow & Task Management REST API built using Spring Boot.
-
-This backend provides secure organization-based task management with role-based access control (RBAC), JWT authentication, and clean SaaS-grade architecture.
+> Secure, scalable, and SaaS-ready architecture with JWT authentication and role-based access control (RBAC).
 
 ---
 
 ## 📌 Overview
 
-The Workflow Backend is designed as a scalable multi-tenant system where:
+This backend is designed as a **scalable multi-tenant system**:
 
-- Users belong to one or more organizations
-- Organizations manage members with specific roles
-- Tasks are isolated per organization
-- Security is enforced at both platform and organization levels
-
-The system follows clean architecture and enterprise best practices.
+- Users belong to one or more organizations.
+- Organizations manage members with specific roles.
+- Tasks are isolated per organization.
+- Security is enforced at platform and organization levels.
+- Clean architecture following enterprise best practices.
 
 ---
 
 ## 🏗️ Architecture
 
-Layered Architecture:
+**Layered Architecture:**
 
+```
 Controller → Service → Repository → Database
+```
 
 ### Key Design Principles
 
@@ -31,7 +37,7 @@ Controller → Service → Repository → Database
 - Stateless JWT authentication
 - Role-Based Access Control (RBAC)
 - Soft delete strategy
-- Global exception handling
+- Centralized exception handling
 - Enum-driven domain modeling
 - Audit timestamps for traceability
 
@@ -39,17 +45,17 @@ Controller → Service → Repository → Database
 
 ## 🛠️ Tech Stack
 
-| Technology | Purpose |
-|------------|----------|
-| Java 17+ | Core language |
-| Spring Boot | Application framework |
-| Spring Security | Authentication & authorization |
-| JWT | Stateless authentication |
-| Spring Data JPA | ORM layer |
-| Hibernate | Persistence provider |
-| MySQL / PostgreSQL | Database |
-| Maven | Build tool |
-| Lombok | Boilerplate reduction |
+| Technology         | Purpose                        |
+| ------------------ | ------------------------------ |
+| Java 17+           | Core language                  |
+| Spring Boot        | Application framework          |
+| Spring Security    | Authentication & authorization |
+| JWT                | Stateless authentication       |
+| Spring Data JPA    | ORM layer                      |
+| Hibernate          | Persistence provider           |
+| MySQL / PostgreSQL | Database                       |
+| Maven              | Build tool                     |
+| Lombok             | Boilerplate reduction          |
 
 ---
 
@@ -60,10 +66,12 @@ Controller → Service → Repository → Database
 Represents a registered user.
 
 **Platform Roles:**
+
 - `MASTER_ADMIN`
 - `USER`
 
-Features:
+**Features:**
+
 - Unique email
 - Encrypted password
 - Soft delete support
@@ -75,32 +83,30 @@ Features:
 
 Represents a tenant workspace.
 
-- Owned by a User
-- Isolates members and tasks
-- Soft delete supported
-
-Each organization operates independently.
+- Owned by a user.
+- Isolates members and tasks.
+- Supports soft delete.
 
 ---
 
 ### 3️⃣ OrganizationMember
 
-Maps Users to Organizations.
+Maps users to organizations.
 
-Unique Constraint:
+**Unique Constraint:**
+
 ```
-
 (organization_id, user_id)
-
 ```
 
 **Organization Roles:**
+
 - `OWNER`
 - `ADMIN`
 - `MANAGER`
 - `EMPLOYEE`
 
-This enables fine-grained authorization within organizations.
+Enables fine-grained authorization within organizations.
 
 ---
 
@@ -108,7 +114,8 @@ This enables fine-grained authorization within organizations.
 
 Represents a work item scoped to an organization.
 
-Fields:
+**Fields:**
+
 - Title
 - Description
 - Created By
@@ -120,7 +127,8 @@ Fields:
 - Soft delete flag
 - Audit timestamps
 
-Enums:
+**Enums:**
+
 - `TaskStatus`
 - `TaskPriority`
 
@@ -131,31 +139,30 @@ Enums:
 ### Authentication
 
 - JWT-based stateless authentication
-- Custom JWT filter
 - Password encryption using BCrypt
+- Custom JWT filter
 
 **Authorization Header:**
+
 ```
-
 Authorization: Bearer <token>
-
-````
-
----
+```
 
 ### Authorization Levels
 
-#### Platform Level
+**Platform Level**
+
 - MASTER_ADMIN
 - USER
 
-#### Organization Level
+**Organization Level**
+
 - OWNER
 - ADMIN
 - MANAGER
 - EMPLOYEE
 
-Access is enforced via Spring Security configuration and service-level validation.
+Enforced via Spring Security and service-level validation.
 
 ---
 
@@ -163,7 +170,7 @@ Access is enforced via Spring Security configuration and service-level validatio
 
 Centralized using `@ControllerAdvice`.
 
-### Standard Response Structure
+**Standard Response Structure:**
 
 ```json
 {
@@ -172,9 +179,9 @@ Centralized using `@ControllerAdvice`.
   "error": "Not Found",
   "message": "Organization not found"
 }
-````
+```
 
-### HTTP Status Codes
+**HTTP Status Codes:**
 
 | Code | Meaning                            |
 | ---- | ---------------------------------- |
@@ -188,39 +195,34 @@ Centralized using `@ControllerAdvice`.
 
 ## 🗄️ Database Design
 
-### Key Concepts
+**Key Concepts:**
 
-* Soft delete instead of hard delete
-* Enum-based role modeling
-* Multi-tenant isolation via `organization_id`
-* Unique constraints for integrity
-* Audit fields (`createdAt`, `updatedAt`)
+- Soft delete instead of hard delete
+- Enum-based role modeling
+- Multi-tenant isolation via `organization_id`
+- Unique constraints for data integrity
+- Audit fields (`createdAt`, `updatedAt`)
 
 ---
 
 ## 🌱 Development Seeder
 
-The application includes a `CommandLineRunner` that seeds development data:
+Seeds initial development data:
 
-* Master Admin
-* Sample Users
-* Organization
-* Organization Members
-* Sample Tasks
+- Master Admin
+- Sample Users
+- Sample Organization
+- Organization Members
+- Sample Tasks
 
-Seeder Class:
-
-```
-DataInitializer
-```
-
+**Seeder Class:** `DataInitializer`
 Runs automatically when the database is empty.
 
 ---
 
 ## 📬 API Modules
 
-The backend exposes REST endpoints for:
+REST endpoints:
 
 ```
 /auth
@@ -231,7 +233,7 @@ The backend exposes REST endpoints for:
 /password-reset
 ```
 
-All secured endpoints require a valid JWT.
+**All secured endpoints require a valid JWT.**
 
 ---
 
@@ -239,38 +241,26 @@ All secured endpoints require a valid JWT.
 
 ### 1️⃣ Clone Repository
 
-```
+```bash
 git clone <repository-url>
 cd backend
 ```
 
 ### 2️⃣ Configure Database
 
-Update:
+Update `application.yml`:
 
-```
-application.yml
-```
-
-Configure:
-
-* Database URL
-* Username
-* Password
-
----
+- Database URL
+- Username
+- Password
 
 ### 3️⃣ Run Application
 
-```
+```bash
 mvn spring-boot:run
 ```
 
-Server runs at:
-
-```
-http://localhost:8080
-```
+Server runs at: `http://localhost:8080`
 
 ---
 
@@ -278,7 +268,7 @@ http://localhost:8080
 
 ### Login Request
 
-```json
+```http
 POST /auth/login
 {
   "email": "owner@workflow.com",
@@ -294,56 +284,54 @@ POST /auth/login
 }
 ```
 
-Use token in subsequent requests.
+Use this token in subsequent requests.
 
 ---
 
 ## 🧩 Production-Ready Features
 
-* Multi-tenant architecture
-* Role hierarchy separation
-* Secure password handling
-* Centralized exception handling
-* Soft delete implementation
-* Clean entity relationships
-* Consistent API responses
-* Scalable domain modeling
+- Multi-tenant architecture
+- Role hierarchy separation
+- Secure password handling
+- Centralized exception handling
+- Soft delete implementation
+- Clean entity relationships
+- Consistent API responses
+- Scalable domain modeling
 
 ---
 
 ## 🚀 Planned Improvements
 
-* Refresh token mechanism
-* Email-based organization invitations
-* Swagger/OpenAPI documentation
-* Pagination & sorting
-* Advanced filtering
-* Audit logging
-* Redis caching
-* Docker support
+- Refresh token mechanism
+- Email-based organization invitations
+- Swagger/OpenAPI documentation
+- Pagination & sorting
+- Advanced filtering
+- Audit logging
+- Redis caching
+- Docker support
 
 ---
 
 ## 🧪 Testing Strategy (Recommended)
 
-* Unit tests (Service layer)
-* Integration tests (Controller + DB)
-* Security tests (Authorization checks)
+- Unit tests (Service layer)
+- Integration tests (Controller + DB)
+- Security tests (Authorization checks)
 
 ---
 
 ## 📎 Deployment Ready
 
-This backend is designed to be:
-
-* Docker-compatible
-* Cloud deployable (AWS, Azure, GCP)
-* CI/CD ready
+- Docker-compatible
+- Cloud deployable (AWS, Azure, GCP)
+- CI/CD ready
 
 ---
 
 ## 👨‍💻 Author
 
-Built with scalable SaaS backend architecture principles and production-readiness in mind.
+Built with **SaaS-grade architecture principles** and production-ready backend standards.
 
-```
+---

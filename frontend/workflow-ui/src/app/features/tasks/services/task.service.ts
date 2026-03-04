@@ -6,12 +6,12 @@ import { HttpParams } from '@angular/common/http';
 
 @Injectable({ providedIn: 'root' })
 export class TaskService {
-  private baseUrl = 'http://localhost:8080/tasks';
+  private baseUrl = 'http://localhost:8080/organizations';
 
   constructor(private http: HttpClient) {}
 
-  getAllTasks(): Observable<Task[]> {
-    return this.http.get<Task[]>(this.baseUrl);
+  getAllTasks(orgId: number): Observable<Task[]> {
+    return this.http.get<Task[]>(`${this.baseUrl}/${orgId}/tasks`);
   }
 
   getTasksByStatus(status: TaskStatus): Observable<Task[]> {

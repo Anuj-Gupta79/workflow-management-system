@@ -4,6 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { BehaviorSubject, finalize } from 'rxjs';
 import { DashboardService } from './../../services/dashboard.service';
 import { CreateWorkspaceComponent } from '../create-workspace/create-workspace.component';
+import { CurrentOrgService } from '../../../../layout/dashboard-layout/services/cur-org.service';
 
 @Component({
   selector: 'app-dashboard-home',
@@ -31,7 +32,10 @@ export class DashboardHomeComponent implements OnInit {
 
   activities$ = new BehaviorSubject<any[]>([]);
 
-  constructor(private dashboardService: DashboardService) {}
+  constructor(
+    private dashboardService: DashboardService,
+    private currentOrgService: CurrentOrgService,
+  ) {}
 
   ngOnInit(): void {
     console.log('DashboardHomeComponent initialized');
