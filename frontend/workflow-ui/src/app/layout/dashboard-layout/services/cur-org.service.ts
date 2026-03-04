@@ -1,20 +1,30 @@
-// current-org.service.ts
 import { Injectable } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
+import { filter } from 'rxjs/operators';
+
+export interface ActiveOrg {
+  id: number;
+  name: string;
+  role: string;
+}
 
 @Injectable({ providedIn: 'root' })
 export class CurrentOrgService {
-  private currentOrgId$ = new BehaviorSubject<number | null>(null);
+  private activeOrg$ = new BehaviorSubject<ActiveOrg | null>(null);
 
-  setOrg(orgId: number) {
-    this.currentOrgId$.next(orgId);
+  // Use this in components that need to react to org switches
+  org$ = this.activeOrg$.asObservable().pipe(filter((org): org is ActiveOrg => org !== null));
+
+  setOrg(org: ActiveOrg) {
+    this.activeOrg$.next(org);
   }
 
-  getOrg() {
-    return this.currentOrgId$.asObservable();
+  // Use this for one-off reads (e.g. inside updateStatus)
+  getCurrent(): ActiveOrg | null {
+    return this.activeOrg$.value;
   }
 
-  getCurrent() {
-    return this.currentOrgId$.value;
+  clear() {
+    this.activeOrg$.next(null);
   }
 }

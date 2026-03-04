@@ -1,55 +1,55 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { RouterModule } from '@angular/router';
+import { Subject, Observable, of, merge, EMPTY } from 'rxjs';
+import { startWith, switchMap, catchError, shareReplay, mapTo, takeUntil } from 'rxjs/operators';
 import { Task, TaskStatus } from '../../models/task.model';
 import { TaskService } from '../../services/task.service';
-import { Subject, Observable, of, merge } from 'rxjs';
-import { RouterModule } from '@angular/router';
-import { startWith, switchMap, catchError, shareReplay, mapTo } from 'rxjs/operators';
+import { CurrentOrgService } from '../../../../layout/dashboard-layout/services/cur-org.service';
 
 @Component({
   selector: 'app-task-list',
+  standalone: true,
   imports: [CommonModule, RouterModule],
   templateUrl: './task-list.html',
   styleUrls: ['./task-list.css'],
-  standalone: true,
 })
-export class TaskList implements OnInit {
-  // RxJS-driven state
+export class TaskList implements OnInit, OnDestroy {
+  private destroy$ = new Subject<void>();
   private reload$ = new Subject<void>();
-  tasks$: Observable<Task[]>;
-  loading$: Observable<boolean>;
+
+  tasks$: Observable<Task[]> = of([]);
+  loading$: Observable<boolean> = of(false);
   openTaskId: number | null = null;
   updatingTaskId: number | null = null;
 
-  constructor(private taskService: TaskService) {
-    this.tasks$ = this.reload$.pipe(
-      startWith<void>(undefined),
-      switchMap(() => this.taskService.getAllTasks().pipe(catchError(() => of([])))),
-      shareReplay({ bufferSize: 1, refCount: true }),
-    );
-
-    this.loading$ = merge(this.reload$.pipe(mapTo(true)), this.tasks$.pipe(mapTo(false))).pipe(
-      startWith(true),
-    );
-  }
+  constructor(
+    private taskService: TaskService,
+    private currentOrgService: CurrentOrgService,
+  ) {}
 
   ngOnInit(): void {
-    this.reload();
+    // ✅ Whenever active org changes, automatically reload tasks for that org
+    this.currentOrgService.org$.pipe(takeUntil(this.destroy$)).subscribe((org) => {
+      this.tasks$ = this.reload$.pipe(
+        startWith<void>(undefined),
+        switchMap(() => this.taskService.getAllTasks(org.id).pipe(catchError(() => of([])))),
+        shareReplay({ bufferSize: 1, refCount: true }),
+      );
+
+      this.loading$ = merge(this.reload$.pipe(mapTo(true)), this.tasks$.pipe(mapTo(false))).pipe(
+        startWith(true),
+      );
+    });
   }
 
-  trackById(index: number, task: Task) {
-    return task?.id ?? index;
+  ngOnDestroy(): void {
+    this.destroy$.next();
+    this.destroy$.complete();
   }
 
-  // trigger reload
   reload() {
     this.reload$.next();
-  }
-
-  loadByStatus(status: TaskStatus) {
-    // For filtering you'd implement a separate subject and switchMap to getTasksByStatus
-    // Here we just reload the full list as a placeholder
-    this.reload();
   }
 
   toggleStatusMenu(taskId: number) {
@@ -59,9 +59,11 @@ export class TaskList implements OnInit {
   updateStatus(task: Task, newStatus: TaskStatus) {
     if (task.status === newStatus) return;
 
-    this.updatingTaskId = task.id;
+    const orgId = this.currentOrgService.getCurrent()?.id; // ✅ snapshot read
+    if (!orgId) return;
 
-    this.taskService.updateTaskStatus(task.id, newStatus).subscribe({
+    this.updatingTaskId = task.id;
+    this.taskService.updateTaskStatus(orgId, task.id, newStatus).subscribe({
       next: () => {
         this.updatingTaskId = null;
         this.openTaskId = null;
@@ -72,6 +74,10 @@ export class TaskList implements OnInit {
         alert('Failed to update status');
       },
     });
+  }
+
+  trackById(index: number, task: Task) {
+    return task?.id ?? index;
   }
 
   getBadgeClass(status: TaskStatus): string {
