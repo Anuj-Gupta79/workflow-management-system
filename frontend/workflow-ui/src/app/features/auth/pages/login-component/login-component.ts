@@ -50,7 +50,7 @@ export class LoginComponent {
       )
       .subscribe({
         next: () => {
-          this.router.navigate(['/dashboard']);
+          this.router.navigate(['/org-select']);
         },
         error: (err) => {
           if (err.status === 401) {

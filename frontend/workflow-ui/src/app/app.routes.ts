@@ -17,6 +17,11 @@ import { CreateTask } from './features/tasks/pages/create-task/create-task';
 
 // Guards
 import { AuthGuard } from './cores/auth/auth.guard';
+import { OrgGuard } from './cores/auth/org.guard';
+
+// Organization selection
+import { OrgSelectComponent } from './features/organization/pages/org-select/org-select';
+
 import { DashboardHomeComponent } from './features/dashboard/pages/dashboard-home/dashboard-home';
 import { ProfileComponent } from './features/profile/pages/profile';
 import { Admin } from './features/admin/pages/admin';
@@ -30,11 +35,18 @@ export const routes: Routes = [
   { path: 'forgot-password/success', component: ForgotPasswordSuccessComponent },
   { path: 'reset-password', component: ResetPasswordComponent },
 
+  /* ---------------- ORG SELECT (AUTH REQUIRED, no org needed) ---------------- */
+  {
+    path: 'org-select',
+    component: OrgSelectComponent,
+    canActivate: [AuthGuard], // must be logged in
+  },
+
   /* ---------------- DASHBOARD (AUTH REQUIRED) ---------------- */
   {
     path: 'dashboard',
     component: DashboardLayout,
-    canActivate: [AuthGuard],
+    canActivate: [AuthGuard, OrgGuard],
     children: [
       { path: '', component: DashboardHomeComponent },
       { path: 'profile', component: ProfileComponent },

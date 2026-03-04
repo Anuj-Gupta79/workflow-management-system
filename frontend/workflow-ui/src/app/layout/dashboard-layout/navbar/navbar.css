@@ -339,3 +339,140 @@
     display: none;
   }
 }
+
+/* ===== ADD THESE TO YOUR EXISTING navbar.css ===== */
+
+/* Org Switcher Button */
+.org-switcher-btn {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 12px;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: background 0.2s;
+  border: 1px solid rgba(99, 102, 241, 0.15);
+  background: rgba(99, 102, 241, 0.04);
+}
+
+.org-switcher-btn:hover {
+  background: rgba(99, 102, 241, 0.08);
+  border-color: rgba(99, 102, 241, 0.3);
+}
+
+.org-avatar {
+  width: 28px;
+  height: 28px;
+  min-width: 28px;
+  border-radius: 7px;
+  background: linear-gradient(135deg, #6366f1, #4f46e5);
+  color: white;
+  font-size: 0.75rem;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.org-info {
+  display: flex;
+  flex-direction: column;
+  line-height: 1.2;
+}
+
+.org-name {
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: #1e293b;
+  max-width: 120px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.org-role {
+  font-size: 0.7rem;
+  color: #94a3b8;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.arrow.rotated {
+  transform: rotate(180deg);
+}
+
+/* Org Dropdown */
+.org-dropdown {
+  min-width: 240px;
+}
+
+.org-option {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 16px;
+  cursor: pointer;
+  transition: background 0.15s;
+  border-radius: 8px;
+  margin: 2px 4px;
+}
+
+.org-option:hover {
+  background: #f1f5f9;
+}
+
+.org-option.active {
+  background: #eef2ff;
+}
+
+.org-option-avatar {
+  width: 32px;
+  height: 32px;
+  min-width: 32px;
+  border-radius: 8px;
+  background: linear-gradient(135deg, #6366f1, #4f46e5);
+  color: white;
+  font-size: 0.8rem;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.org-option-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.org-option-name {
+  display: block;
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: #0f172a;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.org-option-role {
+  display: block;
+  font-size: 0.75rem;
+  color: #94a3b8;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+}
+
+.org-option .check {
+  font-size: 16px;
+  color: #6366f1;
+}
+
+/* Hide org name on small screens, keep avatar */
+@media (max-width: 640px) {
+  .org-info {
+    display: none;
+  }
+  .org-switcher-btn {
+    padding: 6px 8px;
+  }
+}

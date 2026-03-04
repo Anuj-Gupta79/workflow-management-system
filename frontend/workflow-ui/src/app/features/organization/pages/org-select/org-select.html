@@ -1,0 +1,144 @@
+<!-- ===== MINIMAL NAVBAR ===== -->
+<nav class="os-navbar">
+  <div class="os-brand">
+    <div class="os-logo">FS</div>
+    <span>FlowSync</span>
+  </div>
+  <button class="os-logout" (click)="logout()">
+    <span class="material-icons">logout</span>
+    Logout
+  </button>
+</nav>
+
+<!-- ===== MAIN ===== -->
+<div class="os-page">
+  <!-- Loading -->
+  <div *ngIf="isLoading$ | async" class="os-loading">
+    <div class="os-spinner"></div>
+    <p>Loading your workspaces...</p>
+  </div>
+
+  <ng-container *ngIf="!(isLoading$ | async)">
+    <!-- ===== ONBOARDING (no orgs) ===== -->
+    <div *ngIf="(orgs$ | async)?.length === 0 && !showCreate" class="os-onboarding">
+      <div class="os-onboarding-header">
+        <div class="os-welcome-badge">Welcome to FlowSync 👋</div>
+        <h1 class="os-onboarding-title">Your workspace awaits</h1>
+        <p class="os-onboarding-sub">
+          You're not part of any workspace yet. Create one to get started — it only takes a second.
+        </p>
+      </div>
+
+      <!-- Feature grid -->
+      <div class="os-features">
+        <div class="os-feature-card">
+          <div class="os-feature-icon">📋</div>
+          <h4>Task Management</h4>
+          <p>Create, assign, and track tasks with status workflows — from Pending to Approved.</p>
+        </div>
+        <div class="os-feature-card">
+          <div class="os-feature-icon">👥</div>
+          <h4>Team Roles</h4>
+          <p>Invite members with granular roles — Owner, Admin, Manager, or Employee.</p>
+        </div>
+        <div class="os-feature-card">
+          <div class="os-feature-icon">✅</div>
+          <h4>Approval Workflows</h4>
+          <p>Route tasks through structured approval chains with full audit trail.</p>
+        </div>
+        <div class="os-feature-card">
+          <div class="os-feature-icon">📊</div>
+          <h4>Live Dashboard</h4>
+          <p>See task stats, overdue alerts, and team activity at a glance.</p>
+        </div>
+        <div class="os-feature-card">
+          <div class="os-feature-icon">🔒</div>
+          <h4>Secure & Isolated</h4>
+          <p>Each workspace is fully isolated. Your data stays yours.</p>
+        </div>
+        <div class="os-feature-card">
+          <div class="os-feature-icon">🚀</div>
+          <h4>Multi-Workspace</h4>
+          <p>Join or create multiple workspaces and switch between them instantly.</p>
+        </div>
+      </div>
+
+      <button class="os-btn-primary" (click)="showCreate = true">
+        + Create your first workspace
+      </button>
+    </div>
+
+    <!-- ===== ORG LIST (has orgs) ===== -->
+    <div *ngIf="(orgs$ | async)!.length > 0" class="os-picker">
+      <div class="os-picker-header">
+        <h1 class="os-picker-title">Your Workspaces</h1>
+        <p class="os-picker-sub">Select a workspace to continue</p>
+      </div>
+
+      <div class="os-org-grid">
+        <div class="os-org-card" *ngFor="let org of orgs$ | async" (click)="enterOrg(org)">
+          <div class="os-org-avatar">
+            {{ org.organization.name?.charAt(0)?.toUpperCase() }}
+          </div>
+
+          <div class="os-org-info">
+            <h3 class="os-org-name">{{ org.organization.name }}</h3>
+
+            <div class="os-org-meta">
+              <span class="os-role-badge" [ngClass]="getRoleColor(org.role)">
+                {{ getRoleIcon(org.role) }} {{ org.role }}
+              </span>
+
+              <span class="os-org-detail" *ngIf="org.organization.memberCount">
+                <span class="material-icons">group</span>
+                {{ org.organization.memberCount }} members
+              </span>
+
+              <span class="os-org-detail" *ngIf="org.joinedAt">
+                <span class="material-icons">calendar_today</span>
+                Joined {{ org.joinedAt | date: 'MMM yyyy' }}
+              </span>
+            </div>
+          </div>
+
+          <span class="material-icons os-org-arrow">arrow_forward_ios</span>
+        </div>
+      </div>
+
+      <!-- Create additional workspace -->
+      <div class="os-create-more" *ngIf="!showCreate">
+        <button class="os-btn-secondary" (click)="showCreate = true">
+          + Create another workspace
+        </button>
+      </div>
+    </div>
+
+    <!-- ===== CREATE WORKSPACE FORM ===== -->
+    <div *ngIf="showCreate" class="os-create-panel">
+      <div class="os-create-card">
+        <button class="os-back" (click)="showCreate = false">
+          <span class="material-icons">arrow_back</span> Back
+        </button>
+
+        <div class="os-create-icon">🏢</div>
+        <h2>Create a Workspace</h2>
+        <p>Give your workspace a name. You can always rename it later.</p>
+
+        <div class="os-form-group">
+          <input
+            type="text"
+            class="os-input"
+            placeholder="e.g. Acme Corp, My Team..."
+            [(ngModel)]="workspaceName"
+            (keyup.enter)="createWorkspace()"
+          />
+          <div class="os-error" *ngIf="createError$ | async as err">{{ err }}</div>
+        </div>
+
+        <button class="os-btn-primary" (click)="createWorkspace()" [disabled]="isCreating$ | async">
+          {{ (isCreating$ | async) ? 'Creating...' : 'Create Workspace' }}
+        </button>
+      </div>
+    </div>
+  </ng-container>
+</div>

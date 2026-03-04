@@ -50,7 +50,7 @@ export class CreateTask {
     };
 
     this.taskService.createTask(orgId, payload).subscribe({
-      next: () => this.router.navigate(['/dashboard/tasks']), // 👈 fixed route too
+      next: () => this.router.navigate(['/dashboard/tasks']),
       error: () => {
         this.submitting = false;
         alert('Failed to create task');

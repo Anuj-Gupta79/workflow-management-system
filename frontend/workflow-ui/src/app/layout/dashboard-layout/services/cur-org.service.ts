@@ -10,21 +10,23 @@ export interface ActiveOrg {
 
 @Injectable({ providedIn: 'root' })
 export class CurrentOrgService {
-  private activeOrg$ = new BehaviorSubject<ActiveOrg | null>(null);
+  private _activeOrg$ = new BehaviorSubject<ActiveOrg | null>(null);
 
-  // Use this in components that need to react to org switches
-  org$ = this.activeOrg$.asObservable().pipe(filter((org): org is ActiveOrg => org !== null));
+  // Full observable including null (for navbar to show/hide org switcher)
+  activeOrg$ = this._activeOrg$.asObservable();
+
+  // Filtered — only emits when org is set (use in TaskList, Members, etc.)
+  org$ = this._activeOrg$.asObservable().pipe(filter((org): org is ActiveOrg => org !== null));
 
   setOrg(org: ActiveOrg) {
-    this.activeOrg$.next(org);
+    this._activeOrg$.next(org);
   }
 
-  // Use this for one-off reads (e.g. inside updateStatus)
   getCurrent(): ActiveOrg | null {
-    return this.activeOrg$.value;
+    return this._activeOrg$.value;
   }
 
   clear() {
-    this.activeOrg$.next(null);
+    this._activeOrg$.next(null);
   }
 }
