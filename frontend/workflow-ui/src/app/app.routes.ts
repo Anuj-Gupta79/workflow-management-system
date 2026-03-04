@@ -18,9 +18,11 @@ import { CreateTask } from './features/tasks/pages/create-task/create-task';
 // Guards
 import { AuthGuard } from './cores/auth/auth.guard';
 import { OrgGuard } from './cores/auth/org.guard';
+import { OnboardingGuard } from './cores/auth/onboarding.guard';
 
 // Organization selection
 import { OrgSelectComponent } from './features/organization/pages/org-select/org-select';
+import { OnboardingComponent } from './features/organization/pages/onboarding/onboarding';
 
 import { DashboardHomeComponent } from './features/dashboard/pages/dashboard-home/dashboard-home';
 import { ProfileComponent } from './features/profile/pages/profile';
@@ -35,18 +37,25 @@ export const routes: Routes = [
   { path: 'forgot-password/success', component: ForgotPasswordSuccessComponent },
   { path: 'reset-password', component: ResetPasswordComponent },
 
+  /* ---- ONBOARDING (auth required, shown once) ---- */
+  {
+    path: 'onboarding',
+    component: OnboardingComponent,
+    canActivate: [AuthGuard],
+  },
+
   /* ---------------- ORG SELECT (AUTH REQUIRED, no org needed) ---------------- */
   {
     path: 'org-select',
     component: OrgSelectComponent,
-    canActivate: [AuthGuard], // must be logged in
+    canActivate: [AuthGuard, OnboardingGuard], // must be logged in
   },
 
   /* ---------------- DASHBOARD (AUTH REQUIRED) ---------------- */
   {
     path: 'dashboard',
     component: DashboardLayout,
-    canActivate: [AuthGuard, OrgGuard],
+    canActivate: [AuthGuard, OrgGuard, OnboardingGuard],
     children: [
       { path: '', component: DashboardHomeComponent },
       { path: 'profile', component: ProfileComponent },

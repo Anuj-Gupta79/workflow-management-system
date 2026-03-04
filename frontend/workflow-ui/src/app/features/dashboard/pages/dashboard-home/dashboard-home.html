@@ -1,66 +1,198 @@
 <div class="dashboard-home">
-  <!-- CREATE WORKSPACE -->
-  <app-create-workspace
-    *ngIf="showCreateWorkspace$ | async"
+  <!-- Create Workspace Modal -->
+  <app-create-workspace-modal
+    *ngIf="showCreateModal"
     (workspaceCreated)="onWorkspaceCreated()"
-  ></app-create-workspace>
+    (closed)="showCreateModal = false"
+  ></app-create-workspace-modal>
 
-  <!-- DASHBOARD -->
-  <div *ngIf="!(showCreateWorkspace$ | async)">
-    <!-- Header -->
-    <div class="dashboard-header-section">
-      <div class="dashboard-header">
-        <div class="header-info">
-          <h2 class="page-title">{{ currentOrgName$ | async }}</h2>
-          <p class="page-subtitle">Role: {{ currentUserRole$ | async }}</p>
+  <!-- Loading -->
+  <div *ngIf="isLoading$ | async" class="db-loading">
+    <div class="db-spinner"></div>
+  </div>
+
+  <ng-container *ngIf="!(isLoading$ | async) && (activeOrg$ | async) as org">
+    <!-- ===== HEADER ===== -->
+    <div class="dashboard-header">
+      <div class="header-info">
+        <p class="db-greeting">
+          {{ greeting$ | async }}, <strong>{{ userName$ | async }}</strong> 👋
+        </p>
+        <h2 class="page-title">{{ org.name }}</h2>
+        <p class="page-subtitle">
+          <span class="role-chip">{{ org.role }}</span>
+        </p>
+      </div>
+
+      <div class="header-actions">
+        <button class="btn-secondary" (click)="showCreateModal = true">+ New Workspace</button>
+        <button class="btn-primary" (click)="goToCreateTask()">+ Create Task</button>
+      </div>
+    </div>
+
+    <!-- ===== STATS ===== -->
+    <div class="stats-grid">
+      <div class="stat-card" (click)="goToTasks()">
+        <div class="stat-icon">📋</div>
+        <div class="stat-content">
+          <h3>{{ (stats$ | async)?.totalTasks ?? 0 }}</h3>
+          <p>Total Tasks</p>
         </div>
-        <div class="header-actions">
-          <button class="btn-primary">+ Create Task</button>
-          <button class="btn-secondary">+ Create Organization</button>
+      </div>
+
+      <div class="stat-card" (click)="goToTasks()">
+        <div class="stat-icon">👤</div>
+        <div class="stat-content">
+          <h3>{{ (stats$ | async)?.myTasks ?? 0 }}</h3>
+          <p>My Tasks</p>
+        </div>
+      </div>
+
+      <div class="stat-card success-card" (click)="goToTasks()">
+        <div class="stat-icon success">✅</div>
+        <div class="stat-content">
+          <h3>{{ (stats$ | async)?.completedTasks ?? 0 }}</h3>
+          <p>Completed</p>
+        </div>
+      </div>
+
+      <div class="stat-card danger-card" (click)="goToTasks()">
+        <div class="stat-icon danger">⚠️</div>
+        <div class="stat-content">
+          <h3>{{ (stats$ | async)?.overdueTasks ?? 0 }}</h3>
+          <p>Overdue</p>
+        </div>
+      </div>
+
+      <div class="stat-card" (click)="goToMembers()">
+        <div class="stat-icon members">👥</div>
+        <div class="stat-content">
+          <h3>{{ (members$ | async)?.length ?? 0 }}</h3>
+          <p>Members</p>
         </div>
       </div>
     </div>
 
-    <!-- Stats Cards -->
-    <div class="dashboard-stats-section">
-      <div class="stats-grid">
-        <div class="stat-card">
-          <div class="stat-icon success">📋</div>
-          <div class="stat-content">
-            <h3>{{ (stats$ | async)?.totalTasks }}</h3>
-            <p>Total Tasks</p>
+    <!-- ===== TASK STATUS BREAKDOWN ===== -->
+    <div class="db-section-row">
+      <!-- Status Breakdown -->
+      <div class="activity-card status-breakdown">
+        <div class="section-header">
+          <h4>Task Status Breakdown</h4>
+          <button class="link-btn" (click)="goToTasks()">View all →</button>
+        </div>
+
+        <div class="status-bars">
+          <ng-container *ngIf="stats$ | async as stats">
+            <div class="status-bar-item">
+              <div class="status-bar-label"><span class="status-dot pending"></span> Pending</div>
+              <div class="status-bar-track">
+                <div
+                  class="status-bar-fill pending"
+                  [style.width.%]="
+                    stats.totalTasks ? ((stats.myTasks || 0) / stats.totalTasks) * 100 : 0
+                  "
+                ></div>
+              </div>
+              <span class="status-bar-count">{{ stats?.myTasks ?? 0 }}</span>
+            </div>
+
+            <div class="status-bar-item">
+              <div class="status-bar-label">
+                <span class="status-dot completed"></span> Completed
+              </div>
+              <div class="status-bar-track">
+                <div
+                  class="status-bar-fill completed"
+                  [style.width.%]="
+                    stats.totalTasks ? ((stats.completedTasks || 0) / stats.totalTasks) * 100 : 0
+                  "
+                ></div>
+              </div>
+              <span class="status-bar-count">{{ stats?.completedTasks ?? 0 }}</span>
+            </div>
+
+            <div class="status-bar-item">
+              <div class="status-bar-label"><span class="status-dot overdue"></span> Overdue</div>
+              <div class="status-bar-track">
+                <div
+                  class="status-bar-fill overdue"
+                  [style.width.%]="
+                    stats.totalTasks ? ((stats.overdueTasks || 0) / stats.totalTasks) * 100 : 0
+                  "
+                ></div>
+              </div>
+              <span class="status-bar-count">{{ stats?.overdueTasks ?? 0 }}</span>
+            </div>
+          </ng-container>
+        </div>
+      </div>
+
+      <!-- Members Preview -->
+      <div class="activity-card members-preview">
+        <div class="section-header">
+          <h4>Team Members</h4>
+          <button class="link-btn" (click)="goToMembers()">View all →</button>
+        </div>
+
+        <div *ngIf="!(members$ | async)?.length" class="no-activity">No members yet.</div>
+
+        <div class="members-list">
+          <div class="member-item" *ngFor="let m of (members$ | async)?.slice(0, 5)">
+            <div class="member-avatar">
+              {{ getRoleInitials(m.user?.name || m.userName || '') }}
+            </div>
+            <div class="member-info">
+              <span class="member-name">{{ m.user?.name || m.userName || '—' }}</span>
+              <span class="member-role" [ngClass]="'role-' + m.role?.toLowerCase()">
+                {{ m.role }}
+              </span>
+            </div>
           </div>
         </div>
-        <div class="stat-card">
-          <div class="stat-icon">👤</div>
-          <div class="stat-content">
-            <h3>{{ (stats$ | async)?.myTasks }}</h3>
-            <p>My Tasks</p>
-          </div>
-        </div>
-        <div class="stat-card">
-          <div class="stat-icon success">✅</div>
-          <div class="stat-content">
-            <h3>{{ (stats$ | async)?.completedTasks }}</h3>
-            <p>Completed</p>
-          </div>
-        </div>
-        <div class="stat-card">
-          <div class="stat-icon danger">⚠️</div>
-          <div class="stat-content">
-            <h3>{{ (stats$ | async)?.overdueTasks }}</h3>
-            <p>Overdue</p>
-          </div>
-        </div>
+
+        <button
+          class="invite-btn"
+          (click)="goToMembers()"
+          *ngIf="org.role === 'OWNER' || org.role === 'ADMIN'"
+        >
+          + Invite Member
+        </button>
       </div>
     </div>
 
-    <!-- Recent Activity -->
-    <div class="dashboard-activity-section">
+    <!-- ===== MY TASKS + RECENT ACTIVITY ===== -->
+    <div class="db-section-row">
+      <!-- My Assigned Tasks -->
+      <div class="activity-card my-tasks">
+        <div class="section-header">
+          <h4>My Tasks</h4>
+          <button class="link-btn" (click)="goToTasks()">View all →</button>
+        </div>
+
+        <div *ngIf="!(myTasks$ | async)?.length" class="no-activity">
+          No tasks assigned to you yet.
+        </div>
+
+        <div class="my-task-list">
+          <div class="my-task-item" *ngFor="let task of (myTasks$ | async)?.slice(0, 5)">
+            <div class="my-task-info">
+              <span class="my-task-title">{{ task.title }}</span>
+              <span class="my-task-desc">{{ task.description || 'No description' }}</span>
+            </div>
+            <span class="task-status-chip" [ngClass]="getStatusClass(task.status)">
+              {{ task.status }}
+            </span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Recent Activity -->
       <div class="activity-card">
         <div class="section-header">
           <h4>Recent Activity</h4>
         </div>
+
         <div class="activity-list">
           <div *ngIf="!(activities$ | async)?.length" class="no-activity">
             No recent activity yet.
@@ -72,5 +204,5 @@
         </div>
       </div>
     </div>
-  </div>
+  </ng-container>
 </div>

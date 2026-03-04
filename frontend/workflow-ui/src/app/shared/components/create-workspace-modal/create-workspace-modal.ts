@@ -1,23 +1,23 @@
-import { Component, EventEmitter, Output } from '@angular/core';
+import { Component, EventEmitter, Output, HostListener } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { BehaviorSubject, finalize } from 'rxjs';
-import { DashboardService } from './../../services/dashboard.service';
+import { DashboardService } from '../../../features/dashboard/services/dashboard.service';
 
 @Component({
-  selector: 'app-create-workspace',
+  selector: 'app-create-workspace-modal',
   standalone: true,
   imports: [CommonModule, FormsModule],
-  templateUrl: './create-workspace.component.html',
-  styleUrls: ['./create-workspace.component.css'],
+  templateUrl: './create-workspace-modal.html',
+  styleUrls: ['./create-workspace-modal.css'],
 })
-export class CreateWorkspaceComponent {
+export class CreateWorkspaceModalComponent {
+  @Output() workspaceCreated = new EventEmitter<void>();
+  @Output() closed = new EventEmitter<void>();
+
   workspaceName = '';
   isLoading$ = new BehaviorSubject<boolean>(false);
   error$ = new BehaviorSubject<string | null>(null);
-
-  // Emit an event when workspace is successfully created
-  @Output() workspaceCreated = new EventEmitter<void>();
 
   constructor(private dashboardService: DashboardService) {}
 
@@ -36,11 +36,20 @@ export class CreateWorkspaceComponent {
       .subscribe({
         next: () => {
           this.workspaceName = '';
-          this.workspaceCreated.emit(); // notify parent
+          this.workspaceCreated.emit();
+          this.closed.emit();
         },
-        error: () => {
-          this.error$.next('Failed to create workspace');
-        },
+        error: () => this.error$.next('Failed to create workspace. Try again.'),
       });
+  }
+
+  close() {
+    this.closed.emit();
+  }
+
+  // Close on ESC key
+  @HostListener('document:keydown.escape')
+  onEsc() {
+    this.close();
   }
 }

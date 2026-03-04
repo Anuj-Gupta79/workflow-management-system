@@ -1,0 +1,99 @@
+<!-- Navbar (no sidebar) -->
+<nav class="ob-navbar">
+  <div class="ob-brand">
+    <div class="ob-logo">FS</div>
+    <span>FlowSync</span>
+  </div>
+  <button class="ob-logout" (click)="logout()">
+    <span class="material-icons">logout</span>
+    Logout
+  </button>
+</nav>
+
+<!-- Modal -->
+<app-create-workspace-modal
+  *ngIf="showModal"
+  (workspaceCreated)="onWorkspaceCreated()"
+  (closed)="showModal = false"
+></app-create-workspace-modal>
+
+<!-- Page -->
+<div class="ob-page">
+  <!-- Hero -->
+  <div class="ob-hero">
+    <div class="ob-hero-badge">Getting Started Guide</div>
+    <h1 class="ob-hero-title">
+      Everything you need to know<br />about <span class="ob-accent">FlowSync</span>
+    </h1>
+    <p class="ob-hero-sub">
+      A quick walkthrough of all the features. Read through at your own pace — this guide is always
+      accessible from your sidebar.
+    </p>
+    <div class="ob-hero-scroll">
+      <span class="material-icons">expand_more</span>
+      Scroll to explore
+    </div>
+  </div>
+
+  <!-- Sections -->
+  <div class="ob-sections">
+    <!-- Dynamic sections -->
+    <div
+      class="ob-section"
+      *ngFor="let s of sections; let i = index"
+      [class.ob-section-alt]="i % 2 !== 0"
+    >
+      <div class="ob-section-inner">
+        <div class="ob-section-label" [ngClass]="'label-' + s.color">
+          {{ s.icon }} {{ s.title }}
+        </div>
+        <h2 class="ob-section-title">{{ s.title }}</h2>
+        <p class="ob-section-desc">{{ s.description }}</p>
+
+        <!-- Points list -->
+        <ul class="ob-points" *ngIf="s.points">
+          <li *ngFor="let point of s.points">
+            <span class="material-icons ob-check">check_circle</span>
+            {{ point }}
+          </li>
+        </ul>
+
+        <!-- Workflow diagram (tasks section) -->
+        <div class="ob-workflow" *ngIf="s.workflow">
+          <div class="ob-wf-steps">
+            <ng-container *ngFor="let step of s.workflow; let last = last">
+              <div class="ob-wf-step">{{ step }}</div>
+              <span class="material-icons ob-wf-arrow" *ngIf="!last">arrow_forward</span>
+            </ng-container>
+          </div>
+        </div>
+
+        <!-- Roles grid -->
+        <div class="ob-roles" *ngIf="s.roles">
+          <div class="ob-role-card" *ngFor="let role of s.roles">
+            <div class="ob-role-icon">{{ role.icon }}</div>
+            <div class="ob-role-info">
+              <span class="ob-role-name">{{ role.name }}</span>
+              <span class="ob-role-desc">{{ role.desc }}</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- CTA Footer -->
+  <div class="ob-cta">
+    <div class="ob-cta-inner">
+      <h2>Ready to get started?</h2>
+      <p>Create your first workspace and invite your team.</p>
+      <div class="ob-cta-actions">
+        <button class="ob-btn-primary" (click)="showModal = true">
+          <span class="material-icons">add</span>
+          Create a Workspace
+        </button>
+        <button class="ob-btn-secondary" (click)="markSeenAndGo()">Skip for now →</button>
+      </div>
+    </div>
+  </div>
+</div>

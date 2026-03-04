@@ -1,3 +1,5 @@
+<!-- sidebar.html — add Guide link under ACCOUNT section -->
+
 <div class="sidebar">
   <!-- HEADER -->
   <div class="sidebar-header">
@@ -61,6 +63,12 @@
     <a routerLink="/dashboard/settings" routerLinkActive="active" (click)="onLinkClick()">
       <span class="material-icons">settings</span>
       <span class="label">Settings</span>
+    </a>
+
+    <!-- 👇 NEW: Guide link -->
+    <a routerLink="/onboarding" routerLinkActive="active" (click)="onLinkClick()">
+      <span class="material-icons">menu_book</span>
+      <span class="label">Guide</span>
     </a>
   </nav>
 </div>

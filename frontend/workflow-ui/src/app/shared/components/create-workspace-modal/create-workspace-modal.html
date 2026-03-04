@@ -1,0 +1,29 @@
+<!-- Backdrop -->
+<div class="cwm-backdrop" (click)="close()"></div>
+
+<!-- Modal -->
+<div class="cwm-modal" role="dialog" aria-modal="true">
+  <button class="cwm-close" (click)="close()">
+    <span class="material-icons">close</span>
+  </button>
+
+  <div class="cwm-icon">🏢</div>
+  <h2 class="cwm-title">Create a Workspace</h2>
+  <p class="cwm-sub">Give your workspace a name. You can rename it anytime.</p>
+
+  <div class="cwm-form">
+    <input
+      class="cwm-input"
+      type="text"
+      placeholder="e.g. Acme Corp, My Team, Personal..."
+      [(ngModel)]="workspaceName"
+      (keyup.enter)="createWorkspace()"
+      autofocus
+    />
+    <div class="cwm-error" *ngIf="error$ | async as err">{{ err }}</div>
+  </div>
+
+  <button class="cwm-btn" (click)="createWorkspace()" [disabled]="isLoading$ | async">
+    {{ (isLoading$ | async) ? 'Creating...' : 'Create Workspace' }}
+  </button>
+</div>
