@@ -19,6 +19,8 @@ export class ProfileComponent {
   loading$: Observable<boolean>;
 
   saving = false;
+  saveSuccess = false;
+  saveError = false;
 
   profileForm!: ReturnType<FormBuilder['group']>;
 
@@ -26,7 +28,6 @@ export class ProfileComponent {
     private fb: FormBuilder,
     private profileService: ProfileService,
   ) {
-    // ✅ Initialize form HERE
     this.profileForm = this.fb.group({
       name: ['', [Validators.required, Validators.minLength(3)]],
       email: ['', [Validators.required, Validators.email]],
@@ -45,10 +46,7 @@ export class ProfileComponent {
 
     this.profile$.subscribe((profile) => {
       if (profile) {
-        this.profileForm.patchValue({
-          name: profile.name,
-          email: profile.email,
-        });
+        this.profileForm.patchValue({ name: profile.name, email: profile.email });
       }
     });
   }
@@ -64,15 +62,20 @@ export class ProfileComponent {
     }
 
     this.saving = true;
+    this.saveSuccess = false;
+    this.saveError = false;
 
     this.profileService.updateProfile(this.profileForm.value as any).subscribe({
       next: () => {
         this.saving = false;
+        this.saveSuccess = true;
+        setTimeout(() => (this.saveSuccess = false), 3000);
         this.reload();
       },
       error: () => {
         this.saving = false;
-        alert('Failed to update profile');
+        this.saveError = true;
+        setTimeout(() => (this.saveError = false), 4000);
       },
     });
   }

@@ -16,7 +16,7 @@
     <!-- ===== ORG SWITCHER ===== -->
     <div class="dropdown-wrapper" *ngIf="activeOrg$ | async as activeOrg">
       <div class="org-switcher-btn" (click)="toggleOrgMenu($event)">
-        <div class="org-avatar">{{ activeOrg.name?.charAt(0)?.toUpperCase() }}</div>
+        <div class="org-avatar">{{ activeOrg?.name?.charAt(0)?.toUpperCase() }}</div>
         <div class="org-info">
           <span class="org-name">{{ activeOrg.name }}</span>
           <span class="org-role">{{ activeOrg.role }}</span>
