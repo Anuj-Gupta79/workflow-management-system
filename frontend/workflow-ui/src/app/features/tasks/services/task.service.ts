@@ -26,4 +26,17 @@ export class TaskService {
     const params = new HttpParams().set('userId', userId.toString());
     return this.http.patch<Task>(`${this.base}/${orgId}/tasks/${taskId}/assign`, null, { params });
   }
+
+  getPendingTasks(orgId: number): Observable<Task[]> {
+    return this.http.get<Task[]>(`${this.base}/${orgId}/tasks/pending`);
+  }
+
+  approveTask(orgId: number, taskId: number): Observable<Task> {
+    return this.http.patch<Task>(`${this.base}/${orgId}/tasks/${taskId}/approve`, null);
+  }
+
+  rejectTask(orgId: number, taskId: number, reason: string): Observable<Task> {
+    const params = new HttpParams().set('reason', reason);
+    return this.http.patch<Task>(`${this.base}/${orgId}/tasks/${taskId}/reject`, null, { params });
+  }
 }

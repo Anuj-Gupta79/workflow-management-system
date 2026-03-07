@@ -56,6 +56,9 @@ public class Task {
     @Column
     private LocalDateTime dueDate;
 
+    @Column(columnDefinition = "TEXT")
+    private String rejectionReason;
+
     @Builder.Default
     @Column(nullable = false)
     private boolean deleted = false;

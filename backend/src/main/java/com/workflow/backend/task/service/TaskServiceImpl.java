@@ -128,12 +128,47 @@ public class TaskServiceImpl implements TaskService {
         return taskRepository.countByOrganizationIdAndDeletedFalse(orgId);
     }
 
+    @Override
+    public List<Task> getPendingTasksByOrganization(Long orgId) {
+        return taskRepository.findByOrganizationIdAndStatusAndDeletedFalse(orgId, TaskStatus.PENDING);
+    }
+
+    @Override
+    public Task approveTask(Long orgId, Long taskId) {
+        Task task = taskRepository
+                .findByIdAndOrganizationIdAndDeletedFalse(taskId, orgId)
+                .orElseThrow(() -> new RuntimeException("Task not found"));
+
+        if (task.getStatus() != TaskStatus.PENDING && task.getStatus() != TaskStatus.COMPLETED) {
+            throw new RuntimeException("Only PENDING or COMPLETED tasks can be approved");
+        }
+
+        task.setStatus(TaskStatus.APPROVED);
+        task.setRejectionReason(null); // clear any previous rejection
+        return taskRepository.save(task);
+    }
+
+    @Override
+    public Task rejectTask(Long orgId, Long taskId, String reason) {
+        Task task = taskRepository
+                .findByIdAndOrganizationIdAndDeletedFalse(taskId, orgId)
+                .orElseThrow(() -> new RuntimeException("Task not found"));
+
+        if (task.getStatus() != TaskStatus.PENDING && task.getStatus() != TaskStatus.COMPLETED) {
+            throw new RuntimeException("Only PENDING or COMPLETED tasks can be rejected");
+        }
+
+        task.setStatus(TaskStatus.REJECTED);
+        task.setRejectionReason(reason);
+        return taskRepository.save(task);
+    }
+
     private User getCurrentUser() {
         CustomUserDetails principal = (CustomUserDetails) SecurityContextHolder
                 .getContext()
                 .getAuthentication()
                 .getPrincipal();
-                
+
         return userRepository.findById(principal.getId())
                 .orElseThrow(() -> new RuntimeException("Authenticated user not found"));
     }

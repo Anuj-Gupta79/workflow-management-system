@@ -33,6 +33,13 @@ public class TaskController {
                 return ResponseEntity.ok(taskService.getTasksByOrganization(orgId));
         }
 
+        @GetMapping("/pending")
+        @Operation(summary = "Get all pending tasks for approval")
+        @PreAuthorize("@orgSecurity.isManagerOrAbove(#orgId, authentication)")
+        public ResponseEntity<List<Task>> getPendingTasks(@PathVariable Long orgId) {
+                return ResponseEntity.ok(taskService.getPendingTasksByOrganization(orgId));
+        }
+
         @PostMapping
         @Operation(summary = "Create task")
         @PreAuthorize("@orgSecurity.isMember(#orgId, authentication)")
@@ -98,5 +105,24 @@ public class TaskController {
 
                 return ResponseEntity.ok(
                                 taskService.assignTask(orgId, taskId, userId));
+        }
+
+        @PatchMapping("/{taskId}/approve")
+        @Operation(summary = "Approve a task")
+        @PreAuthorize("@orgSecurity.isManagerOrAbove(#orgId, authentication)")
+        public ResponseEntity<Task> approveTask(
+                        @PathVariable Long orgId,
+                        @PathVariable Long taskId) {
+                return ResponseEntity.ok(taskService.approveTask(orgId, taskId));
+        }
+
+        @PatchMapping("/{taskId}/reject")
+        @Operation(summary = "Reject a task")
+        @PreAuthorize("@orgSecurity.isManagerOrAbove(#orgId, authentication)")
+        public ResponseEntity<Task> rejectTask(
+                        @PathVariable Long orgId,
+                        @PathVariable Long taskId,
+                        @RequestParam(required = false) String reason) {
+                return ResponseEntity.ok(taskService.rejectTask(orgId, taskId, reason));
         }
 }

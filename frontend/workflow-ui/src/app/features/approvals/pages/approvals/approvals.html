@@ -1,8 +1,149 @@
-<div class="placeholder-page">
-  <div class="placeholder-card">
-    <span class="material-icons placeholder-icon">fact_check</span>
-    <h2>Approvals</h2>
-    <p>This section is coming soon. We're building it out — check back shortly!</p>
-    <div class="placeholder-badge">🚧 In Development</div>
+<div class="approvals-page">
+  <!-- ===== Header ===== -->
+  <div class="page-header">
+    <div>
+      <h2 class="page-title">Approvals</h2>
+      <p class="page-subtitle">Review and action tasks pending approval</p>
+    </div>
+    <button class="btn-refresh" (click)="reload()">
+      <span class="material-icons">refresh</span>
+      Refresh
+    </button>
   </div>
+
+  <!-- ===== Role notice for employees ===== -->
+  <div class="role-notice" *ngIf="!canApprove">
+    <span class="material-icons">info</span>
+    You have <strong>read-only</strong> access. Only Managers, Admins, and Owners can approve or
+    reject tasks.
+  </div>
+
+  <!-- ===== Error ===== -->
+  <div class="state-error" *ngIf="error$ | async as err">
+    <span class="material-icons">error_outline</span>
+    {{ err }}
+    <button (click)="reload()">Try again</button>
+  </div>
+
+  <!-- ===== Loading ===== -->
+  <div class="state-loading" *ngIf="loading$ | async">
+    <div class="spinner"></div>
+    <span>Loading pending tasks...</span>
+  </div>
+
+  <ng-container *ngIf="!(loading$ | async)">
+    <!-- ===== Empty State ===== -->
+    <div class="state-empty" *ngIf="(tasks$ | async)?.length === 0">
+      <span class="material-icons empty-icon">task_alt</span>
+      <h4>All caught up!</h4>
+      <p>No tasks are currently pending approval.</p>
+    </div>
+
+    <!-- ===== Stats bar ===== -->
+    <div class="stats-bar" *ngIf="(tasks$ | async)?.length ?? 0 > 0">
+      <div class="stat-chip">
+        <span class="material-icons">pending_actions</span>
+        <span
+          ><strong>{{ (tasks$ | async)?.length }}</strong> awaiting review</span
+        >
+      </div>
+    </div>
+
+    <!-- ===== Task Cards ===== -->
+    <div class="cards-grid" *ngIf="(tasks$ | async)?.length ?? 0 > 0">
+      <div class="approval-card" *ngFor="let task of tasks$ | async; trackBy: trackById">
+        <div class="card-accent"></div>
+
+        <!-- Header -->
+        <div class="card-header">
+          <div class="card-title-row">
+            <h4 class="card-title">{{ task.title }}</h4>
+            <span class="priority-badge" [ngClass]="getPriorityClass(task.priority)">
+              {{ getPriorityIcon(task.priority) }} {{ task.priority | titlecase }}
+            </span>
+          </div>
+          <p class="card-desc" *ngIf="task.description">{{ task.description }}</p>
+        </div>
+
+        <!-- Meta -->
+        <div class="card-meta">
+          <div class="meta-row">
+            <div class="meta-item">
+              <span class="material-icons">person_add</span>
+              <span class="meta-label">Created by</span>
+              <span class="meta-value">{{ task.createdBy?.name || '—' }}</span>
+            </div>
+            <div class="meta-item">
+              <span class="material-icons">assignment_ind</span>
+              <span class="meta-label">Assigned to</span>
+              <span class="meta-value">{{ task.assignedTo?.name || 'Unassigned' }}</span>
+            </div>
+            <div class="meta-item">
+              <span class="material-icons">schedule</span>
+              <span class="meta-label">Submitted</span>
+              <span class="meta-value">{{ task.updatedAt | date: 'MMM d, y' }}</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Reject Reason Input -->
+        <div class="reject-input-area" *ngIf="getAction(task.id).showRejectInput">
+          <label>Rejection reason <span class="required">*</span></label>
+          <textarea
+            [(ngModel)]="getAction(task.id).rejectReason"
+            placeholder="Explain why this task is being rejected..."
+            rows="3"
+          ></textarea>
+        </div>
+
+        <!-- Actions — Manager+ -->
+        <div class="card-actions" *ngIf="canApprove">
+          <ng-container *ngIf="!getAction(task.id).showRejectInput">
+            <button
+              class="btn-approve"
+              [disabled]="getAction(task.id).state !== 'idle'"
+              (click)="approve(task)"
+            >
+              <span class="material-icons" *ngIf="getAction(task.id).state !== 'approving'"
+                >check_circle</span
+              >
+              <div class="btn-spinner" *ngIf="getAction(task.id).state === 'approving'"></div>
+              {{ getAction(task.id).state === 'approving' ? 'Approving...' : 'Approve' }}
+            </button>
+
+            <button
+              class="btn-reject"
+              [disabled]="getAction(task.id).state !== 'idle'"
+              (click)="toggleRejectInput(task.id)"
+            >
+              <span class="material-icons">cancel</span>
+              Reject
+            </button>
+          </ng-container>
+
+          <ng-container *ngIf="getAction(task.id).showRejectInput">
+            <button
+              class="btn-reject-confirm"
+              [disabled]="getAction(task.id).state !== 'idle'"
+              (click)="confirmReject(task)"
+            >
+              <span class="material-icons" *ngIf="getAction(task.id).state !== 'rejecting'"
+                >cancel</span
+              >
+              <div class="btn-spinner white" *ngIf="getAction(task.id).state === 'rejecting'"></div>
+              {{ getAction(task.id).state === 'rejecting' ? 'Rejecting...' : 'Confirm Reject' }}
+            </button>
+
+            <button class="btn-cancel" (click)="toggleRejectInput(task.id)">Cancel</button>
+          </ng-container>
+        </div>
+
+        <!-- Read-only for employees -->
+        <div class="readonly-label" *ngIf="!canApprove">
+          <span class="material-icons">lock</span>
+          Pending review by manager
+        </div>
+      </div>
+    </div>
+  </ng-container>
 </div>

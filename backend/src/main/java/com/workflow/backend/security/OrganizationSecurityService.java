@@ -26,7 +26,8 @@ public class OrganizationSecurityService {
             return false;
 
         return memberRepository
-                .findByOrganizationIdAndUserIdAndDeletedFalse(user.getId(), orgId)
+                .findByOrganizationIdAndUserIdAndDeletedFalse(orgId, user
+                        .getId())
                 .isPresent();
     }
 
@@ -39,9 +40,13 @@ public class OrganizationSecurityService {
             return false;
 
         return memberRepository
-                .findByOrganizationIdAndUserIdAndDeletedFalse(user.getId(), orgId)
+                .findByOrganizationIdAndUserIdAndDeletedFalse(orgId, user.getId())
                 .map(member -> isHigherOrEqual(member.getRole(), requiredRole))
                 .orElse(false);
+    }
+
+    public boolean isManagerOrAbove(Long orgId, Authentication authentication) {
+        return hasRole(orgId, OrganizationRole.MANAGER, authentication);
     }
 
     private boolean isHigherOrEqual(OrganizationRole actual, OrganizationRole required) {

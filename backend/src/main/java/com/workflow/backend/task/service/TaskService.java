@@ -24,4 +24,10 @@ public interface TaskService {
 
     long countTasksByOrganization(Long orgId);
 
+    Task approveTask(Long orgId, Long taskId);
+
+    Task rejectTask(Long orgId, Long taskId, String reason);
+
+    List<Task> getPendingTasksByOrganization(Long orgId);
+
 }

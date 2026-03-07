@@ -27,7 +27,7 @@ import { OnboardingComponent } from './features/organization/pages/onboarding/on
 import { DashboardHomeComponent } from './features/dashboard/pages/dashboard-home/dashboard-home';
 import { ProfileComponent } from './features/profile/pages/profile';
 import { Admin } from './features/admin/pages/admin';
-import { Approvals as ApprovalsComponent } from './features/approvals/pages/approvals/approvals';
+import { ApprovalsComponent } from './features/approvals/pages/approvals/approvals';
 import { Workflows as WorkflowsComponent } from './features/workflows/pages/workflows/workflows';
 import { Members as MembersComponent } from './features/members/pages/members/members';
 import { Departments as DepartmentsComponent } from './features/departments/pages/departments/departments';
