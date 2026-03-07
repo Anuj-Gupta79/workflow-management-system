@@ -1,5 +1,7 @@
 package com.workflow.backend.organization.dto;
 
+import com.workflow.backend.organization.utility.OrganizationRole;
+import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -7,6 +9,12 @@ import lombok.Setter;
 @Setter
 public class AddMemberRequest {
 
+    @NotNull
+    private Long organizationId;
+
+    @NotNull
     private Long userId;
-    private String role;
+
+    @NotNull
+    private OrganizationRole role;
 }

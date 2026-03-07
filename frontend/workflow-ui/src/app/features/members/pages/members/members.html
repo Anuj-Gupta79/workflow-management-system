@@ -1,8 +1,215 @@
-<div class="placeholder-page">
-  <div class="placeholder-card">
-    <span class="material-icons placeholder-icon">group</span>
-    <h2>Members</h2>
-    <p>This section is coming soon. We're building it out — check back shortly!</p>
-    <div class="placeholder-badge">🚧 In Development</div>
+<div class="members-page">
+  <!-- ===== Header ===== -->
+  <div class="page-header">
+    <div>
+      <h2 class="page-title">Members</h2>
+      <p class="page-subtitle">Manage your organization's team</p>
+    </div>
+    <div class="header-actions">
+      <button class="btn-refresh" (click)="reload()">
+        <span class="material-icons">refresh</span>
+      </button>
+      <button class="btn-add" *ngIf="canManage" (click)="toggleAddPanel()">
+        <span class="material-icons">person_add</span>
+        Add Member
+      </button>
+    </div>
   </div>
+
+  <!-- ===== Manager notice ===== -->
+  <div class="role-notice info" *ngIf="isManager">
+    <span class="material-icons">info</span>
+    As a Manager you have read-only access. Raise a request via the
+    <strong>MemberRequest</strong> feature to propose role changes or removals.
+  </div>
+
+  <!-- ===== Add Member Panel ===== -->
+  <div class="add-panel" *ngIf="showAddPanel && canManage">
+    <div class="add-panel-header">
+      <h4>Add New Member</h4>
+      <button class="icon-btn" (click)="toggleAddPanel()">
+        <span class="material-icons">close</span>
+      </button>
+    </div>
+    <p class="add-panel-note">
+      Enter the user's registered email. They will receive an invitation to join this organization.
+    </p>
+    <div class="add-panel-form">
+      <div class="form-field">
+        <label>Email address</label>
+        <input
+          type="email"
+          [(ngModel)]="addEmail"
+          placeholder="user@example.com"
+          aria-label="Member email"
+        />
+      </div>
+      <div class="form-field">
+        <label>Role</label>
+        <select [(ngModel)]="addRole" aria-label="Member role">
+          <option *ngFor="let r of ORG_ROLES" [value]="r">{{ r | titlecase }}</option>
+        </select>
+      </div>
+    </div>
+    <div class="add-error" *ngIf="addError">{{ addError }}</div>
+    <div class="add-panel-actions">
+      <button class="btn-outline" (click)="toggleAddPanel()">Cancel</button>
+      <button class="btn-primary" [disabled]="addLoading || !addEmail">
+        <div class="btn-spinner-sm" *ngIf="addLoading"></div>
+        {{ addLoading ? 'Sending...' : 'Send Invite' }}
+      </button>
+    </div>
+  </div>
+
+  <!-- ===== Filter Bar ===== -->
+  <div class="filter-bar">
+    <div class="search-box">
+      <span class="material-icons">search</span>
+      <input
+        type="text"
+        placeholder="Search by name or email..."
+        [(ngModel)]="searchText"
+        (ngModelChange)="applyFilters()"
+        aria-label="Search members"
+      />
+    </div>
+    <select
+      [(ngModel)]="filterRole"
+      (ngModelChange)="applyFilters()"
+      aria-label="Filter by role"
+      class="role-filter"
+    >
+      <option value="">All Roles</option>
+      <option value="OWNER">Owner</option>
+      <option value="ADMIN">Admin</option>
+      <option value="MANAGER">Manager</option>
+      <option value="EMPLOYEE">Employee</option>
+    </select>
+    <span class="member-count" *ngIf="!(loading$ | async)">
+      {{ filteredMembers.length }} member{{ filteredMembers.length !== 1 ? 's' : '' }}
+    </span>
+  </div>
+
+  <!-- ===== Error ===== -->
+  <div class="state-error" *ngIf="error$ | async as err">
+    <span class="material-icons">error_outline</span>
+    {{ err }}
+    <button (click)="reload()">Try again</button>
+  </div>
+
+  <!-- ===== Loading ===== -->
+  <div class="state-loading" *ngIf="loading$ | async">
+    <div class="spinner"></div>
+    <span>Loading members...</span>
+  </div>
+
+  <!-- ===== Members Table ===== -->
+  <ng-container *ngIf="!(loading$ | async)">
+    <div class="table-wrapper" *ngIf="filteredMembers.length > 0">
+      <table class="members-table">
+        <thead>
+          <tr>
+            <th>Member</th>
+            <th>Role</th>
+            <th>Joined</th>
+            <th *ngIf="canManage">Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr
+            *ngFor="let member of filteredMembers; trackBy: trackById"
+            [class.is-you]="member.user.id === currentUserId"
+          >
+            <!-- Member info -->
+            <td class="member-cell">
+              <div class="avatar" [style.background]="getAvatarColor(member.user.name)">
+                {{ member.user.name.charAt(0).toUpperCase() }}
+              </div>
+              <div class="member-info">
+                <span class="member-name">
+                  {{ member.user.name }}
+                  <span class="you-badge" *ngIf="member.user.id === currentUserId">You</span>
+                </span>
+                <span class="member-email">{{ member.user.email }}</span>
+              </div>
+            </td>
+
+            <!-- Role -->
+            <td class="role-cell">
+              <!-- Editing -->
+              <ng-container *ngIf="editingMemberId === member.id">
+                <div class="role-edit-row">
+                  <select [(ngModel)]="editingRole" aria-label="Select new role">
+                    <option *ngFor="let r of ORG_ROLES" [value]="r">{{ r | titlecase }}</option>
+                  </select>
+                  <button class="icon-btn success" (click)="saveRole(member)" title="Save">
+                    <span class="material-icons">check</span>
+                  </button>
+                  <button class="icon-btn" (click)="cancelEdit()" title="Cancel">
+                    <span class="material-icons">close</span>
+                  </button>
+                </div>
+              </ng-container>
+
+              <!-- Display -->
+              <span
+                *ngIf="editingMemberId !== member.id"
+                class="role-badge"
+                [ngClass]="getRoleClass(member.role)"
+              >
+                {{ member.role | titlecase }}
+              </span>
+            </td>
+
+            <!-- Joined -->
+            <td class="date-cell">
+              {{ member.joinedAt ? (member.joinedAt | date: 'MMM d, y') : '—' }}
+            </td>
+
+            <!-- Actions -->
+            <td class="actions-cell" *ngIf="canManage">
+              <!-- Remove confirmation inline -->
+              <ng-container *ngIf="removingMemberId === member.id">
+                <div class="confirm-remove">
+                  <span>Remove {{ member.user.name }}?</span>
+                  <button class="btn-danger-sm" (click)="doRemove(member)">Yes, remove</button>
+                  <button class="btn-ghost-sm" (click)="cancelRemove()">Cancel</button>
+                </div>
+              </ng-container>
+
+              <!-- Normal actions -->
+              <ng-container *ngIf="removingMemberId !== member.id">
+                <button
+                  class="icon-btn"
+                  *ngIf="canEditMember(member) && editingMemberId !== member.id"
+                  (click)="startEdit(member)"
+                  title="Change role"
+                >
+                  <span class="material-icons">edit</span>
+                </button>
+                <button
+                  class="icon-btn danger"
+                  *ngIf="canRemoveMember(member)"
+                  (click)="confirmRemove(member.id)"
+                  title="Remove member"
+                >
+                  <span class="material-icons">person_remove</span>
+                </button>
+                <span class="no-actions" *ngIf="!canEditMember(member) && !canRemoveMember(member)">
+                  —
+                </span>
+              </ng-container>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Empty state -->
+    <div class="state-empty" *ngIf="filteredMembers.length === 0">
+      <span class="material-icons empty-icon">group_off</span>
+      <h4>No members found</h4>
+      <p>Try adjusting your search or filters.</p>
+    </div>
+  </ng-container>
 </div>

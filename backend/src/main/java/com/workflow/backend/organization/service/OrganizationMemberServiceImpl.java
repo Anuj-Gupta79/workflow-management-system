@@ -4,11 +4,14 @@ import java.util.List;
 
 import org.springframework.stereotype.Service;
 
+import com.workflow.backend.organization.dto.AddMemberRequest;
 import com.workflow.backend.organization.entity.Organization;
 import com.workflow.backend.organization.entity.OrganizationMember;
 import com.workflow.backend.organization.repository.OrganizationMemberRepository;
+import com.workflow.backend.organization.repository.OrganizationRepository;
 import com.workflow.backend.organization.utility.OrganizationRole;
 import com.workflow.backend.user.entity.User;
+import com.workflow.backend.user.repository.UserRepository;
 
 import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
@@ -19,22 +22,34 @@ import lombok.AllArgsConstructor;
 public class OrganizationMemberServiceImpl implements OrganizationMemberService {
 
     private final OrganizationMemberRepository memberRepository;
+    private final UserRepository userRepository;
+    private final OrganizationRepository organizationRepository;
 
     @Override
-    public OrganizationMember addMember(OrganizationMember member) {
+    public OrganizationMember addMember(AddMemberRequest request) {
+
+        Organization org = organizationRepository
+                .findByIdAndDeletedFalse(request.getOrganizationId())
+                .orElseThrow(() -> new RuntimeException("Organization not found"));
+
+        User user = userRepository.findById(request.getUserId())
+                .orElseThrow(() -> new RuntimeException("User not found"));
 
         boolean exists = memberRepository
-                .findByOrganizationIdAndUserIdAndDeletedFalse(member.getOrganization().getId(),
-                        member.getUser().getId())
+                .findByOrganizationIdAndUserIdAndDeletedFalse(org.getId(), user.getId())
                 .isPresent();
 
-        if (exists) {
+        if (exists)
             throw new RuntimeException("User already a member of this organization");
-        }
 
-        if (member.getRole() == OrganizationRole.OWNER) {
+        if (request.getRole() == OrganizationRole.OWNER)
             throw new RuntimeException("Cannot assign OWNER role directly");
-        }
+
+        OrganizationMember member = new OrganizationMember();
+        member.setOrganization(org);
+        member.setUser(user);
+        member.setRole(request.getRole());
+        member.setDeleted(false);
 
         return memberRepository.save(member);
     }

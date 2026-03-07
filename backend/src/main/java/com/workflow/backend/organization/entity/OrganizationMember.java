@@ -1,5 +1,9 @@
 package com.workflow.backend.organization.entity;
 
+import java.time.LocalDateTime;
+
+import org.hibernate.annotations.CreationTimestamp;
+
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.workflow.backend.organization.utility.OrganizationRole;
 import com.workflow.backend.user.entity.User;
@@ -31,7 +35,7 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
+@JsonIgnoreProperties({ "hibernateLazyInitializer", "handler" })
 public class OrganizationMember {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -53,4 +57,8 @@ public class OrganizationMember {
     @Builder.Default
     @Column(nullable = false)
     private boolean deleted = false;
+
+    @CreationTimestamp
+    @Column(updatable = false)
+    private LocalDateTime joinedAt;
 }

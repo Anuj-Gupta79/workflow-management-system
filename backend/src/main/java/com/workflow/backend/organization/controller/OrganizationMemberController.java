@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.workflow.backend.organization.dto.AddMemberRequest;
 import com.workflow.backend.organization.entity.OrganizationMember;
 import com.workflow.backend.organization.service.OrganizationMemberService;
 import com.workflow.backend.organization.utility.OrganizationRole;
@@ -21,6 +22,7 @@ import com.workflow.backend.organization.utility.OrganizationRole;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
 @RestController
@@ -33,9 +35,9 @@ public class OrganizationMemberController {
 
     @Operation(summary = "Add member to organization (ADMIN only)")
     @PostMapping
-    @PreAuthorize("@orgSecurity.hasRole(#member.organization.id, T(com.workflow.backend.organization.utility.OrganizationRole).ADMIN, authentication)")
-    public ResponseEntity<OrganizationMember> addMember(@RequestBody OrganizationMember member) {
-        return ResponseEntity.ok(memberService.addMember(member));
+    @PreAuthorize("@orgSecurity.hasRole(#request.organizationId, T(com.workflow.backend.organization.utility.OrganizationRole).ADMIN, authentication)")
+    public ResponseEntity<OrganizationMember> addMember(@RequestBody @Valid AddMemberRequest request) {
+        return ResponseEntity.ok(memberService.addMember(request));
     }
 
     @Operation(summary = "Get members by organization")
