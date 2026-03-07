@@ -2,6 +2,7 @@ package com.workflow.backend.task.service;
 
 import java.util.List;
 
+import com.workflow.backend.task.dto.TaskRequest;
 import com.workflow.backend.task.entity.Task;
 import com.workflow.backend.task.utility.TaskStatus;
 
@@ -9,7 +10,7 @@ public interface TaskService {
 
     List<Task> getTasksByOrganization(Long orgId);
 
-    Task createTask(Long orgId, Task task);
+    Task createTask(Long orgId, TaskRequest task);
 
     List<Task> getTasksByCreatorInOrganization(Long orgId, Long userId);
 

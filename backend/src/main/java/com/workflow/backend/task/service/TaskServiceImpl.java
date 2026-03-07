@@ -7,11 +7,14 @@ import org.springframework.stereotype.Service;
 
 import com.workflow.backend.organization.repository.OrganizationMemberRepository;
 import com.workflow.backend.organization.repository.OrganizationRepository;
+import com.workflow.backend.task.dto.TaskRequest;
 import com.workflow.backend.task.entity.Task;
 import com.workflow.backend.task.repository.TaskRepository;
+import com.workflow.backend.task.utility.TaskPriority;
 import com.workflow.backend.task.utility.TaskStatus;
 import com.workflow.backend.user.entity.User;
 import com.workflow.backend.user.repository.UserRepository;
+import com.workflow.backend.utility.CustomUserDetails;
 
 import lombok.RequiredArgsConstructor;
 
@@ -30,7 +33,7 @@ public class TaskServiceImpl implements TaskService {
     }
 
     @Override
-    public Task createTask(Long orgId, Task task) {
+    public Task createTask(Long orgId, TaskRequest request) {
 
         var organization = organizationRepository
                 .findByIdAndDeletedFalse(orgId)
@@ -38,23 +41,27 @@ public class TaskServiceImpl implements TaskService {
 
         User currentUser = getCurrentUser();
 
-        // NEVER trust client for these fields
-        task.setId(null);
+        Task task = new Task();
+        task.setTitle(request.getTitle());
+        task.setDescription(request.getDescription());
         task.setOrganization(organization);
         task.setCreatedBy(currentUser);
         task.setDeleted(false);
         task.setStatus(TaskStatus.TO_DO);
 
-        // Optional: validate assigned user if provided
-        if (task.getAssignedTo() != null) {
+        // Default priority if not provided
+        task.setPriority(
+                request.getPriority() != null
+                        ? TaskPriority.valueOf(request.getPriority())
+                        : TaskPriority.MEDIUM);
 
-            Long assignedUserId = task.getAssignedTo().getId();
-
+        // Optional assignee
+        if (request.getAssignedTo() != null) {
             memberRepository
-                    .findByOrganizationIdAndUserIdAndDeletedFalse(orgId, assignedUserId)
+                    .findByOrganizationIdAndUserIdAndDeletedFalse(orgId, request.getAssignedTo())
                     .orElseThrow(() -> new RuntimeException("Assigned user not part of organization"));
 
-            User assignedUser = userRepository.findById(assignedUserId)
+            User assignedUser = userRepository.findById(request.getAssignedTo())
                     .orElseThrow(() -> new RuntimeException("Assigned user not found"));
 
             task.setAssignedTo(assignedUser);
@@ -122,12 +129,15 @@ public class TaskServiceImpl implements TaskService {
     }
 
     private User getCurrentUser() {
-        return (User) SecurityContextHolder
+        CustomUserDetails principal = (CustomUserDetails) SecurityContextHolder
                 .getContext()
                 .getAuthentication()
                 .getPrincipal();
+                
+        return userRepository.findById(principal.getId())
+                .orElseThrow(() -> new RuntimeException("Authenticated user not found"));
     }
-    
+
     private boolean isValidTransition(TaskStatus current, TaskStatus next) {
 
         if (current == next)

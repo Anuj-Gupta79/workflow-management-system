@@ -13,12 +13,17 @@ export class TaskService {
     return this.http.get<Task[]>(`${this.base}/${orgId}/tasks`);
   }
 
+  createTask(orgId: number, payload: Partial<Task>): Observable<Task> {
+    return this.http.post<Task>(`${this.base}/${orgId}/tasks`, payload);
+  }
+
   updateTaskStatus(orgId: number, taskId: number, newStatus: TaskStatus): Observable<Task> {
     const params = new HttpParams().set('newStatus', newStatus);
     return this.http.patch<Task>(`${this.base}/${orgId}/tasks/${taskId}/status`, null, { params });
   }
 
-  createTask(orgId: number, payload: Partial<Task>): Observable<Task> {
-    return this.http.post<Task>(`${this.base}/${orgId}/tasks`, payload);
+  assignTask(orgId: number, taskId: number, userId: number): Observable<Task> {
+    const params = new HttpParams().set('userId', userId.toString());
+    return this.http.patch<Task>(`${this.base}/${orgId}/tasks/${taskId}/assign`, null, { params });
   }
 }

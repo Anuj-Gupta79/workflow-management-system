@@ -5,6 +5,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
+import com.workflow.backend.task.dto.TaskRequest;
 import com.workflow.backend.task.entity.Task;
 import com.workflow.backend.task.service.TaskService;
 import com.workflow.backend.task.utility.TaskStatus;
@@ -12,6 +13,7 @@ import com.workflow.backend.task.utility.TaskStatus;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 
 import java.util.List;
 
@@ -36,7 +38,7 @@ public class TaskController {
         @PreAuthorize("@orgSecurity.isMember(#orgId, authentication)")
         public ResponseEntity<Task> createTask(
                         @PathVariable Long orgId,
-                        @RequestBody Task task) {
+                        @RequestBody @Valid TaskRequest task) {
 
                 return ResponseEntity.ok(taskService.createTask(orgId, task));
         }
