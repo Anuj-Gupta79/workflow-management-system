@@ -1,107 +1,274 @@
 <div class="task-page">
-  <!-- ===== Page Header ===== -->
+  <!-- ===== Header ===== -->
   <div class="page-header">
     <div>
       <h2 class="page-title">Tasks</h2>
       <p class="page-subtitle">Manage and track workflow tasks</p>
     </div>
+    <a routerLink="/dashboard/tasks/new" class="btn-create">
+      <span class="material-icons">add_task</span>
+      Create Task
+    </a>
+  </div>
 
-    <a routerLink="/dashboard/tasks/new" class="btn btn-primary"> + Create Task </a>
+  <!-- ===== Filter Bar ===== -->
+  <div class="filter-bar">
+    <!-- Search -->
+    <div class="search-box">
+      <span class="material-icons search-icon">search</span>
+      <input
+        type="text"
+        placeholder="Search tasks..."
+        [(ngModel)]="searchText"
+        (ngModelChange)="applyFilters()"
+      />
+    </div>
+
+    <!-- My Tasks toggle -->
+    <button
+      class="my-tasks-btn"
+      [class.active]="myTasksOnly"
+      (click)="myTasksOnly = !myTasksOnly; applyFilters()"
+    >
+      <span class="material-icons">person</span>
+      My Tasks
+    </button>
+
+    <!-- Status filter -->
+    <div class="filter-select-wrapper">
+      <select
+        aria-label="filter by status"
+        [(ngModel)]="filterStatus"
+        (ngModelChange)="applyFilters()"
+      >
+        <option value="">All Statuses</option>
+        <option *ngFor="let s of allStatuses" [value]="s">{{ s | titlecase }}</option>
+      </select>
+    </div>
+
+    <!-- Priority filter -->
+    <div class="filter-select-wrapper">
+      <select
+        aria-label="filter by priority"
+        [(ngModel)]="filterPriority"
+        (ngModelChange)="applyFilters()"
+      >
+        <option value="">All Priorities</option>
+        <option *ngFor="let p of allPriorities" [value]="p">{{ p | titlecase }}</option>
+      </select>
+    </div>
+
+    <!-- Assignee filter -->
+    <div class="filter-select-wrapper" *ngIf="assignees.length > 0">
+      <select
+        aria-label="filter by assignee"
+        [(ngModel)]="filterAssignee"
+        (ngModelChange)="applyFilters()"
+      >
+        <option value="">All Assignees</option>
+        <option *ngFor="let a of assignees" [value]="a.id">{{ a.name }}</option>
+      </select>
+    </div>
+
+    <!-- Clear filters -->
+    <button class="clear-btn" *ngIf="hasActiveFilters" (click)="clearFilters()">
+      <span class="material-icons">close</span>
+      Clear
+    </button>
+  </div>
+
+  <!-- ===== Stats strip ===== -->
+  <div class="stats-strip" *ngIf="(allTasks$ | async)?.length">
+    <span class="strip-item">
+      Total: <strong>{{ (allTasks$ | async)?.length }}</strong>
+    </span>
+    <span class="strip-divider">·</span>
+    <span class="strip-item">
+      Showing: <strong>{{ filteredTasks.length }}</strong>
+    </span>
+    <span class="strip-divider" *ngIf="hasActiveFilters">·</span>
+    <span class="strip-active" *ngIf="hasActiveFilters">Filters active</span>
   </div>
 
   <!-- ===== Loading ===== -->
-  <div *ngIf="loading$ | async" class="state-card info">Loading tasks...</div>
-
-  <!-- ===== Empty State ===== -->
-  <div
-    *ngIf="!(loading$ | async) && ((tasks$ | async)?.length ?? 0) === 0"
-    class="state-card empty"
-  >
-    No tasks found.
+  <div *ngIf="loading$ | async" class="state-loading">
+    <div class="tl-spinner"></div>
+    <span>Loading tasks...</span>
   </div>
 
-  <!-- ===== Table View (Desktop) ===== -->
-  <div
-    *ngIf="!(loading$ | async) && ((tasks$ | async)?.length ?? 0) > 0"
-    class="table-wrapper d-none d-md-block"
-  >
+  <!-- ===== Empty State ===== -->
+  <div *ngIf="!(loading$ | async) && filteredTasks.length === 0" class="state-empty">
+    <span class="material-icons empty-icon">
+      {{ hasActiveFilters ? 'filter_list_off' : 'task_alt' }}
+    </span>
+    <h4>{{ hasActiveFilters ? 'No tasks match your filters' : 'No tasks yet' }}</h4>
+    <p *ngIf="!hasActiveFilters">Create your first task to get started.</p>
+    <div class="empty-actions">
+      <button *ngIf="hasActiveFilters" class="btn-outline" (click)="clearFilters()">
+        Clear Filters
+      </button>
+      <a *ngIf="!hasActiveFilters" routerLink="/dashboard/tasks/new" class="btn-create small">
+        + Create Task
+      </a>
+    </div>
+  </div>
+
+  <!-- ===== Desktop Table ===== -->
+  <div *ngIf="!(loading$ | async) && filteredTasks.length > 0" class="table-wrapper">
     <table class="custom-table">
       <thead>
         <tr>
-          <th>Title</th>
-          <th>Status</th>
-          <th>Created By</th>
+          <th class="sortable" (click)="sortBy('title')">
+            Title
+            <span class="material-icons sort-icon">{{ getSortIcon('title') }}</span>
+          </th>
+          <th class="sortable" (click)="sortBy('status')">
+            Status
+            <span class="material-icons sort-icon">{{ getSortIcon('status') }}</span>
+          </th>
+          <th class="sortable" (click)="sortBy('priority')">
+            Priority
+            <span class="material-icons sort-icon">{{ getSortIcon('priority') }}</span>
+          </th>
           <th>Assigned To</th>
+          <th>Created By</th>
+          <th class="sortable" (click)="sortBy('createdAt')">
+            Created
+            <span class="material-icons sort-icon">{{ getSortIcon('createdAt') }}</span>
+          </th>
         </tr>
       </thead>
 
       <tbody>
-        <tr *ngFor="let task of tasks$ | async; trackBy: trackById">
-          <td class="title-cell">{{ task.title }}</td>
+        <tr *ngFor="let task of filteredTasks; trackBy: trackById">
+          <!-- Title -->
+          <td class="title-cell">
+            <span class="task-title">{{ task.title }}</span>
+            <span class="task-desc" *ngIf="task.description">{{ task.description }}</span>
+          </td>
 
-          <td class="position-relative">
-            <span
-              class="status-badge"
-              [ngClass]="getBadgeClass(task.status)"
-              (click)="toggleStatusMenu(task.id)"
-            >
-              {{ task.status }}
-            </span>
-
-            <div *ngIf="openTaskId === task.id" class="status-menu">
-              <button
-                *ngFor="let next of allowedTransitions[task.status]"
-                [disabled]="updatingTaskId === task.id"
-                (click)="updateStatus(task, next)"
+          <!-- Status -->
+          <td class="status-cell" (click)="$event.stopPropagation()">
+            <div class="status-wrapper">
+              <span
+                class="status-badge"
+                [ngClass]="getStatusClass(task.status)"
+                (click)="toggleStatusMenu(task.id)"
               >
-                → {{ next }}
-              </button>
+                {{ task.status | titlecase }}
+                <span class="material-icons chevron">expand_more</span>
+              </span>
 
-              <div *ngIf="allowedTransitions[task.status].length === 0" class="status-empty">
-                No actions available
+              <div *ngIf="openTaskId === task.id" class="status-menu">
+                <div class="status-menu-header">Update Status</div>
+                <ng-container
+                  *ngIf="allowedTransitions[task.status].length > 0; else noTransitions"
+                >
+                  <button
+                    *ngFor="let next of allowedTransitions[task.status]"
+                    [disabled]="updatingTaskId === task.id"
+                    (click)="updateStatus(task, next)"
+                    class="status-option"
+                  >
+                    <span class="status-dot-sm" [ngClass]="getStatusClass(next)"></span>
+                    {{ next | titlecase }}
+                    <span class="material-icons loading-icon" *ngIf="updatingTaskId === task.id"
+                      >refresh</span
+                    >
+                  </button>
+                </ng-container>
+                <ng-template #noTransitions>
+                  <div class="status-empty">No transitions available</div>
+                </ng-template>
               </div>
             </div>
           </td>
 
-          <td>{{ task.createdByName || '—' }}</td>
-          <td>{{ task.assignedToName || '—' }}</td>
+          <!-- Priority -->
+          <td>
+            <span class="priority-badge" [ngClass]="getPriorityClass(task.priority)">
+              {{ getPriorityIcon(task.priority) }} {{ task.priority | titlecase }}
+            </span>
+          </td>
+
+          <!-- Assigned To -->
+          <td>
+            <div class="user-cell" *ngIf="task.assignedTo; else unassigned">
+              <div class="user-avatar">{{ task.assignedTo.name.charAt(0) }}</div>
+              <span>{{ task.assignedTo.name }}</span>
+            </div>
+            <ng-template #unassigned>
+              <span class="unassigned">Unassigned</span>
+            </ng-template>
+          </td>
+
+          <!-- Created By -->
+          <td>
+            <div class="user-cell" *ngIf="task.createdBy">
+              <div class="user-avatar creator">{{ task.createdBy.name.charAt(0) }}</div>
+              <span>{{ task.createdBy.name }}</span>
+            </div>
+          </td>
+
+          <!-- Created At -->
+          <td class="date-cell">{{ task.createdAt | date: 'MMM d, y' }}</td>
         </tr>
       </tbody>
     </table>
   </div>
 
-  <!-- ===== Mobile Card View ===== -->
-  <div class="d-block d-md-none">
-    <div class="task-card" *ngFor="let task of tasks$ | async; trackBy: trackById">
-      <div class="task-card-header">
-        <h6>{{ task.title }}</h6>
-
-        <span
-          class="status-badge"
-          [ngClass]="getBadgeClass(task.status)"
-          (click)="toggleStatusMenu(task.id)"
-        >
-          {{ task.status }}
+  <!-- ===== Mobile Cards ===== -->
+  <div class="mobile-cards" *ngIf="!(loading$ | async) && filteredTasks.length > 0">
+    <div class="task-card" *ngFor="let task of filteredTasks; trackBy: trackById">
+      <div class="task-card-top">
+        <div class="task-card-title">{{ task.title }}</div>
+        <span class="priority-badge" [ngClass]="getPriorityClass(task.priority)">
+          {{ getPriorityIcon(task.priority) }} {{ task.priority | titlecase }}
         </span>
       </div>
 
-      <div *ngIf="openTaskId === task.id" class="status-menu-mobile">
-        <button
-          *ngFor="let next of allowedTransitions[task.status]"
-          [disabled]="updatingTaskId === task.id"
-          (click)="updateStatus(task, next)"
-        >
-          → {{ next }}
-        </button>
+      <p class="task-card-desc" *ngIf="task.description">{{ task.description }}</p>
 
-        <div *ngIf="allowedTransitions[task.status].length === 0" class="status-empty">
-          No actions available
+      <div class="task-card-meta">
+        <div class="meta-item" *ngIf="task.assignedTo">
+          <span class="material-icons">person</span>
+          {{ task.assignedTo.name }}
+        </div>
+        <div class="meta-item">
+          <span class="material-icons">calendar_today</span>
+          {{ task.createdAt | date: 'MMM d' }}
         </div>
       </div>
 
-      <div class="task-meta">
-        <div><strong>Created:</strong> {{ task.createdByName || '—' }}</div>
-        <div><strong>Assigned:</strong> {{ task.assignedToName || '—' }}</div>
+      <div class="task-card-footer" (click)="$event.stopPropagation()">
+        <span
+          class="status-badge"
+          [ngClass]="getStatusClass(task.status)"
+          (click)="toggleStatusMenu(task.id)"
+        >
+          {{ task.status | titlecase }}
+          <span class="material-icons chevron">expand_more</span>
+        </span>
+
+        <div *ngIf="openTaskId === task.id" class="status-menu mobile-menu">
+          <div class="status-menu-header">Update Status</div>
+          <ng-container
+            *ngIf="allowedTransitions[task.status].length > 0; else noTransitionsMobile"
+          >
+            <button
+              *ngFor="let next of allowedTransitions[task.status]"
+              [disabled]="updatingTaskId === task.id"
+              (click)="updateStatus(task, next)"
+              class="status-option"
+            >
+              <span class="status-dot-sm" [ngClass]="getStatusClass(next)"></span>
+              {{ next | titlecase }}
+            </button>
+          </ng-container>
+          <ng-template #noTransitionsMobile>
+            <div class="status-empty">No transitions available</div>
+          </ng-template>
+        </div>
       </div>
     </div>
   </div>
