@@ -1,0 +1,147 @@
+<div class="invite-wrapper">
+  <div class="invite-card">
+    <!-- Brand -->
+    <div class="brand">
+      <div class="brand-icon">FS</div>
+      <span class="brand-name">FlowSync</span>
+    </div>
+
+    <!-- Loading -->
+    <div class="state-block" *ngIf="state === 'loading'">
+      <div class="spinner"></div>
+      <p>Validating your invitation...</p>
+    </div>
+
+    <!-- Accepting -->
+    <div class="state-block" *ngIf="state === 'accepting'">
+      <div class="spinner"></div>
+      <p>
+        Joining <strong>{{ invite?.organization?.name }}</strong
+        >...
+      </p>
+    </div>
+
+    <!-- Declining -->
+    <div class="state-block" *ngIf="state === 'declining'">
+      <div class="spinner"></div>
+      <p>Declining invitation...</p>
+    </div>
+
+    <!-- Invalid -->
+    <div class="state-block" *ngIf="state === 'invalid'">
+      <span class="material-icons state-icon error-icon">link_off</span>
+      <h3>Invalid Invitation</h3>
+      <p>{{ errorMessage }}</p>
+      <a routerLink="/" class="btn-primary mt">Go to Home</a>
+    </div>
+
+    <!-- Expired -->
+    <div class="state-block" *ngIf="state === 'expired'">
+      <span class="material-icons state-icon error-icon">timer_off</span>
+      <h3>Invitation Expired</h3>
+      <p>This invite link has expired. Please ask the admin to send a new one.</p>
+      <a routerLink="/" class="btn-primary mt">Go to Home</a>
+    </div>
+
+    <!-- Already declined -->
+    <div class="state-block" *ngIf="state === 'declined-already'">
+      <span class="material-icons state-icon warn-icon">do_not_disturb</span>
+      <h3>Already Declined</h3>
+      <p>You've already declined this invitation. Contact the admin if you changed your mind.</p>
+      <a routerLink="/" class="btn-primary mt">Go to Home</a>
+    </div>
+
+    <!-- Success — accepted -->
+    <div class="state-block" *ngIf="state === 'success'">
+      <span class="material-icons state-icon success-icon">check_circle</span>
+      <h3>You're in! 🎉</h3>
+      <p>
+        You've successfully joined
+        <strong>{{ invite?.organization?.name }}</strong
+        >. Redirecting to your dashboard...
+      </p>
+    </div>
+
+    <!-- Success — declined -->
+    <div class="state-block" *ngIf="state === 'declined'">
+      <span class="material-icons state-icon warn-icon">do_not_disturb</span>
+      <h3>Invitation Declined</h3>
+      <p>
+        You've declined the invitation to join
+        <strong>{{ invite?.organization?.name }}</strong
+        >. The sender has been notified.
+      </p>
+      <a routerLink="/" class="btn-outline mt">Go to Home</a>
+    </div>
+
+    <!-- Main invite view -->
+    <ng-container *ngIf="state === 'ready' && invite">
+      <div class="invite-header">
+        <span class="material-icons invite-icon">mark_email_unread</span>
+        <h2>You've Been Invited!</h2>
+        <p class="invite-sub">
+          <strong>{{ invite.invitedBy.name }}</strong> has invited you to join their organization on
+          FlowSync
+        </p>
+      </div>
+
+      <!-- Org Info Card -->
+      <div class="org-card">
+        <div class="org-avatar">{{ invite.organization.name.charAt(0) }}</div>
+        <div class="org-info">
+          <span class="org-name">{{ invite.organization.name }}</span>
+          <span class="org-role">
+            You'll join as
+            <span class="role-chip">{{ invite.role | titlecase }}</span>
+          </span>
+        </div>
+      </div>
+
+      <!-- Meta info -->
+      <div class="invite-meta">
+        <div class="meta-row">
+          <span class="material-icons">person</span>
+          <span
+            >Invited by <strong>{{ invite.invitedBy.name }}</strong> ({{
+              invite.invitedBy.email
+            }})</span
+          >
+        </div>
+        <div class="meta-row">
+          <span class="material-icons">email</span>
+          <span
+            >Sent to <strong>{{ invite.inviteeEmail }}</strong></span
+          >
+        </div>
+        <div class="meta-row">
+          <span class="material-icons">schedule</span>
+          <span>Expires {{ invite.expiryTime | date: 'MMM d, y, h:mm a' }}</span>
+        </div>
+      </div>
+
+      <!-- Error message -->
+      <div class="error-msg" *ngIf="errorMessage">
+        <span class="material-icons">error_outline</span>
+        {{ errorMessage }}
+      </div>
+
+      <!-- Actions -->
+      <div class="action-row">
+        <button class="btn-accept" (click)="accept()">
+          <span class="material-icons">check_circle</span>
+          Accept Invitation
+        </button>
+        <button class="btn-decline" (click)="decline()">
+          <span class="material-icons">cancel</span>
+          Decline
+        </button>
+      </div>
+
+      <p class="hint">
+        By accepting, you'll be added to <strong>{{ invite.organization.name }}</strong> as a
+        <strong>{{ invite.role | titlecase }}</strong
+        >.
+      </p>
+    </ng-container>
+  </div>
+</div>

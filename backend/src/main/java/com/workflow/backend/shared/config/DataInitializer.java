@@ -1,4 +1,4 @@
-package com.workflow.backend.config;
+package com.workflow.backend.shared.config;
 
 import java.time.LocalDateTime;
 import org.springframework.boot.CommandLineRunner;

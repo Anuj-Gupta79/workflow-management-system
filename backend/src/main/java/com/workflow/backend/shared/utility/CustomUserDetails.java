@@ -1,4 +1,4 @@
-package com.workflow.backend.utility;
+package com.workflow.backend.shared.utility;
 
 import java.util.Collection;
 

@@ -7,6 +7,7 @@ import { SignupComponent } from './features/auth/pages/signup-component/signup-c
 import { ForgotPasswordComponent } from './features/auth/pages/forgot-password-component/forgot-password-component';
 import { ForgotPasswordSuccessComponent } from './features/auth/pages/forgot-password-success-component/forgot-password-success-component';
 import { ResetPasswordComponent } from './features/auth/pages/reset-password-component/reset-password-component';
+import { InvitePageComponent } from './features/organization/pages/invite-page/invite-page';
 
 // Dashboard layout
 import { DashboardLayout } from './layout/dashboard-layout/dashboard-layout';
@@ -41,6 +42,7 @@ export const routes: Routes = [
   { path: 'forgot-password', component: ForgotPasswordComponent },
   { path: 'forgot-password/success', component: ForgotPasswordSuccessComponent },
   { path: 'reset-password', component: ResetPasswordComponent },
+  { path: 'invite', component: InvitePageComponent },
 
   /* ---- ONBOARDING (auth required, shown once) ---- */
   {

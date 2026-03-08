@@ -10,7 +10,6 @@
             Empower teams.<br />
             Scale effortlessly.
           </p>
-
           <div class="brand-features">
             <div>✔ Smart task automation</div>
             <div>✔ Real-time collaboration</div>
@@ -28,6 +27,18 @@
               <p class="signup-subtitle">Start managing workflows with <span>FlowSync</span></p>
             </div>
 
+            <!-- ===== Invite Banner ===== -->
+            <div class="invite-banner" *ngIf="hasInvite">
+              <span class="material-icons">mail</span>
+              <div>
+                <strong>You have a pending invitation!</strong>
+                <p>Create your account to join the organization.</p>
+              </div>
+            </div>
+
+            <!-- ===== Error ===== -->
+            <div class="signup-error" *ngIf="error">{{ error }}</div>
+
             <form [formGroup]="signupForm" (ngSubmit)="submit()">
               <!-- Name -->
               <div class="signup-group">
@@ -38,7 +49,17 @@
               <!-- Email -->
               <div class="signup-group">
                 <label>Email</label>
+
+                <!-- Locked to invite email -->
+                <div class="locked-email" *ngIf="hasInvite">
+                  <span class="material-icons">lock</span>
+                  {{ inviteEmail }}
+                  <span class="locked-hint">Locked to invite email</span>
+                </div>
+
+                <!-- Normal email input -->
                 <input
+                  *ngIf="!hasInvite"
                   type="email"
                   class="signup-input"
                   formControlName="email"
@@ -49,7 +70,6 @@
               <!-- Password -->
               <div class="signup-group">
                 <label>Password</label>
-
                 <div class="signup-password-wrapper">
                   <input
                     [type]="showPassword ? 'text' : 'password'"
@@ -58,7 +78,6 @@
                     placeholder="Create a strong password"
                     (input)="checkStrength()"
                   />
-
                   <span class="signup-toggle" (click)="showPassword = !showPassword">
                     <span class="material-icons">
                       {{ showPassword ? 'visibility_off' : 'visibility' }}
@@ -70,22 +89,27 @@
                 <div class="password-strength">
                   <div class="strength-bar" [ngClass]="strengthClass"></div>
                 </div>
-
-                <small class="strength-text">
-                  {{ strengthText }}
-                </small>
+                <small class="strength-text">{{ strengthText }}</small>
               </div>
 
               <!-- CTA -->
-              <button type="submit" class="signup-btn" [disabled]="signupForm.invalid">
-                Get Started
+              <button type="submit" class="signup-btn" [disabled]="signupForm.invalid || loading">
+                <span *ngIf="!loading">{{
+                  hasInvite ? 'Create Account & Join' : 'Get Started'
+                }}</span>
+                <span *ngIf="loading" class="loader"></span>
               </button>
             </form>
 
             <div class="text-center mt-4">
               <small>
                 Already have an account?
-                <a routerLink="/login" class="signup-link">Login</a>
+                <a
+                  [routerLink]="['/login']"
+                  [queryParams]="hasInvite ? { inviteToken: inviteToken } : {}"
+                  class="signup-link"
+                  >Login</a
+                >
               </small>
             </div>
           </div>

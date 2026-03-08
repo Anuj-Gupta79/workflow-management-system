@@ -1,4 +1,4 @@
-package com.workflow.backend.config;
+package com.workflow.backend.shared.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -41,7 +41,8 @@ public class SecurityConfig {
                                                                 "/auth/**",
                                                                 "/swagger-ui/**",
                                                                 "/v3/api-docs/**",
-                                                                "/swagger-ui.html")
+                                                                "/swagger-ui.html",
+                                                                "/invites/validate")
                                                 .permitAll()
 
                                                 .anyRequest().authenticated())

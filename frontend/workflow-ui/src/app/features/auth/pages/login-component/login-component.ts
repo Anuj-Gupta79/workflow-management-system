@@ -1,7 +1,7 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormBuilder, Validators, FormGroup } from '@angular/forms';
-import { Router, RouterModule } from '@angular/router';
+import { Router, RouterModule, ActivatedRoute } from '@angular/router';
 import { BehaviorSubject, finalize } from 'rxjs';
 import { AuthService } from '../../../../cores/auth/auth.service';
 
@@ -12,24 +12,38 @@ import { AuthService } from '../../../../cores/auth/auth.service';
   templateUrl: './login-component.html',
   styleUrls: ['./login-component.css'],
 })
-export class LoginComponent {
+export class LoginComponent implements OnInit {
   loginForm: FormGroup;
 
-  // 🔥 Reactive state
   isLoading$ = new BehaviorSubject<boolean>(false);
   serverError$ = new BehaviorSubject<string | null>(null);
 
   showPassword = false;
 
+  // Invite flow
+  private inviteToken = '';
+  private returnUrl = '';
+
   constructor(
     private fb: FormBuilder,
     private authService: AuthService,
     private router: Router,
+    private route: ActivatedRoute,
   ) {
     this.loginForm = this.fb.group({
       email: ['', [Validators.required, Validators.email]],
       password: ['', Validators.required],
     });
+  }
+
+  ngOnInit(): void {
+    // Pick up invite token from query param or localStorage
+    this.inviteToken =
+      this.route.snapshot.queryParamMap.get('inviteToken') ||
+      localStorage.getItem('pendingInviteToken') ||
+      '';
+
+    this.returnUrl = this.route.snapshot.queryParamMap.get('returnUrl') || '';
   }
 
   submit(): void {
@@ -43,14 +57,17 @@ export class LoginComponent {
 
     this.authService
       .login(this.loginForm.value)
-      .pipe(
-        finalize(() => {
-          this.isLoading$.next(false);
-        }),
-      )
+      .pipe(finalize(() => this.isLoading$.next(false)))
       .subscribe({
         next: () => {
-          this.router.navigate(['/org-select']);
+          if (this.inviteToken) {
+            // Redirect back to invite page — it will handle accept/decline
+            this.router.navigateByUrl('/invite?token=' + this.inviteToken);
+          } else if (this.returnUrl) {
+            this.router.navigateByUrl(this.returnUrl);
+          } else {
+            this.router.navigate(['/org-select']);
+          }
         },
         error: (err) => {
           if (err.status === 401) {

@@ -5,7 +5,9 @@ import { Subject, BehaviorSubject, Observable, of, merge } from 'rxjs';
 import { takeUntil, startWith, switchMap, catchError, mapTo, shareReplay } from 'rxjs/operators';
 import { Member, OrgRole, ORG_ROLES, ROLE_HIERARCHY } from '../../models/member.model';
 import { MemberService } from '../../services/member.service';
+import { InviteService } from '../../../organization/services/invite.service';
 import { CurrentOrgService } from '../../../../layout/dashboard-layout/services/cur-org.service';
+import { ToastService } from '../../../../shared/service/toast.service';
 
 @Component({
   selector: 'app-members',
@@ -22,27 +24,23 @@ export class MembersComponent implements OnInit, OnDestroy {
   loading$: Observable<boolean> = of(true);
   error$ = new BehaviorSubject<string>('');
 
-  // Current user context
   currentUserId: number | null = null;
   currentRole: OrgRole = 'EMPLOYEE';
-  canManage = false; // OWNER or ADMIN
+  canManage = false;
   isManager = false;
 
-  // Role change inline editing
   editingMemberId: number | null = null;
   editingRole: OrgRole = 'EMPLOYEE';
-
-  // Remove confirmation
   removingMemberId: number | null = null;
 
-  // Add member panel
+  // Add/Invite panel
   showAddPanel = false;
   addEmail = '';
   addRole: OrgRole = 'EMPLOYEE';
   addLoading = false;
   addError = '';
+  addSuccess = '';
 
-  // Search
   searchText = '';
   filterRole = '';
 
@@ -54,7 +52,9 @@ export class MembersComponent implements OnInit, OnDestroy {
 
   constructor(
     private memberService: MemberService,
+    private inviteService: InviteService,
     private currentOrgService: CurrentOrgService,
+    private toastService: ToastService,
   ) {}
 
   ngOnInit(): void {
@@ -111,10 +111,7 @@ export class MembersComponent implements OnInit, OnDestroy {
         (m) => m.user.name.toLowerCase().includes(q) || m.user.email.toLowerCase().includes(q),
       );
     }
-    if (this.filterRole) {
-      list = list.filter((m) => m.role === this.filterRole);
-    }
-    // Sort by role hierarchy desc then name
+    if (this.filterRole) list = list.filter((m) => m.role === this.filterRole);
     list.sort(
       (a, b) =>
         ROLE_HIERARCHY[b.role] - ROLE_HIERARCHY[a.role] || a.user.name.localeCompare(b.user.name),
@@ -173,19 +170,62 @@ export class MembersComponent implements OnInit, OnDestroy {
     });
   }
 
-  // ===== ADD MEMBER =====
+  // ===== INVITE =====
   toggleAddPanel(): void {
     this.showAddPanel = !this.showAddPanel;
     this.addEmail = '';
     this.addRole = 'EMPLOYEE';
     this.addError = '';
+    this.addSuccess = '';
+  }
+
+  sendInvite(): void {
+    if (!this.addEmail.trim()) {
+      this.addError = 'Please enter an email address.';
+      return;
+    }
+
+    const orgId = this.currentOrgService.getCurrent()?.id;
+    if (!orgId) return;
+
+    this.addLoading = true;
+    this.addError = '';
+    this.addSuccess = '';
+
+    const emailSent = this.addEmail.trim();
+
+    this.inviteService.sendInvite(orgId, emailSent, this.addRole).subscribe({
+      next: () => {
+        this.addLoading = false;
+        this.addEmail = '';
+        this.addRole = 'EMPLOYEE';
+        this.toastService.success(`Invite sent to ${emailSent} successfully!`);
+        setTimeout(() => {
+          this.showAddPanel = false;
+          this.addSuccess = '';
+        }, 500);
+      },
+      error: (err) => {
+        this.addLoading = false;
+        const serverMsg: string = err?.error?.message ?? '';
+        if (serverMsg.toLowerCase().includes('pending invite already exists')) {
+          this.addError = `An invite is already pending for ${emailSent}. Wait for them to respond.`;
+          this.toastService.error(`Invite already pending for ${emailSent}.`);
+        } else if (serverMsg.toLowerCase().includes('already a member')) {
+          this.addError = `${emailSent} is already a member of this organization.`;
+          this.toastService.error(`${emailSent} is already a member.`);
+        } else {
+          this.addError = serverMsg || 'Failed to send invite. Please try again.';
+          this.toastService.error(this.addError);
+        }
+      },
+    });
   }
 
   // ===== HELPERS =====
   canEditMember(member: Member): boolean {
     if (!this.canManage) return false;
     if (member.role === 'OWNER') return false;
-    // Admin cannot edit another admin unless they are owner
     if (member.role === 'ADMIN' && this.currentRole !== 'OWNER') return false;
     if (member.user.id === this.currentUserId) return false;
     return true;
@@ -211,8 +251,7 @@ export class MembersComponent implements OnInit, OnDestroy {
 
   getAvatarColor(name: string): string {
     const colors = ['#6366f1', '#0ea5e9', '#10b981', '#f59e0b', '#ef4444', '#8b5cf6', '#ec4899'];
-    const idx = name.charCodeAt(0) % colors.length;
-    return colors[idx];
+    return colors[name.charCodeAt(0) % colors.length];
   }
 
   trackById(_: number, m: Member) {

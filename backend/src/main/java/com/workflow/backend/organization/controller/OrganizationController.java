@@ -18,9 +18,9 @@ import com.workflow.backend.organization.dto.OrganizationRequest;
 import com.workflow.backend.organization.entity.Organization;
 import com.workflow.backend.organization.service.OrganizationMemberService;
 import com.workflow.backend.organization.service.OrganizationService;
+import com.workflow.backend.shared.utility.CustomUserDetails;
 import com.workflow.backend.user.entity.User;
 import com.workflow.backend.user.repository.UserRepository;
-import com.workflow.backend.utility.CustomUserDetails;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;

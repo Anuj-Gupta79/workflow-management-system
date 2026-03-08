@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 
 import com.workflow.backend.organization.repository.OrganizationMemberRepository;
 import com.workflow.backend.organization.repository.OrganizationRepository;
+import com.workflow.backend.shared.utility.CustomUserDetails;
 import com.workflow.backend.task.dto.TaskRequest;
 import com.workflow.backend.task.entity.Task;
 import com.workflow.backend.task.repository.TaskRepository;
@@ -14,7 +15,6 @@ import com.workflow.backend.task.utility.TaskPriority;
 import com.workflow.backend.task.utility.TaskStatus;
 import com.workflow.backend.user.entity.User;
 import com.workflow.backend.user.repository.UserRepository;
-import com.workflow.backend.utility.CustomUserDetails;
 
 import lombok.RequiredArgsConstructor;
 

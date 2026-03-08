@@ -41,6 +41,17 @@
   animation: fadeUp 0.6s ease;
 }
 
+@keyframes fadeUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
 .signup-body {
   padding: 3rem;
 }
@@ -52,6 +63,48 @@
 .signup-subtitle span {
   font-weight: 600;
   color: #5b3df5;
+}
+
+/* ===== Invite Banner ===== */
+.invite-banner {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  background: #eef2ff;
+  border: 1.5px solid #c7d2fe;
+  border-radius: 12px;
+  padding: 14px 16px;
+  margin-bottom: 1.5rem;
+  color: #3730a3;
+}
+
+.invite-banner .material-icons {
+  font-size: 20px;
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+
+.invite-banner strong {
+  display: block;
+  font-size: 0.9rem;
+  margin-bottom: 2px;
+}
+
+.invite-banner p {
+  margin: 0;
+  font-size: 0.8rem;
+  opacity: 0.8;
+}
+
+/* ===== Error ===== */
+.signup-error {
+  background: #fef2f2;
+  border: 1px solid #fecaca;
+  color: #dc2626;
+  border-radius: 10px;
+  padding: 10px 14px;
+  font-size: 0.85rem;
+  margin-bottom: 1rem;
 }
 
 /* Inputs */
@@ -66,12 +119,40 @@
   border: 1px solid #ddd;
   padding: 0 14px;
   transition: 0.3s ease;
+  box-sizing: border-box;
 }
 
 .signup-input:focus {
   border-color: #5b3df5;
   box-shadow: 0 0 0 3px rgba(91, 61, 245, 0.1);
   outline: none;
+}
+
+/* Locked email */
+.locked-email {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  height: 48px;
+  border-radius: 12px;
+  border: 1px solid #c7d2fe;
+  background: #f5f3ff;
+  padding: 0 14px;
+  font-size: 0.9rem;
+  color: #4f46e5;
+  font-weight: 500;
+}
+
+.locked-email .material-icons {
+  font-size: 16px;
+  color: #6366f1;
+}
+
+.locked-hint {
+  margin-left: auto;
+  font-size: 0.72rem;
+  color: #94a3b8;
+  font-weight: 400;
 }
 
 /* Password */
@@ -136,6 +217,9 @@
   color: white;
   font-weight: 600;
   transition: 0.3s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .signup-btn:hover:not(:disabled) {
@@ -145,6 +229,33 @@
 
 .signup-btn:disabled {
   opacity: 0.6;
+}
+
+/* Loader spinner inside button */
+.loader {
+  width: 18px;
+  height: 18px;
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  border-top-color: white;
+  border-radius: 50%;
+  animation: spin 0.7s linear infinite;
+  display: inline-block;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.signup-link {
+  color: #5b3df5;
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.signup-link:hover {
+  text-decoration: underline;
 }
 
 /* Responsive */

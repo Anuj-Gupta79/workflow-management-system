@@ -3,11 +3,12 @@ import { CommonModule } from '@angular/common';
 import { RouterOutlet } from '@angular/router';
 import { Navbar } from './navbar/navbar';
 import { Sidebar } from './sidebar/sidebar';
+import { ToastComponent } from '../../shared/components/toast/toast';
 
 @Component({
   selector: 'app-dashboard-layout',
   standalone: true,
-  imports: [CommonModule, RouterOutlet, Navbar, Sidebar],
+  imports: [CommonModule, RouterOutlet, Navbar, Sidebar, ToastComponent],
   templateUrl: './dashboard-layout.html',
   styleUrls: ['./dashboard-layout.css'],
 })
@@ -26,7 +27,6 @@ export class DashboardLayout implements OnInit {
 
   private checkScreenSize() {
     if (window.innerWidth <= 768) {
-      // Always closed on mobile by default
       this.isMobileOpen = false;
       this.isSidebarCollapsed = false;
     }

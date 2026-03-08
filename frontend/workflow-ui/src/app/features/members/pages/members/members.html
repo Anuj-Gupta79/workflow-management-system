@@ -6,12 +6,12 @@
       <p class="page-subtitle">Manage your organization's team</p>
     </div>
     <div class="header-actions">
-      <button class="btn-refresh" (click)="reload()">
+      <button class="btn-refresh" (click)="reload()" title="Refresh">
         <span class="material-icons">refresh</span>
       </button>
       <button class="btn-add" *ngIf="canManage" (click)="toggleAddPanel()">
         <span class="material-icons">person_add</span>
-        Add Member
+        {{ showAddPanel ? 'Cancel' : 'Invite Member' }}
       </button>
     </div>
   </div>
@@ -19,43 +19,66 @@
   <!-- ===== Manager notice ===== -->
   <div class="role-notice info" *ngIf="isManager">
     <span class="material-icons">info</span>
-    As a Manager you have read-only access. Raise a request via the
-    <strong>MemberRequest</strong> feature to propose role changes or removals.
+    As a Manager you have read-only access. Contact an Admin or Owner to make changes to members.
   </div>
 
-  <!-- ===== Add Member Panel ===== -->
+  <!-- ===== Invite Panel ===== -->
   <div class="add-panel" *ngIf="showAddPanel && canManage">
     <div class="add-panel-header">
-      <h4>Add New Member</h4>
+      <h4>
+        <span class="material-icons">send</span>
+        Send Invitation
+      </h4>
       <button class="icon-btn" (click)="toggleAddPanel()">
         <span class="material-icons">close</span>
       </button>
     </div>
+
     <p class="add-panel-note">
-      Enter the user's registered email. They will receive an invitation to join this organization.
+      An invitation email will be sent. If they don't have an account yet, they'll be prompted to
+      create one first.
     </p>
+
     <div class="add-panel-form">
       <div class="form-field">
         <label>Email address</label>
         <input
           type="email"
           [(ngModel)]="addEmail"
-          placeholder="user@example.com"
+          placeholder="colleague@example.com"
           aria-label="Member email"
+          [disabled]="addLoading"
         />
       </div>
       <div class="form-field">
         <label>Role</label>
-        <select [(ngModel)]="addRole" aria-label="Member role">
+        <select [(ngModel)]="addRole" aria-label="Member role" [disabled]="addLoading">
           <option *ngFor="let r of ORG_ROLES" [value]="r">{{ r | titlecase }}</option>
         </select>
       </div>
     </div>
-    <div class="add-error" *ngIf="addError">{{ addError }}</div>
+
+    <!-- Error -->
+    <div class="add-error" *ngIf="addError">
+      <span class="material-icons">error_outline</span>
+      {{ addError }}
+    </div>
+
+    <!-- Success -->
+    <div class="add-success" *ngIf="addSuccess">
+      <span class="material-icons">check_circle</span>
+      {{ addSuccess }}
+    </div>
+
     <div class="add-panel-actions">
-      <button class="btn-outline" (click)="toggleAddPanel()">Cancel</button>
-      <button class="btn-primary" [disabled]="addLoading || !addEmail">
+      <button class="btn-outline" (click)="toggleAddPanel()" [disabled]="addLoading">Cancel</button>
+      <button
+        class="btn-primary"
+        [disabled]="addLoading || !addEmail.trim()"
+        (click)="sendInvite()"
+      >
         <div class="btn-spinner-sm" *ngIf="addLoading"></div>
+        <span class="material-icons" *ngIf="!addLoading">send</span>
         {{ addLoading ? 'Sending...' : 'Send Invite' }}
       </button>
     </div>
@@ -136,7 +159,6 @@
 
             <!-- Role -->
             <td class="role-cell">
-              <!-- Editing -->
               <ng-container *ngIf="editingMemberId === member.id">
                 <div class="role-edit-row">
                   <select [(ngModel)]="editingRole" aria-label="Select new role">
@@ -150,8 +172,6 @@
                   </button>
                 </div>
               </ng-container>
-
-              <!-- Display -->
               <span
                 *ngIf="editingMemberId !== member.id"
                 class="role-badge"
@@ -168,7 +188,6 @@
 
             <!-- Actions -->
             <td class="actions-cell" *ngIf="canManage">
-              <!-- Remove confirmation inline -->
               <ng-container *ngIf="removingMemberId === member.id">
                 <div class="confirm-remove">
                   <span>Remove {{ member.user.name }}?</span>
@@ -177,7 +196,6 @@
                 </div>
               </ng-container>
 
-              <!-- Normal actions -->
               <ng-container *ngIf="removingMemberId !== member.id">
                 <button
                   class="icon-btn"
@@ -195,9 +213,9 @@
                 >
                   <span class="material-icons">person_remove</span>
                 </button>
-                <span class="no-actions" *ngIf="!canEditMember(member) && !canRemoveMember(member)">
-                  —
-                </span>
+                <span class="no-actions" *ngIf="!canEditMember(member) && !canRemoveMember(member)"
+                  >—</span
+                >
               </ng-container>
             </td>
           </tr>

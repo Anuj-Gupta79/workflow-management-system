@@ -8,9 +8,9 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
+import com.workflow.backend.shared.utility.CustomUserDetails;
 import com.workflow.backend.user.entity.User;
 import com.workflow.backend.user.repository.UserRepository;
-import com.workflow.backend.utility.CustomUserDetails;
 
 @Service
 public class UserDetailServiceImpl implements UserDetailsService {

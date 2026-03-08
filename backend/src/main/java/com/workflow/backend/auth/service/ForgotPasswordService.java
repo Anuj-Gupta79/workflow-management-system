@@ -9,6 +9,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.workflow.backend.auth.entity.PasswordResetToken;
 import com.workflow.backend.auth.repository.PasswordResetTokenRepository;
+import com.workflow.backend.shared.service.EmailService;
 import com.workflow.backend.user.entity.User;
 import com.workflow.backend.user.repository.UserRepository;
 
