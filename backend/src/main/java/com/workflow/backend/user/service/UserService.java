@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.springframework.security.core.Authentication;
 
+import com.workflow.backend.user.dto.ChangePasswordRequest;
 import com.workflow.backend.user.dto.UserRequest;
 import com.workflow.backend.user.dto.UserResponse;
 import com.workflow.backend.user.entity.User;
@@ -25,4 +26,6 @@ public interface UserService {
     UserResponse getCurrentUser(Authentication authentication);
 
     UserResponse updateProfile(Authentication authentication, UserRequest request);
+
+    void changePassword(Authentication authentication, ChangePasswordRequest request);
 }

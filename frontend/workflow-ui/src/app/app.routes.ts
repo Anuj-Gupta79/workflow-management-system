@@ -31,7 +31,6 @@ import { Admin } from './features/admin/pages/admin';
 import { ApprovalsComponent } from './features/approvals/pages/approvals/approvals';
 import { Workflows as WorkflowsComponent } from './features/workflows/pages/workflows/workflows';
 import { MembersComponent } from './features/members/pages/members/members';
-import { Departments as DepartmentsComponent } from './features/departments/pages/departments/departments';
 import { Settings as SettingsComponent } from './features/settings/pages/settings/settings';
 
 export const routes: Routes = [
@@ -72,7 +71,6 @@ export const routes: Routes = [
       { path: 'approvals', component: ApprovalsComponent },
       { path: 'workflows', component: WorkflowsComponent },
       { path: 'members', component: MembersComponent },
-      { path: 'departments', component: DepartmentsComponent },
       { path: 'settings', component: SettingsComponent },
     ],
   },

@@ -1,8 +1,283 @@
-<div class="placeholder-page">
-  <div class="placeholder-card">
-    <span class="material-icons placeholder-icon">settings</span>
-    <h2>Settings</h2>
-    <p>This section is coming soon. We're building it out — check back shortly!</p>
-    <div class="placeholder-badge">🚧 In Development</div>
+<div class="settings-page">
+
+  <!-- ===== Header ===== -->
+  <div class="page-header">
+    <div>
+      <h2 class="page-title">Settings</h2>
+      <p class="page-subtitle">Manage your account and organization preferences</p>
+    </div>
+  </div>
+
+  <!-- ===== Tabs ===== -->
+  <div class="tabs">
+    <button class="tab-btn" [class.active]="activeTab === 'account'" (click)="setTab('account')">
+      <span class="material-icons">lock</span>
+      Account
+    </button>
+    <button class="tab-btn" [class.active]="activeTab === 'organization'" (click)="setTab('organization')">
+      <span class="material-icons">business</span>
+      Organization
+    </button>
+    <button class="tab-btn" [class.active]="activeTab === 'appearance'" (click)="setTab('appearance')">
+      <span class="material-icons">palette</span>
+      Appearance
+    </button>
+  </div>
+
+  <!-- ===== Account Tab ===== -->
+  <div class="tab-content" *ngIf="activeTab === 'account'">
+    <div class="settings-card">
+      <div class="card-header">
+        <span class="material-icons card-icon">lock_reset</span>
+        <div>
+          <h3>Change Password</h3>
+          <p>Update your password to keep your account secure.</p>
+        </div>
+      </div>
+
+      <form [formGroup]="passwordForm" (ngSubmit)="submitPasswordChange()">
+
+        <!-- Current Password -->
+        <div class="form-group">
+          <label>Current Password</label>
+          <div class="input-wrapper">
+            <input
+              [type]="showCurrentPassword ? 'text' : 'password'"
+              formControlName="currentPassword"
+              placeholder="Enter current password"
+              class="settings-input"
+            />
+            <button type="button" class="toggle-btn" (click)="showCurrentPassword = !showCurrentPassword">
+              <span class="material-icons">{{ showCurrentPassword ? 'visibility_off' : 'visibility' }}</span>
+            </button>
+          </div>
+          <small class="field-error"
+            *ngIf="passwordForm.get('currentPassword')?.touched && passwordForm.get('currentPassword')?.invalid">
+            Current password is required.
+          </small>
+        </div>
+
+        <!-- New Password -->
+        <div class="form-group">
+          <label>New Password</label>
+          <div class="input-wrapper">
+            <input
+              [type]="showNewPassword ? 'text' : 'password'"
+              formControlName="newPassword"
+              placeholder="At least 6 characters"
+              class="settings-input"
+            />
+            <button type="button" class="toggle-btn" (click)="showNewPassword = !showNewPassword">
+              <span class="material-icons">{{ showNewPassword ? 'visibility_off' : 'visibility' }}</span>
+            </button>
+          </div>
+          <small class="field-error"
+            *ngIf="passwordForm.get('newPassword')?.touched && passwordForm.get('newPassword')?.hasError('minlength')">
+            Password must be at least 6 characters.
+          </small>
+          <small class="field-error"
+            *ngIf="passwordForm.get('newPassword')?.touched && passwordForm.get('newPassword')?.hasError('required')">
+            New password is required.
+          </small>
+        </div>
+
+        <!-- Confirm Password -->
+        <div class="form-group">
+          <label>Confirm New Password</label>
+          <div class="input-wrapper">
+            <input
+              [type]="showConfirmPassword ? 'text' : 'password'"
+              formControlName="confirmPassword"
+              placeholder="Repeat new password"
+              class="settings-input"
+            />
+            <button type="button" class="toggle-btn" (click)="showConfirmPassword = !showConfirmPassword">
+              <span class="material-icons">{{ showConfirmPassword ? 'visibility_off' : 'visibility' }}</span>
+            </button>
+          </div>
+          <small class="field-error"
+            *ngIf="passwordForm.get('confirmPassword')?.touched && passwordForm.hasError('passwordMismatch')">
+            Passwords do not match.
+          </small>
+        </div>
+
+        <div class="form-actions">
+          <button type="submit" class="btn-primary" [disabled]="passwordForm.invalid || passwordLoading">
+            <div class="btn-spinner" *ngIf="passwordLoading"></div>
+            <span class="material-icons" *ngIf="!passwordLoading">save</span>
+            {{ passwordLoading ? 'Saving...' : 'Update Password' }}
+          </button>
+        </div>
+
+      </form>
+    </div>
+  </div>
+
+  <!-- ===== Organization Tab ===== -->
+  <div class="tab-content" *ngIf="activeTab === 'organization'">
+
+    <!-- OWNER: editable -->
+    <ng-container *ngIf="isOwner">
+
+      <!-- Update Name -->
+      <div class="settings-card">
+        <div class="card-header">
+          <span class="material-icons card-icon">edit</span>
+          <div>
+            <h3>Organization Name</h3>
+            <p>Update the display name of your organization.</p>
+          </div>
+        </div>
+        <div class="form-group">
+          <label>Name</label>
+          <input
+            type="text"
+            [(ngModel)]="orgName"
+            class="settings-input"
+            placeholder="Organization name"
+          />
+        </div>
+        <div class="form-actions">
+          <button class="btn-primary" [disabled]="!orgName.trim() || orgNameLoading" (click)="saveOrgName()">
+            <div class="btn-spinner" *ngIf="orgNameLoading"></div>
+            <span class="material-icons" *ngIf="!orgNameLoading">save</span>
+            {{ orgNameLoading ? 'Saving...' : 'Save Changes' }}
+          </button>
+        </div>
+      </div>
+
+      <!-- Danger Zone -->
+      <div class="settings-card danger-card">
+        <div class="card-header">
+          <span class="material-icons card-icon danger-icon">warning</span>
+          <div>
+            <h3>Danger Zone</h3>
+            <p>Irreversible actions. Proceed with caution.</p>
+          </div>
+        </div>
+        <div class="danger-row">
+          <div>
+            <strong>Delete Organization</strong>
+            <p>Permanently deletes <strong>{{ currentOrg?.name }}</strong> and removes all members. This cannot be undone.</p>
+          </div>
+          <button class="btn-danger" (click)="openDeleteModal()">
+            <span class="material-icons">delete_forever</span>
+            Delete Organization
+          </button>
+        </div>
+      </div>
+
+    </ng-container>
+
+    <!-- Non-owner: read only -->
+    <div class="settings-card" *ngIf="!isOwner">
+      <div class="card-header">
+        <span class="material-icons card-icon">business</span>
+        <div>
+          <h3>Organization Info</h3>
+          <p>You have read-only access to organization settings.</p>
+        </div>
+      </div>
+      <div class="info-row">
+        <span class="info-label">Name</span>
+        <span class="info-value">{{ currentOrg?.name }}</span>
+      </div>
+      <div class="info-row">
+        <span class="info-label">Your Role</span>
+        <span class="role-chip" [ngClass]="'role-' + currentOrg?.role?.toLowerCase()">
+          {{ currentOrg?.role | titlecase }}
+        </span>
+      </div>
+      <div class="role-notice">
+        <span class="material-icons">info</span>
+        Only the Owner can modify organization settings.
+      </div>
+    </div>
+
+  </div>
+
+  <!-- ===== Appearance Tab ===== -->
+  <div class="tab-content" *ngIf="activeTab === 'appearance'">
+    <div class="settings-card">
+      <div class="card-header">
+        <span class="material-icons card-icon">palette</span>
+        <div>
+          <h3>Theme</h3>
+          <p>Choose how FlowSync looks for you.</p>
+        </div>
+      </div>
+
+      <div class="theme-options">
+
+        <!-- Light -->
+        <div class="theme-option" [class.selected]="!isDarkMode" (click)="isDarkMode && toggleDarkMode()">
+          <div class="theme-preview light-preview">
+            <div class="preview-sidebar"></div>
+            <div class="preview-content">
+              <div class="preview-bar"></div>
+              <div class="preview-card"></div>
+            </div>
+          </div>
+          <div class="theme-label">
+            <span class="material-icons">light_mode</span>
+            Light
+            <span class="selected-badge" *ngIf="!isDarkMode">Active</span>
+          </div>
+        </div>
+
+        <!-- Dark -->
+        <div class="theme-option" [class.selected]="isDarkMode" (click)="!isDarkMode && toggleDarkMode()">
+          <div class="theme-preview dark-preview">
+            <div class="preview-sidebar"></div>
+            <div class="preview-content">
+              <div class="preview-bar"></div>
+              <div class="preview-card"></div>
+            </div>
+          </div>
+          <div class="theme-label">
+            <span class="material-icons">dark_mode</span>
+            Dark
+            <span class="selected-badge" *ngIf="isDarkMode">Active</span>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<!-- ===== Delete Confirmation Modal ===== -->
+<div class="modal-backdrop" *ngIf="showDeleteModal" (click)="closeDeleteModal()">
+  <div class="modal" (click)="$event.stopPropagation()">
+    <div class="modal-header">
+      <span class="material-icons modal-warn-icon">warning</span>
+      <h3>Delete Organization</h3>
+    </div>
+    <div class="modal-body">
+      <p>
+        This will permanently delete <strong>{{ currentOrg?.name }}</strong> and remove all
+        members. This action <strong>cannot be undone</strong>.
+      </p>
+      <div class="form-group">
+        <label>Type <strong>{{ currentOrg?.name }}</strong> to confirm:</label>
+        <input
+          type="text"
+          [(ngModel)]="deleteConfirmText"
+          class="settings-input"
+          placeholder="Organization name"
+        />
+      </div>
+    </div>
+    <div class="modal-actions">
+      <button class="btn-outline" (click)="closeDeleteModal()" [disabled]="deleteLoading">
+        Cancel
+      </button>
+      <button class="btn-danger" [disabled]="!canConfirmDelete || deleteLoading" (click)="confirmDelete()">
+        <div class="btn-spinner btn-spinner-white" *ngIf="deleteLoading"></div>
+        <span class="material-icons" *ngIf="!deleteLoading">delete_forever</span>
+        {{ deleteLoading ? 'Deleting...' : 'Delete Organization' }}
+      </button>
+    </div>
   </div>
 </div>

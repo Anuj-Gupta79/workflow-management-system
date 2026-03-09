@@ -3,8 +3,10 @@ package com.workflow.backend.user.service;
 import java.util.List;
 
 import org.springframework.security.core.Authentication;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import com.workflow.backend.user.dto.ChangePasswordRequest;
 import com.workflow.backend.user.dto.UserRequest;
 import com.workflow.backend.user.dto.UserResponse;
 import com.workflow.backend.user.entity.User;
@@ -18,6 +20,7 @@ import lombok.RequiredArgsConstructor;
 public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
+    private final PasswordEncoder passwordEncoder;
 
     @Override
     public List<User> getAllUsers() {
@@ -83,5 +86,24 @@ public class UserServiceImpl implements UserService {
         }
 
         return new UserResponse(userRepository.save(user));
+    }
+
+    @Override
+    public void changePassword(Authentication authentication, ChangePasswordRequest request) {
+
+        User user = getUserByEmail(authentication.getName());
+
+        // Verify current password
+        if (!passwordEncoder.matches(request.getCurrentPassword(), user.getPassword())) {
+            throw new RuntimeException("Current password is incorrect");
+        }
+
+        // Prevent same password
+        if (passwordEncoder.matches(request.getNewPassword(), user.getPassword())) {
+            throw new RuntimeException("New password must be different from current password");
+        }
+
+        user.setPassword(passwordEncoder.encode(request.getNewPassword()));
+        userRepository.save(user);
     }
 }

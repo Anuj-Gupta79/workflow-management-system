@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.springframework.stereotype.Service;
 
+import com.workflow.backend.organization.dto.OrganizationRequest;
 import com.workflow.backend.organization.entity.Organization;
 import com.workflow.backend.organization.repository.OrganizationRepository;
 
@@ -61,7 +62,7 @@ public class OrganizationServiceImpl implements OrganizationService {
     }
 
     @Override
-    public Organization updateOrganization(Long id, Organization updatedOrg) {
+    public Organization updateOrganization(Long id, OrganizationRequest updatedOrg) {
 
         Organization org = getOrganizationById(id);
 

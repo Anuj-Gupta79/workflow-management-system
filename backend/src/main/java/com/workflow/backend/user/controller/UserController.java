@@ -6,6 +6,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
+import com.workflow.backend.user.dto.ChangePasswordRequest;
 import com.workflow.backend.user.dto.UserRequest;
 import com.workflow.backend.user.dto.UserResponse;
 import com.workflow.backend.user.service.UserServiceImpl;
@@ -13,6 +14,7 @@ import com.workflow.backend.user.service.UserServiceImpl;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 
 import java.util.List;
 
@@ -65,6 +67,17 @@ public class UserController {
             Authentication authentication) {
 
         userService.deleteUser(id, authentication);
+        return ResponseEntity.noContent().build();
+    }
+
+    @Operation(summary = "Change current user password")
+    @PutMapping("/me/password")
+    @PreAuthorize("isAuthenticated()")
+    public ResponseEntity<Void> changePassword(
+            Authentication authentication,
+            @RequestBody @Valid ChangePasswordRequest request) {
+
+        userService.changePassword(authentication, request);
         return ResponseEntity.noContent().build();
     }
 }

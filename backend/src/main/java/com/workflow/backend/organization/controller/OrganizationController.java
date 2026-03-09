@@ -79,11 +79,10 @@ public class OrganizationController {
 
     @Operation(summary = "Update organization")
     @PutMapping("/{id}")
-    @PreAuthorize("@orgSecurity.hasRole(#id, T(com.workflow.backend.organization.utility.OrganizationRole).OWNER, authentication) "
-            +
-            "or @orgSecurity.hasRole(#id, T(com.workflow.backend.organization.utility.OrganizationRole).ADMIN, authentication)")
-    public ResponseEntity<Organization> updateOrganization(@PathVariable Long id, @RequestBody Organization org) {
-        return ResponseEntity.ok(organizationService.updateOrganization(id, org));
+    @PreAuthorize("@orgSecurity.hasRole(#id, T(com.workflow.backend.organization.utility.OrganizationRole).OWNER, authentication)")
+    public ResponseEntity<Organization> updateOrganization(@PathVariable Long id,
+            @RequestBody OrganizationRequest request) {
+        return ResponseEntity.ok(organizationService.updateOrganization(id, request));
     }
 
     @Operation(summary = "Delete organization (OWNER only)")

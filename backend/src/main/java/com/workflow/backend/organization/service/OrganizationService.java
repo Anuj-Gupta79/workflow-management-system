@@ -2,6 +2,7 @@ package com.workflow.backend.organization.service;
 
 import java.util.List;
 
+import com.workflow.backend.organization.dto.OrganizationRequest;
 import com.workflow.backend.organization.entity.Organization;
 
 public interface OrganizationService {
@@ -21,5 +22,5 @@ public interface OrganizationService {
     void deleteOrganization(Long id);
 
     // Update organization details
-    Organization updateOrganization(Long id, Organization updatedOrg);
+    Organization updateOrganization(Long id, OrganizationRequest updatedOrg);
 }
