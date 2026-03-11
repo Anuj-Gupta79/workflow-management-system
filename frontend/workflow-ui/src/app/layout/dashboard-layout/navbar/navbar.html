@@ -4,7 +4,6 @@
     <button class="menu-toggle" (click)="onToggle()">
       <span class="material-icons">menu</span>
     </button>
-
     <div class="brand">
       <div class="logo-badge">FS</div>
       <span class="brand-text">FlowSync</span>
@@ -32,7 +31,6 @@
         <div class="dropdown-header">
           <span>Switch Workspace</span>
         </div>
-
         <div
           class="org-option"
           *ngFor="let org of allOrgs$ | async"
@@ -48,9 +46,7 @@
             >check</span
           >
         </div>
-
         <div class="dropdown-divider"></div>
-
         <div class="dropdown-item" (click)="goToOrgSelect()">
           <span class="material-icons">add_circle_outline</span>
           Manage Workspaces
@@ -58,39 +54,69 @@
       </div>
     </div>
 
-    <!-- NOTIFICATIONS -->
+    <!-- ===== NOTIFICATIONS ===== -->
     <div class="dropdown-wrapper">
       <div class="icon-button" (click)="toggleNotifications($event)">
         <span class="material-icons">notifications</span>
-        <span *ngIf="notifications.length > 0" class="badge">{{ notifications.length }}</span>
+        <span class="badge" *ngIf="unreadCount > 0">
+          {{ unreadCount > 99 ? '99+' : unreadCount }}
+        </span>
       </div>
 
-      <div class="custom-dropdown" *ngIf="showNotifications" (click)="$event.stopPropagation()">
+      <div
+        class="custom-dropdown notif-dropdown"
+        *ngIf="showNotifications"
+        (click)="$event.stopPropagation()"
+      >
         <div class="dropdown-header">
           <span>Notifications</span>
-          <button (click)="clearNotifications()">Clear All</button>
+          <button
+            *ngIf="unreadCount > 0"
+            class="mark-all-btn"
+            (click)="markAllRead()"
+            [disabled]="markingAllRead"
+          >
+            {{ markingAllRead ? 'Marking...' : 'Mark all read' }}
+          </button>
         </div>
 
-        <div class="notification-list" *ngIf="notifications.length > 0; else emptyState">
+        <!-- Loading -->
+        <div class="notif-loading" *ngIf="notifLoading">
+          <div class="notif-spinner"></div>
+          <span>Loading...</span>
+        </div>
+
+        <!-- List -->
+        <div class="notification-list" *ngIf="!notifLoading && notifications.length > 0">
           <div
             class="notification-item"
             *ngFor="let n of notifications; trackBy: trackByNotificationId"
+            [class.unread]="!n.read"
+            (click)="markAsRead(n, $event)"
           >
-            <span class="material-icons notif-icon">notifications</span>
-            <span class="notif-text">{{ n.message }}</span>
+            <div class="notif-icon-wrapper" [style.background]="getNotifIconColor(n.type) + '1a'">
+              <span class="material-icons notif-icon" [style.color]="getNotifIconColor(n.type)">
+                {{ getNotifIcon(n.type) }}
+              </span>
+            </div>
+            <div class="notif-body">
+              <span class="notif-text">{{ n.message }}</span>
+              <span class="notif-time">{{ n.createdAt | date: 'MMM d, h:mm a' }}</span>
+            </div>
+            <div class="unread-dot" *ngIf="!n.read"></div>
           </div>
         </div>
 
-        <ng-template #emptyState>
-          <div class="empty">
-            <span class="material-icons">notifications_off</span>
-            <div>No notifications</div>
-          </div>
-        </ng-template>
+        <!-- Empty -->
+        <div class="empty" *ngIf="!notifLoading && notifications.length === 0">
+          <span class="material-icons">notifications_none</span>
+          <span>You're all caught up!</span>
+          <span style="font-size: 0.75rem; color: #cbd5e1">No new notifications</span>
+        </div>
       </div>
     </div>
 
-    <!-- PROFILE -->
+    <!-- ===== PROFILE ===== -->
     <div class="dropdown-wrapper" *ngIf="profile$ | async as profile">
       <div class="user-info" (click)="toggleProfileMenu($event)">
         <span class="user-name">{{ profile?.name }}</span>
@@ -105,14 +131,11 @@
             <div class="name">{{ profile?.name }}</div>
           </div>
         </div>
-
         <div class="dropdown-divider"></div>
-
         <div class="dropdown-item" (click)="goToProfile()">
           <span class="material-icons">person</span>
           My Profile
         </div>
-
         <div class="dropdown-item logout" (click)="logout()">
           <span class="material-icons">logout</span>
           Logout
@@ -121,3 +144,6 @@
     </div>
   </div>
 </nav>
+
+// src/app/layout/dashboard-layout/services/notification.service.ts //grep -n
+"fetchNotifications\|onDone" src/app/layout/dashboard-layout/services/notification.service.ts

@@ -1,215 +1,229 @@
-Perfect! Let’s make your **fullstack README fully polished and SaaS-professional** with **GitHub-style badges**—this gives it that “resume & portfolio ready” feel. I’ll add badges for **license, Angular version, Spring Boot version, build status, code coverage**, and some more nice-to-have ones.
+# 🔄 Workflow Management System
 
-Here’s the updated version:
-
----
-
-# 🔄 Workflow Management System – Fullstack SaaS
-
-![Frontend](https://img.shields.io/badge/Frontend-Angular-red?style=flat-square)
-![Backend](https://img.shields.io/badge/Backend-Spring%20Boot-green?style=flat-square)
-![Database](https://img.shields.io/badge/Database-MySQL-blue?style=flat-square)
-![Status](https://img.shields.io/badge/Status-Production-ready-brightgreen?style=flat-square)
+![Frontend](https://img.shields.io/badge/Frontend-Angular%2016-red?style=flat-square)
+![Backend](https://img.shields.io/badge/Backend-Spring%20Boot%203.2-green?style=flat-square)
+![Database](https://img.shields.io/badge/Database-PostgreSQL-blue?style=flat-square)
+![Status](https://img.shields.io/badge/Status-Production--Ready-brightgreen?style=flat-square)
 ![License](https://img.shields.io/badge/License-MIT-blue?style=flat-square)
-![Angular Version](https://img.shields.io/badge/Angular-16-orange?style=flat-square)
-![Spring Boot Version](https://img.shields.io/badge/Spring%20Boot-3.2.0-green?style=flat-square)
-![Build](https://img.shields.io/badge/Build-Passing-brightgreen?style=flat-square)
-![Coverage](https://img.shields.io/badge/Coverage-85%25-yellow?style=flat-square)
 
-> **End-to-end Workflow & Task Management System**
-> Multi-tenant SaaS platform with **role-based access**, **secure JWT auth**, and responsive **Angular dashboard**.
+> **End-to-end multi-tenant Workflow & Task Management SaaS**
+> Built with Angular 16 + Spring Boot 3.2 + PostgreSQL. Features JWT auth, role-based access control, real-time SSE notifications, and an email-based invite system.
 
 ---
 
-## 🌟 Project Overview
+## 🌟 Overview
 
-The **Workflow Management System** allows organizations to:
+FlowSync lets organizations manage work across teams with full role isolation:
 
-- Create and manage **workspaces (organizations)**.
-- Assign members with **granular roles**: OWNER, ADMIN, MANAGER, EMPLOYEE.
-- Track **tasks with status, priority, and assignments**.
-- Monitor **recent activity and dashboard metrics**.
-- Ensure **secure multi-tenant isolation** and **RBAC**.
-
-> Production-grade SaaS architecture built for scalability and cloud deployment.
+- Create and manage **workspaces** — users can belong to multiple orgs and switch between them
+- Assign members with **granular roles**: OWNER, ADMIN, MANAGER, EMPLOYEE
+- **Create, assign, and track tasks** through a defined status workflow
+- **Approve or reject** tasks with reasons (MANAGER+)
+- **Invite members** via email with token-based accept/decline flow
+- **Real-time notifications** pushed instantly via SSE — no polling
+- **Settings** for password management, org configuration, and appearance
 
 ---
 
 ## 🏗️ System Architecture
 
 ```mermaid
-graph TD;
-    A[Angular Frontend SPA] -->|REST API| B[Spring Boot Backend];
-    B --> C[MySQL / PostgreSQL Database];
-    B --> D[Security Layer: JWT + RBAC];
-    C --> B;
+graph TD
+    A[Angular 16 SPA] -->|REST API + JWT| B[Spring Boot 3.2]
+    A -->|SSE Stream| B
+    B --> C[PostgreSQL]
+    B --> D[JavaMailSender]
+    B --> E[JWT + Spring Security]
 ```
 
-**Frontend → Backend → Database** flow:
-
-1. Angular SPA calls REST API via **HttpClient**.
-2. Backend authenticates users, enforces **roles**, and manages multi-tenant logic.
-3. Database stores users, organizations, tasks, and audit logs.
-4. JWT + Spring Security ensures **secure communication**.
+1. Angular SPA communicates with the backend via REST and a persistent SSE connection
+2. All requests carry a JWT token validated by a custom filter chain
+3. Organization-level authorization enforced via a custom `OrgSecurity` bean
+4. Notifications pushed in real time to connected clients without polling
+5. Email sent for invite creation, acceptance, and decline
 
 ---
 
 ## 🛠️ Tech Stack
 
-| Layer    | Technology / Tool             | Purpose                                  |
-| -------- | ----------------------------- | ---------------------------------------- |
-| Frontend | Angular 16+, TypeScript       | SPA, reactive UI, component-based design |
-|          | RxJS, BehaviorSubject         | State management & async data streams    |
-|          | CSS Grid/Flex, Material Icons | Responsive, modern UI                    |
-| Backend  | Java 17+, Spring Boot 3.2     | REST API, business logic                 |
-|          | Spring Security + JWT         | Auth & role-based access                 |
-|          | Spring Data JPA + Hibernate   | ORM & persistence                        |
-| Database | MySQL / PostgreSQL            | Multi-tenant persistent storage          |
-| DevOps   | Maven, Node, NPM              | Build & package                          |
-| Testing  | Jasmine/Karma, JUnit, Mockito | Unit & integration tests                 |
+| Layer     | Technology                        | Purpose                              |
+|-----------|-----------------------------------|--------------------------------------|
+| Frontend  | Angular 16, TypeScript            | SPA, standalone components           |
+|           | RxJS, BehaviorSubject             | Reactive state management            |
+|           | EventSource API                   | Real-time SSE notification stream    |
+|           | CSS3, Flexbox/Grid, Material Icons| Responsive UI                        |
+| Backend   | Java 17, Spring Boot 3.2          | REST API, business logic             |
+|           | Spring Security 6, JWT            | Auth, RBAC, method-level security    |
+|           | Spring Data JPA, Hibernate        | ORM and persistence                  |
+|           | JavaMailSender                    | Transactional email delivery         |
+|           | Spring MVC SseEmitter             | Real-time push notifications         |
+|           | Swagger / OpenAPI                 | API documentation                    |
+| Database  | PostgreSQL                        | Multi-tenant persistent storage      |
+| Build     | Maven, Node, NPM                  | Build and package management         |
 
 ---
 
-## 💎 Features
+## 💎 Feature Highlights
 
-### Frontend
+### 🔐 Auth & Onboarding
+- JWT-based login and signup with BCrypt password hashing
+- Forgot/reset password via email token
+- New users guided through org creation before dashboard access
+- Guard chain: `AuthGuard → OnboardingGuard → OrgGuard`
 
-- **Dashboard:** Task stats, organization info, and recent activity.
-- **Task Management:** Filter, assign, update task status.
-- **Organization Management:** Create and manage workspaces.
-- **Role-Aware UI:** Dynamically shows/hides components based on user roles.
-- **Responsive Design:** Desktop, tablet, and mobile-friendly.
-- **Activity Feed:** Displays updates; shows “No recent activity yet” if empty.
+### 🏢 Multi-Tenant Workspaces
+- Users belong to multiple orgs with independent roles
+- Navbar org switcher — switch context without re-login
+- Full data isolation per organization
 
-### Backend
+### ✅ Task Management
+- Create tasks with title, description, priority, and optional assignee
+- Status workflow: `TO_DO → IN_PROGRESS → PENDING → APPROVED/REJECTED`
+- Filter by status, assign to members, track overdue tasks
+- MANAGER+ can approve or reject with optional rejection reason
 
-- **JWT Authentication:** Stateless login with secure tokens.
-- **RBAC:** Platform (MASTER_ADMIN, USER) + Organization roles.
-- **Multi-Tenant Architecture:** Tenant data isolation per organization.
-- **Task Management:** CRUD operations with status, priority, assignments.
-- **Global Exception Handling:** Standardized API responses.
-- **Soft Delete:** Logical deletion with audit timestamps.
+### 👥 Members & Invites
+- View all org members with roles
+- ADMIN+ can invite via email — 48-hour expiry token
+- Invite page handles: validation → wrong-account detection → accept/decline
+- Wrong account: shows both emails, "Switch Account" clears session and redirects
+
+### 🔔 Real-Time Notifications (SSE)
+- Persistent SSE stream per user, established on login
+- Unread badge updates instantly — no polling
+- Notifications for: task assigned, task approved/rejected, invite accepted/declined
+- Mark individual or all as read; auto-reconnect on drop
+
+### ⚙️ Settings
+- Change password with current password verification
+- OWNER: rename org or delete org (requires typing org name to confirm)
+- Non-owners: read-only org info with role badge
+
+### 🍞 Toast System
+- Global `ToastService` used across all features
+- Success / Error / Info variants with auto-dismiss and slide-in animation
 
 ---
 
 ## 🧩 Domain Model
 
-| Entity                 | Description                                                                      |
-| ---------------------- | -------------------------------------------------------------------------------- |
-| **User**               | Platform-level user with email, password, and role                               |
-| **Organization**       | Tenant workspace owned by a user                                                 |
-| **OrganizationMember** | Maps user to organization with role                                              |
-| **Task**               | Scoped to organization; fields: title, description, status, priority, assignedTo |
+| Entity | Description |
+|--------|-------------|
+| `User` | Platform-level user — email, password, platform role |
+| `Organization` | Tenant workspace — owned by a user, soft-deletable |
+| `OrganizationMember` | Maps user ↔ org with role (`OWNER/ADMIN/MANAGER/EMPLOYEE`) |
+| `Task` | Org-scoped work item — status, priority, assignee, rejection reason |
+| `OrgInvite` | Email invite token — 48hr expiry, tracks inviter |
+| `Notification` | In-app notification — type, read status, linked to user |
 
 ---
 
-## 🔑 Authentication Flow
+## 🔑 Role Permissions
 
-1. Sign up / login via frontend → JWT token issued.
-2. Store token in `localStorage`.
-3. Include token in `Authorization: Bearer <token>` header for all API requests.
-4. Backend validates token and enforces **role-based access**.
+| Action | OWNER | ADMIN | MANAGER | EMPLOYEE |
+|--------|-------|-------|---------|----------|
+| Rename / Delete org | ✅ | ❌ | ❌ | ❌ |
+| Send member invites | ✅ | ✅ | ❌ | ❌ |
+| Approve / Reject tasks | ✅ | ✅ | ✅ | ❌ |
+| Assign tasks | ✅ | ✅ | ✅ | ✅ |
+| Create tasks | ✅ | ✅ | ✅ | ✅ |
 
 ---
 
-## 🖼️ Screenshots / UI Previews
+## 🖼️ Screenshots
 
 ### Landing
-
 ![Landing](./resources/landing-page.png)
 
-### SignUp/Login
-
+### Sign Up / Login
 ![Auth](./resources/sign-up.png)
 
-### Reset Password Mail
-
-![Reset Password Mail](./resources/reset-password-mail.png)
-
-### Reset Password
-
-![Reset Password](./resources/reset-password.png)
-
-### Dashboard Overview
-
+### Dashboard
 ![Dashboard](./resources/dashboard.png)
 
-### Responsive Mobile View
+### Notifications
+![Notifications](./resources/notifications.png)
 
-![Mobile Dashboard](./resources/mobile-view.png)
+### Members & Invite
+![Members](./resources/members.png)
+
+### Settings
+![Settings](./resources/settings.png)
+
+### Mobile View
+![Mobile](./resources/mobile-view.png)
 
 ---
 
 ## ▶️ Getting Started
 
+### Prerequisites
+- Java 17+
+- Node 18+
+- PostgreSQL
+
 ### Backend
-
 ```bash
-git clone <backend-repo-url>
-cd backend
-# configure application.yml with DB credentials
-mvn spring-boot:run
-```
+git clone https://github.com/Anuj-Gupta79/workflow-management-system
+cd workflow-management-system/backend
 
-Server runs at `http://localhost:8080`.
+# Configure application.yml
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost:5432/workflow_db
+    username: your_username
+    password: your_password
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: your_email@gmail.com
+    password: your_app_password
+jwt:
+  secret: your_secret_key
+  expiration: 86400000
+
+mvn spring-boot:run
+# Runs at http://localhost:8080
+# Swagger UI: http://localhost:8080/swagger-ui/index.html
+```
 
 ### Frontend
-
 ```bash
-git clone <frontend-repo-url>
-cd frontend
+cd workflow-management-system/frontend/workflow-ui
 npm install
-# update environment.ts with backend API URL
 ng serve
+# Runs at http://localhost:4200
 ```
 
-Frontend runs at `http://localhost:4200`.
+---
+
+## 🚀 Production-Ready Highlights
+
+- Multi-tenant SaaS architecture with full org-level data isolation
+- Dual-level RBAC: platform roles + organization roles
+- Real-time SSE notifications with auto-reconnect
+- Email-based invite flow with token expiry and cross-account detection
+- Soft delete across all entities with audit timestamps
+- Centralized exception handling with consistent error responses
+- Standalone Angular components with reactive BehaviorSubject state
+- Clean subscription management with `takeUntil(destroy$)` pattern
 
 ---
 
-## 🌐 Example Flow
+## 🚧 Planned Improvements
 
-1. User signs up / logs in → token stored in browser.
-2. Creates organization (if none exists) → redirected to dashboard.
-3. Dashboard shows **stats, current organization, role, and activity feed**.
-4. Task list → create, assign, update status.
-5. Members management → add/remove members.
-6. Frontend dynamically adapts to user roles.
-
----
-
-## 🚀 Production-Ready Features
-
-- Multi-tenant SaaS architecture
-- JWT + RBAC security
-- Modular Angular frontend
-- Soft delete + audit timestamps
-- Role-based navigation
-- Docker-ready & cloud deployable
-- CI/CD ready
-- Modern responsive UI
-
----
-
-## 🧪 Testing Strategy
-
-- **Frontend:** Unit tests (Jasmine/Karma), E2E tests (Cypress)
-- **Backend:** JUnit + Mockito, integration tests
-- Test multi-tenant behavior, RBAC, and dashboard data consistency
-
----
-
-## 📦 Deployment
-
-- Dockerize frontend & backend
-- CI/CD friendly
-- Cloud-ready for AWS, Azure, GCP
+- Refresh token mechanism
+- Redis-backed SSE for horizontal scaling
+- Pagination and sorting on task/member lists
+- Docker + Docker Compose setup
+- CI/CD pipeline
+- Dark mode
 
 ---
 
 ## 👨‍💻 Author
 
-Built with **modern SaaS principles**, clean architecture, and fullstack best practices.
-Demonstrates **multi-tenant workflow management** with production-grade quality.
+**Anuj Gupta**  
+[GitHub](https://github.com/Anuj-Gupta79)
 
----
+Built with SaaS-grade architecture principles demonstrating full-stack production-ready development.

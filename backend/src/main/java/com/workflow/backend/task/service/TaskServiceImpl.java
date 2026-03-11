@@ -5,6 +5,8 @@ import java.util.List;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
+import com.workflow.backend.notification.entity.Notification.NotificationType;
+import com.workflow.backend.notification.service.NotificationService;
 import com.workflow.backend.organization.repository.OrganizationMemberRepository;
 import com.workflow.backend.organization.repository.OrganizationRepository;
 import com.workflow.backend.shared.utility.CustomUserDetails;
@@ -26,6 +28,7 @@ public class TaskServiceImpl implements TaskService {
     private final OrganizationRepository organizationRepository;
     private final UserRepository userRepository;
     private final OrganizationMemberRepository memberRepository;
+    private final NotificationService notificationService;
 
     @Override
     public List<Task> getTasksByOrganization(Long orgId) {
@@ -120,7 +123,17 @@ public class TaskServiceImpl implements TaskService {
                 .orElseThrow(() -> new RuntimeException("User not found"));
 
         task.setAssignedTo(user);
-        return taskRepository.save(task);
+        Task saved = taskRepository.save(task);
+
+        User currentUser = getCurrentUser();
+        if (!user.getId().equals(currentUser.getId())) {
+            notificationService.createAndPush(
+                    user,
+                    "You have been assigned a new task: \"" + task.getTitle() + "\"",
+                    NotificationType.TASK_ASSIGNED);
+        }
+
+        return saved;
     }
 
     @Override
@@ -144,8 +157,17 @@ public class TaskServiceImpl implements TaskService {
         }
 
         task.setStatus(TaskStatus.APPROVED);
-        task.setRejectionReason(null); // clear any previous rejection
-        return taskRepository.save(task);
+        task.setRejectionReason(null);
+        Task saved = taskRepository.save(task);
+
+        if (task.getCreatedBy() != null) {
+            notificationService.createAndPush(
+                    task.getCreatedBy(),
+                    "Your task \"" + task.getTitle() + "\" has been approved! ✅",
+                    NotificationType.TASK_APPROVED);
+        }
+
+        return saved;
     }
 
     @Override
@@ -160,17 +182,21 @@ public class TaskServiceImpl implements TaskService {
 
         task.setStatus(TaskStatus.REJECTED);
         task.setRejectionReason(reason);
-        return taskRepository.save(task);
-    }
+        Task saved = taskRepository.save(task);
 
-    private User getCurrentUser() {
-        CustomUserDetails principal = (CustomUserDetails) SecurityContextHolder
-                .getContext()
-                .getAuthentication()
-                .getPrincipal();
+        // Notify task creator
+        if (task.getCreatedBy() != null) {
+            String msg = reason != null && !reason.isBlank()
+                    ? "Your task \"" + task.getTitle() + "\" was rejected. Reason: " + reason
+                    : "Your task \"" + task.getTitle() + "\" has been rejected.";
 
-        return userRepository.findById(principal.getId())
-                .orElseThrow(() -> new RuntimeException("Authenticated user not found"));
+            notificationService.createAndPush(
+                    task.getCreatedBy(),
+                    msg,
+                    NotificationType.TASK_REJECTED);
+        }
+
+        return saved;
     }
 
     private boolean isValidTransition(TaskStatus current, TaskStatus next) {
@@ -216,5 +242,15 @@ public class TaskServiceImpl implements TaskService {
             default:
                 return false;
         }
+    }
+
+    private User getCurrentUser() {
+        CustomUserDetails principal = (CustomUserDetails) SecurityContextHolder
+                .getContext()
+                .getAuthentication()
+                .getPrincipal();
+
+        return userRepository.findById(principal.getId())
+                .orElseThrow(() -> new RuntimeException("Authenticated user not found"));
     }
 }

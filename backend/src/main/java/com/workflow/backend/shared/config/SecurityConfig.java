@@ -42,7 +42,8 @@ public class SecurityConfig {
                                                                 "/swagger-ui/**",
                                                                 "/v3/api-docs/**",
                                                                 "/swagger-ui.html",
-                                                                "/invites/validate")
+                                                                "/invites/validate",
+                                                                "/notifications/stream")
                                                 .permitAll()
 
                                                 .anyRequest().authenticated())

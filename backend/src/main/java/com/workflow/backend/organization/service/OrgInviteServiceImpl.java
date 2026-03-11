@@ -5,6 +5,8 @@ import java.util.UUID;
 
 import org.springframework.stereotype.Service;
 
+import com.workflow.backend.notification.entity.Notification.NotificationType;
+import com.workflow.backend.notification.service.NotificationService;
 import com.workflow.backend.organization.entity.OrgInvite;
 import com.workflow.backend.organization.entity.OrgInvite.InviteStatus;
 import com.workflow.backend.organization.entity.OrganizationMember;
@@ -27,6 +29,7 @@ public class OrgInviteServiceImpl implements OrgInviteService {
     private final OrganizationMemberRepository memberRepository;
     private final UserRepository userRepository;
     private final EmailService emailService;
+    private final NotificationService notificationService;
 
     @Override
     public OrgInvite createInvite(Long orgId, String email, OrganizationRole role, User inviter) {
@@ -114,6 +117,11 @@ public class OrgInviteServiceImpl implements OrgInviteService {
                 invite.getOrganization().getName(),
                 true);
 
+        notificationService.createAndPush(
+                invite.getInvitedBy(),
+                user.getName() + " accepted your invitation to join " + invite.getOrganization().getName(),
+                NotificationType.INVITE_ACCEPTED);
+
         return invite;
     }
 
@@ -136,6 +144,11 @@ public class OrgInviteServiceImpl implements OrgInviteService {
                 user.getName(),
                 invite.getOrganization().getName(),
                 false);
+
+        notificationService.createAndPush(
+                invite.getInvitedBy(),
+                user.getName() + " declined your invitation to join " + invite.getOrganization().getName(),
+                NotificationType.INVITE_DECLINED);
 
         return invite;
     }
