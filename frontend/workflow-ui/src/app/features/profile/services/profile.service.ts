@@ -1,6 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
+import { environment } from '../../../../../environments/environment';
 
 export interface Profile {
   id: number;
@@ -12,7 +13,7 @@ export interface Profile {
 
 @Injectable({ providedIn: 'root' })
 export class ProfileService {
-  private api = 'http://localhost:8080/users/me';
+  private api = environment.apiUrl + '/users/me';
 
   constructor(private http: HttpClient) {}
 

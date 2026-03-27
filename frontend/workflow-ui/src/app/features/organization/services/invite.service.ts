@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { OrgRole } from '../../members/models/member.model';
+import { environment } from '../../../../../environments/environment';
 
 export interface InviteRequest {
   organizationId: number;
@@ -13,7 +14,7 @@ export interface InviteRequest {
   providedIn: 'root',
 })
 export class InviteService {
-  private base = 'http://localhost:8080';
+  private base = environment.apiUrl;
 
   constructor(private http: HttpClient) {}
 

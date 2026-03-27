@@ -17,6 +17,7 @@ import {
 } from '../../../../layout/dashboard-layout/services/cur-org.service';
 import { AuthService } from '../../../../cores/auth/auth.service';
 import { ToastService } from '../../../../shared/service/toast.service';
+import { environment } from '../../../../../../environments/environment';
 
 type Tab = 'account' | 'organization' | 'appearance';
 
@@ -29,7 +30,7 @@ type Tab = 'account' | 'organization' | 'appearance';
 })
 export class Settings implements OnInit, OnDestroy {
   private destroy$ = new Subject<void>();
-  private base = 'http://localhost:8080';
+  private base = environment.apiUrl;
 
   activeTab: Tab = 'account';
 

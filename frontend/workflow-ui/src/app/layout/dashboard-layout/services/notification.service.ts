@@ -1,6 +1,7 @@
 import { Injectable, OnDestroy } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { BehaviorSubject, Observable } from 'rxjs';
+import { environment } from '../../../../../environments/environment';
 
 export interface AppNotification {
   id: number;
@@ -12,7 +13,7 @@ export interface AppNotification {
 
 @Injectable({ providedIn: 'root' })
 export class NotificationService implements OnDestroy {
-  private base = 'http://localhost:8080';
+  private base = environment.apiUrl;
   private eventSource: EventSource | null = null;
 
   private _notifications$ = new BehaviorSubject<AppNotification[]>([]);

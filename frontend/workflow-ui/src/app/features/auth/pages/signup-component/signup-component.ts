@@ -4,6 +4,7 @@ import { ReactiveFormsModule, FormBuilder, Validators, FormGroup } from '@angula
 import { Router, RouterModule, ActivatedRoute } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
 import { AuthService } from '../../../../cores/auth/auth.service';
+import { environment } from '../../../../../../environments/environment';
 
 @Component({
   selector: 'app-signup-component',
@@ -24,7 +25,7 @@ export class SignupComponent implements OnInit {
   inviteEmail = '';
   hasInvite = false;
 
-  private base = 'http://localhost:8080';
+  private base = environment.apiUrl;
 
   constructor(
     private fb: FormBuilder,

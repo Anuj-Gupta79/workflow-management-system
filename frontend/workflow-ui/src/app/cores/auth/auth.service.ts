@@ -4,12 +4,13 @@ import { Observable, tap } from 'rxjs';
 import { LoginRequest } from '../../features/auth/models/login-request.model';
 import { SignupRequest } from '../../features/auth/models/signup-request.model';
 import { AuthResponse } from '../../features/auth/models/auth-response.model';
+import { environment } from '../../../../environments/environment';
 
 @Injectable({
   providedIn: 'root',
 })
 export class AuthService {
-  private baseUrl = 'http://localhost:8080/auth';
+  private baseUrl = environment.apiUrl + '/auth';
   private readonly TOKEN_KEY = 'token';
   private readonly ROLE_KEY = 'role';
 
